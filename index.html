@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial AspectJ — Programación Orientada a Aspectos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+<style>
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #1c2333;
+  --bg4: #21262d;
+  --cyan: #00d9ff;
+  --cyan-dim: rgba(0,217,255,0.15);
+  --cyan-glow: rgba(0,217,255,0.4);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,0.15);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.15);
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.15);
+  --red: #f87171;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #484f58;
+  --border: #30363d;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--cyan)}
+
+/* ── PROGRESS BAR ── */
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple));width:0%;z-index:9999;transition:width .1s}
+
+/* ── NAV ── */
+nav{position:fixed;top:3px;left:0;right:0;z-index:1000;background:rgba(13,17,23,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:64px;display:flex;align-items:center;padding:0 2rem;gap:2rem}
+.nav-logo{font-family:var(--mono);font-size:1.1rem;font-weight:600;color:var(--cyan);white-space:nowrap;flex-shrink:0}
+.nav-logo span{color:var(--text2)}
+.nav-links{display:flex;gap:.25rem;list-style:none;overflow-x:auto;flex:1;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{padding:.4rem .75rem;border-radius:6px;font-size:.85rem;font-weight:500;color:var(--text2);transition:all .2s;white-space:nowrap;display:block}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan);background:var(--cyan-dim)}
+.nav-links a.highlight{color:var(--orange);background:var(--orange-dim)}
+.nav-links a.highlight:hover{background:rgba(251,146,60,0.25)}
+
+/* ── HERO ── */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:6rem 2rem 4rem}
+#canvas-bg{position:absolute;inset:0;opacity:.4}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:860px}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--cyan-dim);border:1px solid rgba(0,217,255,0.3);border-radius:100px;padding:.35rem 1rem;font-size:.8rem;font-weight:600;color:var(--cyan);letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.5rem}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero-title{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.1;margin-bottom:1rem}
+.hero-title .line1{display:block;color:var(--text)}
+.hero-title .line2{display:block;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.15rem;color:var(--text2);max-width:600px;margin:0 auto 2rem}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border-radius:var(--radius-sm);font-size:.95rem;font-weight:600;cursor:pointer;transition:all .25s;border:none}
+.btn-primary{background:var(--cyan);color:#000}
+.btn-primary:hover{background:#fff;box-shadow:0 0 30px var(--cyan-glow)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.hero-stats{display:flex;gap:3rem;justify-content:center;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-num{font-size:2rem;font-weight:800;color:var(--cyan);font-family:var(--mono)}
+.stat-label{font-size:.8rem;color:var(--text2);text-transform:uppercase;letter-spacing:.1em}
+
+/* ── SECTIONS ── */
+section{padding:5rem 2rem}
+.container{max-width:1100px;margin:0 auto}
+.section-tag{font-family:var(--mono);font-size:.75rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.15em;margin-bottom:.75rem;display:block}
+.section-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;line-height:1.2;margin-bottom:1rem}
+.section-title .accent{background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-desc{font-size:1.05rem;color:var(--text2);max-width:650px}
+.section-header{margin-bottom:3rem}
+
+/* ── FADE-IN ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+.fade-up.delay-1{transition-delay:.1s}
+.fade-up.delay-2{transition-delay:.2s}
+.fade-up.delay-3{transition-delay:.3s}
+.fade-up.delay-4{transition-delay:.4s}
+
+/* ── AOP PROBLEM SECTION ── */
+#que-es-aop{background:var(--bg)}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+@media(max-width:768px){.problem-grid{grid-template-columns:1fr}}
+.problem-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;position:relative;overflow:hidden}
+.problem-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#f97316)}
+.solution-card::before{background:linear-gradient(90deg,var(--cyan),var(--green))}
+.problem-card h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.problem-tag{display:inline-block;padding:.2rem .6rem;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.tag-bad{background:rgba(248,113,113,0.15);color:var(--red)}
+.tag-good{background:var(--green-dim);color:var(--green)}
+.cross-concerns{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem}
+.concern-col{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.concern-col-head{padding:.6rem 1rem;font-size:.8rem;font-weight:700;text-align:center;background:var(--bg3)}
+.concern-row{display:grid;grid-template-rows:repeat(4,1fr);gap:.5rem;padding:.75rem}
+.concern-item{padding:.4rem .6rem;border-radius:4px;font-size:.75rem;font-weight:500;text-align:center}
+.c-log{background:rgba(0,217,255,0.12);color:var(--cyan)}
+.c-sec{background:rgba(248,113,113,0.12);color:var(--red)}
+.c-tx{background:rgba(52,211,153,0.12);color:var(--green)}
+.c-perf{background:rgba(251,146,60,0.12);color:var(--orange)}
+.c-biz{background:var(--bg4);color:var(--text2)}
+
+/* ── CONCEPTS SECTION ── */
+#conceptos{background:var(--bg2)}
+.concepts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;margin-top:2rem}
+.concept-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;cursor:default;transition:all .3s;position:relative;overflow:hidden}
+.concept-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;pointer-events:none}
+.concept-card:hover{transform:translateY(-6px);border-color:transparent}
+.concept-card.c1:hover{box-shadow:0 0 0 1px var(--cyan),0 12px 40px rgba(0,217,255,0.2)}
+.concept-card.c2:hover{box-shadow:0 0 0 1px var(--purple),0 12px 40px rgba(167,139,250,0.2)}
+.concept-card.c3:hover{box-shadow:0 0 0 1px var(--orange),0 12px 40px rgba(251,146,60,0.2)}
+.concept-card.c4:hover{box-shadow:0 0 0 1px var(--green),0 12px 40px rgba(52,211,153,0.2)}
+.concept-card.c5:hover{box-shadow:0 0 0 1px var(--red),0 12px 40px rgba(248,113,113,0.2)}
+.concept-icon{font-size:2rem;margin-bottom:.75rem}
+.concept-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;font-family:var(--mono)}
+.concept-card p{font-size:.85rem;color:var(--text2);line-height:1.5;margin-bottom:1rem}
+.concept-tag{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:.2rem .5rem;border-radius:4px;background:var(--bg4)}
+.c1 .concept-tag{color:var(--cyan)}
+.c2 .concept-tag{color:var(--purple)}
+.c3 .concept-tag{color:var(--orange)}
+.c4 .concept-tag{color:var(--green)}
+.c5 .concept-tag{color:var(--red)}
+
+/* ── ADVICE TYPES ── */
+#advice{background:var(--bg)}
+.advice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+.advice-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;transition:all .3s;border-top:3px solid transparent}
+.advice-card:hover{transform:translateY(-4px)}
+.a-before{border-top-color:var(--cyan)}
+.a-after{border-top-color:var(--purple)}
+.a-afterret{border-top-color:var(--green)}
+.a-afterthr{border-top-color:var(--red)}
+.a-around{border-top-color:var(--orange)}
+.advice-card h3{font-size:.9rem;font-weight:700;margin-bottom:.4rem;font-family:var(--mono)}
+.advice-card p{font-size:.8rem;color:var(--text2);line-height:1.5}
+.advice-flow{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:2.5rem;flex-wrap:wrap}
+.flow-box{padding:.5rem 1rem;border-radius:6px;font-family:var(--mono);font-size:.8rem;font-weight:600}
+.flow-method{background:var(--bg3);border:1px solid var(--border);color:var(--text)}
+.flow-before{background:var(--cyan-dim);color:var(--cyan);border:1px solid rgba(0,217,255,.3)}
+.flow-after{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,.3)}
+.flow-around{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(251,146,60,.3)}
+.flow-arrow{color:var(--text3);font-size:.9rem}
+
+/* ── INSTALLATION ── */
+#instalacion{background:var(--bg2)}
+.install-steps{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+@media(max-width:768px){.install-steps{grid-template-columns:1fr}}
+.install-step{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--cyan);color:#000;font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;flex-shrink:0}
+.install-step h3{font-size:.95rem;font-weight:700;margin-bottom:.75rem}
+.install-step p{font-size:.85rem;color:var(--text2);margin-bottom:.75rem}
+
+/* ── CODE BLOCKS ── */
+.code-wrap{position:relative;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 1rem;background:#161b22;border-bottom:1px solid var(--border)}
+.code-filename{font-family:var(--mono);font-size:.78rem;color:var(--text2)}
+.code-filename .ext-java{color:var(--orange)}
+.code-filename .ext-aj{color:var(--cyan)}
+.code-filename .ext-xml{color:var(--green)}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--text2);padding:.25rem .6rem;border-radius:4px;font-size:.72rem;cursor:pointer;transition:all .2s;font-family:var(--mono)}
+.copy-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.copy-btn.copied{border-color:var(--green);color:var(--green)}
+.code-wrap pre{margin:0!important;border-radius:0!important;border:none!important;max-height:420px;overflow-y:auto}
+.code-wrap pre code.hljs{padding:1rem 1.25rem!important;font-size:.82rem!important;line-height:1.65!important;font-family:var(--mono)!important}
+
+/* ── EXAMPLES SECTION ── */
+#ejemplos{background:var(--bg)}
+.examples-selector{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2rem}
+.ex-btn{display:flex;flex-direction:column;align-items:flex-start;gap:.2rem;padding:.6rem 1rem;border-radius:var(--radius-sm);background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:all .2s;text-align:left;min-width:140px}
+.ex-btn:hover{border-color:var(--cyan);background:var(--cyan-dim)}
+.ex-btn.active{border-color:var(--cyan);background:var(--cyan-dim);box-shadow:0 0 0 1px rgba(0,217,255,.2)}
+.ex-btn-icon{font-size:1.1rem}
+.ex-btn-name{font-size:.82rem;font-weight:600;color:var(--text)}
+.ex-btn-files{font-size:.7rem;color:var(--text2);font-family:var(--mono)}
+.example-panel{display:none;animation:fadeIn .3s ease}
+.example-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.example-header{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:1.5rem 2rem;border-bottom:none}
+.example-header h3{font-size:1.2rem;font-weight:700;margin-bottom:.4rem}
+.example-header p{font-size:.9rem;color:var(--text2);line-height:1.6}
+.example-body{background:var(--bg2);border:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);padding:1.5rem 2rem}
+.file-tabs{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap}
+.file-tab{padding:.4rem .9rem;border-radius:var(--radius-sm);font-family:var(--mono);font-size:.78rem;cursor:pointer;background:var(--bg3);border:1px solid var(--border);color:var(--text2);transition:all .2s}
+.file-tab:hover{color:var(--text)}
+.file-tab.active[data-type="java"]{background:var(--orange-dim);border-color:rgba(251,146,60,.4);color:var(--orange)}
+.file-tab.active[data-type="aj"]{background:var(--cyan-dim);border-color:rgba(0,217,255,.4);color:var(--cyan)}
+.file-tab.active[data-type="xml"]{background:var(--green-dim);border-color:rgba(52,211,153,.4);color:var(--green)}
+.file-panel{display:none}
+.file-panel.active{display:block}
+.file-desc{font-size:.85rem;color:var(--text2);margin-bottom:.75rem;padding:.75rem 1rem;background:var(--bg3);border-radius:var(--radius-sm);border-left:3px solid var(--cyan)}
+.theory-box{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin-bottom:1rem}
+.theory-box p{font-size:.88rem;color:var(--text2);line-height:1.7}
+.theory-box code{font-family:var(--mono);font-size:.82rem;color:var(--cyan);background:var(--bg4);padding:.1rem .4rem;border-radius:3px}
+
+/* ── COMPARISON SECTION ── */
+#comparacion{background:var(--bg2)}
+.compare-table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin-top:2rem}
+table{width:100%;border-collapse:collapse}
+th{background:var(--bg3);padding:.9rem 1.25rem;text-align:left;font-size:.82rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
+td{padding:.85rem 1.25rem;font-size:.88rem;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.th-feature{min-width:200px}
+.th-aspectj{color:var(--cyan)}
+.th-spring{color:var(--green)}
+.check{color:var(--green);font-weight:700}
+.cross{color:var(--red);font-weight:700}
+.mid{color:var(--orange);font-weight:700}
+
+/* ── WHEN TO USE ── */
+#cuando-usar{background:var(--bg)}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+@media(max-width:768px){.use-grid{grid-template-columns:1fr}}
+.use-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.use-card h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.use-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.use-list li{font-size:.88rem;color:var(--text2);display:flex;align-items:flex-start;gap:.6rem;line-height:1.5}
+.use-list li::before{flex-shrink:0;margin-top:.1rem}
+.use-yes li::before{content:'✓';color:var(--green);font-weight:700}
+.use-no li::before{content:'✗';color:var(--red);font-weight:700}
+
+/* ── CONCLUSIONS ── */
+#conclusiones{background:var(--bg2)}
+.conclusion-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-top:2rem}
+.conclusion-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.conclusion-card h3{font-size:.95rem;font-weight:700;margin-bottom:.75rem;color:var(--cyan)}
+.conclusion-card p{font-size:.85rem;color:var(--text2);line-height:1.6}
+.quote-box{background:var(--bg3);border:1px solid var(--border);border-left:4px solid var(--cyan);border-radius:0 var(--radius) var(--radius) 0;padding:1.5rem 2rem;margin-top:2rem;font-style:italic;font-size:.95rem;color:var(--text2);line-height:1.8}
+.resources-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+.resource-link{display:flex;align-items:center;gap:.6rem;padding:.75rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.85rem;transition:all .2s;color:var(--text2)}
+.resource-link:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+
+/* ── FOOTER ── */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text2);font-size:.85rem}
+footer .footer-brand{font-family:var(--mono);color:var(--cyan);font-size:1rem;font-weight:600;margin-bottom:.5rem}
+
+/* ── BACK TO TOP ── */
+#back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;background:var(--bg2);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:all .3s;z-index:500;font-size:1rem}
+#back-top.show{opacity:1}
+#back-top:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 20px var(--cyan-glow)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){nav{padding:0 1rem;gap:.75rem}.nav-links a{padding:.35rem .5rem;font-size:.78rem}}
+@media(max-width:640px){.hero-stats{gap:1.5rem}.examples-selector{gap:.4rem}.ex-btn{min-width:calc(50% - .2rem)}.example-header,.example-body{padding:1rem 1.25rem}}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">&lt;<span>AspectJ</span>/&gt;</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Inicio</a></li>
+    <li><a href="#que-es-aop">¿Qué es AOP?</a></li>
+    <li><a href="#conceptos">Conceptos</a></li>
+    <li><a href="#instalacion">Instalación</a></li>
+    <li><a href="#advice">Tipos de Advice</a></li>
+    <li><a href="#ejemplos" class="highlight">Ejemplos</a></li>
+    <li><a href="#comparacion">AspectJ vs Spring</a></li>
+    <li><a href="#conclusiones">Conclusiones</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="canvas-bg"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">Universidad Nacional de Colombia &nbsp;·&nbsp; Lenguajes de Programación</div>
+    <h1 class="hero-title">
+      <span class="line1">Tutorial</span>
+      <span class="line2">AspectJ &amp; AOP</span>
+    </h1>
+    <p class="hero-sub">Programación Orientada a Aspectos en Java — de los conceptos básicos a ejemplos prácticos reales.</p>
+    <div class="hero-btns">
+      <a href="#que-es-aop" class="btn btn-primary">Explorar Tutorial</a>
+      <a href="#ejemplos" class="btn btn-outline">Ver Ejemplos</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Conceptos Clave</div></div>
+      <div class="stat"><div class="stat-num">11</div><div class="stat-label">Ejemplos de Código</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Tipos de Weaving</div></div>
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Tipos de Advice</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ ES AOP -->
+<section id="que-es-aop">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// El Problema</span>
+      <h2 class="section-title">¿Por qué necesitamos <span class="accent">AOP</span>?</h2>
+      <p class="section-desc">La Programación Orientada a Objetos es excelente para modelar el dominio, pero falla cuando hay comportamientos que "cortan" transversalmente todas las clases.</p>
+    </div>
+
+    <div class="problem-grid fade-up">
+      <div class="problem-card">
+        <h3><span class="problem-tag tag-bad">Problema</span> Código repetido en OOP</h3>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-filename"><span class="ext-java">ServicioA.java</span> / <span class="ext-java">ServicioB.java</span> / ...</span>
+          </div>
+          <pre><code class="language-java">// Cada clase repite el mismo boilerplate:
+public void procesarPedido(Pedido p) {
+    log.info("Inicio procesarPedido");   // logging
+    checkAuth(usuario);                   // seguridad
+    long t = System.currentTimeMillis(); // timing
+
+    // lógica de negocio
+    pedidoRepo.save(p);
+
+    long ms = System.currentTimeMillis() - t;
+    log.info("Fin: " + ms + "ms");       // logging
+}
+// → 50 clases × este código = pesadilla</code></pre>
+        </div>
+      </div>
+      <div class="problem-card solution-card">
+        <h3><span class="problem-tag tag-good">Solución</span> Separación con AOP</h3>
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-filename"><span class="ext-aj">LoggingAspect.aj</span></span>
+          </div>
+          <pre><code class="language-java">// Se define UNA vez, aplica en toda la app:
+public aspect LoggingAspect {
+    pointcut serviceMethods() :
+        execution(* com.app.service.*.*(..));
+
+    before() : serviceMethods() {
+        System.out.println("Inicio: "
+            + thisJoinPoint.getSignature());
+    }
+
+    after() : serviceMethods() {
+        System.out.println("Fin del método");
+    }
+}
+// → El servicio queda completamente limpio</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fade-up" style="margin-top:2.5rem">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--text2)">Cross-Cutting Concerns — comportamientos que atraviesan toda la aplicación:</h3>
+      <div class="cross-concerns">
+        <div class="concern-col">
+          <div class="concern-col-head">Módulo Usuarios</div>
+          <div class="concern-row">
+            <div class="concern-item c-log">Logging</div>
+            <div class="concern-item c-sec">Seguridad</div>
+            <div class="concern-item c-tx">Transacciones</div>
+            <div class="concern-item c-biz">Lógica de negocio</div>
+          </div>
+        </div>
+        <div class="concern-col">
+          <div class="concern-col-head">Módulo Pedidos</div>
+          <div class="concern-row">
+            <div class="concern-item c-log">Logging</div>
+            <div class="concern-item c-sec">Seguridad</div>
+            <div class="concern-item c-tx">Transacciones</div>
+            <div class="concern-item c-biz">Lógica de negocio</div>
+          </div>
+        </div>
+        <div class="concern-col">
+          <div class="concern-col-head">Módulo Productos</div>
+          <div class="concern-row">
+            <div class="concern-item c-log">Logging</div>
+            <div class="concern-item c-sec">Seguridad</div>
+            <div class="concern-item c-tx">Transacciones</div>
+            <div class="concern-item c-biz">Lógica de negocio</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:.85rem;color:var(--text2);margin-top:1rem;text-align:center">Con AOP, los concerns en <span style="color:var(--cyan)">azul</span>, <span style="color:var(--red)">rojo</span> y <span style="color:var(--green)">verde</span> se definen <strong>una sola vez</strong> en un Aspecto — no en cada módulo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTOS -->
+<section id="conceptos">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Vocabulario</span>
+      <h2 class="section-title">Conceptos <span class="accent">Clave</span></h2>
+      <p class="section-desc">Los 5 pilares que necesitas entender para dominar AspectJ y AOP.</p>
+    </div>
+    <div class="concepts-grid">
+      <div class="concept-card c1 fade-up delay-1">
+        <div class="concept-icon">🧩</div>
+        <h3>Aspect</h3>
+        <p>Módulo que encapsula un cross-cutting concern. Equivale a una clase en OOP, pero para comportamiento transversal.</p>
+        <div class="concept-tag">public aspect LogAspect { }</div>
+      </div>
+      <div class="concept-card c2 fade-up delay-2">
+        <div class="concept-icon">📍</div>
+        <h3>Join Point</h3>
+        <p>Punto específico en la ejecución del programa donde puede actuar un aspecto: llamada a método, constructor, acceso a campo...</p>
+        <div class="concept-tag">method call / execution</div>
+      </div>
+      <div class="concept-card c3 fade-up delay-3">
+        <div class="concept-icon">🎯</div>
+        <h3>Pointcut</h3>
+        <p>Expresión que selecciona qué Join Points nos interesan. Define <em>dónde</em> se aplicará el advice.</p>
+        <div class="concept-tag">execution(* Service.*(..))</div>
+      </div>
+      <div class="concept-card c4 fade-up delay-4">
+        <div class="concept-icon">⚡</div>
+        <h3>Advice</h3>
+        <p>El código que se ejecuta en el Join Point seleccionado. Puede ser before, after, around, afterReturning o afterThrowing.</p>
+        <div class="concept-tag">before() : pointcut() { }</div>
+      </div>
+      <div class="concept-card c5 fade-up delay-4">
+        <div class="concept-icon">🔗</div>
+        <h3>Weaving</h3>
+        <p>Proceso de combinar los aspectos con el código base. Puede ocurrir en tiempo de compilación, carga o ejecución.</p>
+        <div class="concept-tag">compile-time / load-time</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALACIÓN -->
+<section id="instalacion">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Setup</span>
+      <h2 class="section-title">Instalación y <span class="accent">Configuración</span></h2>
+      <p class="section-desc">Configura AspectJ en tu proyecto Maven con estos pasos.</p>
+    </div>
+    <div class="install-steps">
+      <div class="fade-up delay-1">
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-filename"><span class="ext-xml">pom.xml</span> — Dependencias</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          </div>
+          <pre><code class="language-xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+    &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;
+    &lt;version&gt;1.9.21&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+&lt;build&gt;
+  &lt;plugins&gt;
+    &lt;plugin&gt;
+      &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+      &lt;artifactId&gt;aspectj-maven-plugin&lt;/artifactId&gt;
+      &lt;version&gt;1.15.0&lt;/version&gt;
+      &lt;configuration&gt;
+        &lt;complianceLevel&gt;17&lt;/complianceLevel&gt;
+        &lt;source&gt;17&lt;/source&gt;
+        &lt;target&gt;17&lt;/target&gt;
+      &lt;/configuration&gt;
+      &lt;executions&gt;
+        &lt;execution&gt;
+          &lt;goals&gt;&lt;goal&gt;compile&lt;/goal&gt;&lt;/goals&gt;
+        &lt;/execution&gt;
+      &lt;/executions&gt;
+    &lt;/plugin&gt;
+  &lt;/plugins&gt;
+&lt;/build&gt;</code></pre>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem" class="fade-up delay-2">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <h3>Verificar Java y Maven</h3>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">java -version  // Java 11+ requerido
+mvn -version   // Maven 3.6+ requerido</code></pre></div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">2</div>
+          <h3>Plugin IntelliJ IDEA</h3>
+          <p>File → Settings → Plugins → Marketplace → buscar <strong>"AspectJ Support"</strong> → instalar → reiniciar IDE</p>
+        </div>
+        <div class="install-step">
+          <div class="step-num">3</div>
+          <h3>Compilar y ejecutar</h3>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">mvn clean compile
+mvn exec:java \
+  -Dexec.mainClass="com.app.Main"</code></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIPOS DE ADVICE -->
+<section id="advice">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Advice</span>
+      <h2 class="section-title">Tipos de <span class="accent">Advice</span></h2>
+      <p class="section-desc">El advice define <em>cuándo</em> y <em>cómo</em> se ejecuta el código del aspecto en relación al Join Point.</p>
+    </div>
+    <div class="advice-grid fade-up">
+      <div class="advice-card a-before">
+        <h3>before()</h3>
+        <p>Se ejecuta <strong>antes</strong> del método. Ideal para validación, logging de entrada, seguridad. No puede detener la ejecución (salvo excepción).</p>
+      </div>
+      <div class="advice-card a-after">
+        <h3>after()</h3>
+        <p>Se ejecuta <strong>después siempre</strong>, tanto en éxito como en error. Equivalente al bloque <code style="font-family:var(--mono);color:var(--purple)">finally</code>.</p>
+      </div>
+      <div class="advice-card a-afterret">
+        <h3>after() returning</h3>
+        <p>Se ejecuta <strong>solo en éxito</strong>. Puede acceder al valor de retorno. Ideal para auditoría o caché post-ejecución.</p>
+      </div>
+      <div class="advice-card a-afterthr">
+        <h3>after() throwing</h3>
+        <p>Se ejecuta <strong>solo si hay excepción</strong>. Puede acceder a la excepción lanzada. Ideal para manejo centralizado de errores.</p>
+      </div>
+      <div class="advice-card a-around">
+        <h3>around()</h3>
+        <p>Envuelve el método <strong>completamente</strong>. Control total: puede modificar args, cambiar el resultado, o evitar la ejecución. Requiere llamar <code style="font-family:var(--mono);color:var(--orange)">proceed()</code>.</p>
+      </div>
+    </div>
+    <div class="advice-flow fade-up">
+      <div class="flow-box flow-around">around() { inicio...</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-before">before()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-method">método()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-after">after()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-around">...fin }</div>
+    </div>
+  </div>
+</section>
+
+<!-- EJEMPLOS -->
+<section id="ejemplos">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Código en Acción</span>
+      <h2 class="section-title">Ejemplos <span class="accent">Prácticos</span></h2>
+      <p class="section-desc">11 ejemplos progresivos para dominar AspectJ — desde Hello World hasta sistemas reales con múltiples aspectos.</p>
+    </div>
+
+    <div class="examples-selector fade-up">
+      <button class="ex-btn active" data-ex="hello"><span class="ex-btn-icon">👋</span><span class="ex-btn-name">Hello World</span><span class="ex-btn-files">2 archivos</span></button>
+      <button class="ex-btn" data-ex="testasp"><span class="ex-btn-icon">🔧</span><span class="ex-btn-name">TestAsp</span><span class="ex-btn-files">2 archivos</span></button>
+      <button class="ex-btn" data-ex="wildcards"><span class="ex-btn-icon">✳️</span><span class="ex-btn-name">Comodines *</span><span class="ex-btn-files">2 archivos</span></button>
+      <button class="ex-btn" data-ex="callexec"><span class="ex-btn-icon">📞</span><span class="ex-btn-name">Call y Execution</span><span class="ex-btn-files">3 archivos</span></button>
+      <button class="ex-btn" data-ex="callsvs"><span class="ex-btn-icon">⚖️</span><span class="ex-btn-name">Calls vs Exec.</span><span class="ex-btn-files">3 archivos</span></button>
+      <button class="ex-btn" data-ex="context"><span class="ex-btn-icon">📦</span><span class="ex-btn-name">Context Passing</span><span class="ex-btn-files">3 archivos</span></button>
+      <button class="ex-btn" data-ex="behavior"><span class="ex-btn-icon">🎭</span><span class="ex-btn-name">Aspect Behaviours</span><span class="ex-btn-files">5 archivos</span></button>
+      <button class="ex-btn" data-ex="security"><span class="ex-btn-icon">🔒</span><span class="ex-btn-name">Seguridad</span><span class="ex-btn-files">3 archivos</span></button>
+      <button class="ex-btn" data-ex="timing"><span class="ex-btn-icon">⏱️</span><span class="ex-btn-name">Tiempo Ejecución</span><span class="ex-btn-files">3 archivos</span></button>
+      <button class="ex-btn" data-ex="pedido"><span class="ex-btn-icon">🛒</span><span class="ex-btn-name">Realiz. Pedido</span><span class="ex-btn-files">7 archivos</span></button>
+      <button class="ex-btn" data-ex="calc"><span class="ex-btn-icon">🧮</span><span class="ex-btn-name">Calculadora Logs</span><span class="ex-btn-files">3 archivos</span></button>
+    </div>
+
+    <!-- ═══ HELLO WORLD ═══ -->
+    <div class="example-panel active" id="ex-hello">
+      <div class="example-header">
+        <h3>👋 Hello World AspectJ</h3>
+        <p>El ejemplo más sencillo posible. Una clase Java imprime "Hello " y un aspecto agrega "World" automáticamente <em>sin modificar</em> la clase original.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'hello-java')">Hello.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'hello-aj')">World.aj</button>
+        </div>
+        <div class="file-panel active" id="hello-java">
+          <div class="file-desc">Clase Java normal — no tiene ninguna referencia a AspectJ. Solo llama a <code>sayHello()</code>.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Hello.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Hello {
+    public static void main(String[] args) {
+        sayHello();
+    }
+
+    public static void sayHello() {
+        System.out.print("Hello ");
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="hello-aj">
+          <div class="file-desc">El aspecto intercepta la ejecución de <code>sayHello()</code> y añade "World" después de que retorna.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">World.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect World {
+    pointcut greeting() : execution(* Hello.sayHello(..));
+
+    after() returning() : greeting() {
+        System.out.println("World");
+    }
+}
+// Output: Hello World</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TESTASP ═══ -->
+    <div class="example-panel" id="ex-testasp">
+      <div class="example-header">
+        <h3>🔧 Ejemplo con Clase Java — TestAsp &amp; Aspect</h3>
+        <p>Demostración de múltiples pointcuts con comodines, manejo de excepciones, constructores, y el advice <code>around()</code> para envolver todos los métodos.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'testasp-java')">TestAsp.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'testasp-aj')">Aspect.aj</button>
+        </div>
+        <div class="file-panel active" id="testasp-java">
+          <div class="file-desc">Clase con métodos sobrecargados (<code>metodo1</code>, <code>metodo2</code>, <code>metodo3</code>) y un bloque try-catch para división por cero.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">TestAsp.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class TestAsp {
+    public void metodo1(int numero) {
+        System.out.println("Metodo1 con numero: " + numero);
+    }
+    public void metodo1(int numero, String string) {
+        System.out.println("Metodo1 con numero y cadena: "
+                + numero + ", " + string);
+    }
+    public void metodo2(int numero) {
+        System.out.println("Metodo2 con numero: " + numero);
+    }
+    public void metodo3() {
+        System.out.println("Metodo3 sin parametros");
+    }
+
+    public static void main(String[] args) {
+        TestAsp asp = new TestAsp();
+        asp.metodo1(1);
+        asp.metodo1(1, "HOLA");
+        asp.metodo2(1);
+        asp.metodo3();
+
+        try {
+            System.out.println(1 / 0);
+        } catch (Exception e) {
+            System.out.println("No se puede dividir en 0");
+        }
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="testasp-aj">
+          <div class="file-desc">Aspecto con 7 pointcuts distintos: comodines <code>*1</code>, <code>*2</code>, firmas específicas, handler de excepciones, constructor e inicialización.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Aspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect Aspect {
+
+    static int i = 0;
+
+    // Todos los métodos de TestAsp
+    pointcut all() : call(* TestAsp.*(..));
+    // Métodos cuyo nombre termina en "1"
+    pointcut cut_metodo1() : call(* TestAsp.*1(..));
+    // Métodos cuyo nombre termina en "2", solo si i &lt;= 2
+    pointcut cut_metodo2() : call(* TestAsp.*2(..)) &amp;&amp; if(i &lt;= 2);
+    // metodo1 con un entero
+    pointcut cut_metodo1_int() : call(* TestAsp.*1(int));
+    // metodo1 con entero y String
+    pointcut cut_metodo1_IyS() : call(* TestAsp.*1(int, String));
+    // Interceptar el handler de Exception
+    pointcut exception() : handler(Exception);
+    // Interceptar el constructor
+    pointcut inita() : initialization(TestAsp.new());
+
+    before() : exception() {
+        System.out.println("Alguien dividio por 0!");
+    }
+
+    before() : inita() {
+        System.out.println("Entrando al constructor "
+                + thisJoinPoint.getSignature());
+    }
+
+    after() : cut_metodo1() {
+        System.out.println("Despues de metodo1, i=" + i);
+        i++;
+    }
+
+    after() : cut_metodo2() {
+        System.out.println("Despues de metodo2, i=" + i);
+        i++;
+    }
+
+    after() : cut_metodo1_int() {
+        System.out.println("Despues de metodo1(int)");
+    }
+
+    after() : cut_metodo1_IyS() {
+        System.out.println("Despues de metodo1(int,String)");
+    }
+
+    void around() : all() {
+        System.out.println("----------------");
+        proceed();
+        System.out.println("----------------");
+    }
+}</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ WILDCARDS ═══ -->
+    <div class="example-panel" id="ex-wildcards">
+      <div class="example-header">
+        <h3>✳️ Comodines "*" en Pointcuts</h3>
+        <p>Los comodines permiten seleccionar múltiples métodos con una sola expresión. <code>*</code> coincide con exactamente un parámetro, <code>..</code> con cero o más.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'wc-java')">AOPDemo.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'wc-aj')">DemoAspect.aj</button>
+        </div>
+        <div class="file-panel active" id="wc-java">
+          <div class="file-desc">Clase con métodos sobrecargados. Observa cómo los pointcuts los seleccionan selectivamente.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">AOPDemo.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class AOPDemo {
+    public static void main(String[] args) {
+        AOPDemo demo = new AOPDemo();
+        demo.method1(99);
+        demo.method1(99, "stringvalue");
+        demo.method2("stringvalue");
+    }
+
+    public void method1(int number) {
+        System.out.println("executing method1(int)");
+    }
+
+    public void method1(int number, String value) {
+        System.out.println("executing method1(int,String)");
+    }
+
+    public void method2(String value) {
+        System.out.println("executing method2(String)");
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="wc-aj">
+          <div class="file-desc">Tres pointcuts distintos usando comodines: <code>(*,*)</code> = exactamente dos params, <code>(..)</code> = cualquier número, <code>(*)</code> = exactamente uno.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">DemoAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect DemoAspect {
+    // Coincide: method1(int, String)  → dos parámetros exactos
+    pointcut callDemoAspectPointcut() :
+            call(void AOPDemo.method1(*, *));
+
+    // Coincide: method1(int), method1(int,String), method2(String)
+    pointcut callDemoAspectPointcut2() :
+            call(void AOPDemo.*(..));
+
+    // Coincide: method1(int) y method2(String) → un parámetro exacto
+    pointcut callDemoAspectPointcut3() :
+            call(void AOPDemo.method1(*));
+
+    after() : callDemoAspectPointcut3() {
+        System.out.println("Demo Aspect Pointcut - after");
+    }
+
+    before() : callDemoAspectPointcut3() {
+        System.out.println("Demo Aspect Pointcut - before");
+    }
+}
+// method1(int) dispara before + after
+// method1(int,String) NO dispara (requiere exactamente un param)</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CALL Y EXECUTION ═══ -->
+    <div class="example-panel" id="ex-callexec">
+      <div class="example-header">
+        <h3>📞 Call y Execution — Diferencia Práctica</h3>
+        <p><code>call()</code> intercepta el <em>lugar desde donde se llama</em> al método. <code>execution()</code> intercepta <em>dentro</em> del cuerpo del método. Esto importa mucho con herencia.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'ce-parent')">Parent.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'ce-child')">Child.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'ce-tracer')">ExecTracer.aj</button>
+        </div>
+        <div class="file-panel active" id="ce-parent">
+          <div class="file-desc">La clase padre define <code>greet()</code> y el <code>main</code>. Instancia a Child y llama <code>greet()</code> — el aspecto intercepta en distintos niveles.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Parent.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Parent {
+
+    public void greet() {
+        System.out.println("Hello");
+    }
+
+    public static void main(String[] args) {
+        Child person = new Child();
+        person.greet();
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ce-child">
+          <div class="file-desc">Child hereda de Parent sin sobrescribir nada. El call intercepta en el caller, execution intercepta en Parent donde vive el cuerpo.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Child.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Child extends Parent {
+    // Hereda greet() sin modificarla
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ce-tracer">
+          <div class="file-desc">El aspecto muestra la diferencia: <code>call(* Child.*())</code> actúa en el sitio de llamada, <code>execution(* Parent.greet())</code> actúa dentro del método heredado.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">ExecTracer.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect ExecTracer {
+
+    // call: se activa en el lugar donde se hace la llamada
+    before() : call(* Child.*()) {
+        System.out.println("CALL a Child.método");
+    }
+
+    before() : call(* Parent.*()) {
+        System.out.println("CALL a Parent.método");
+    }
+
+    // execution: se activa dentro del cuerpo del método
+    after() : execution(* Parent.greet()) {
+        System.out.println("EXECUTION de Parent.greet() completada");
+    }
+
+    after() : execution(* Parent.main(..)) {
+        System.out.println("EXECUTION de main() completada");
+    }
+}
+// Nota: person.greet() → activa call(Child.*) y execution(Parent.greet)
+// La ejecución vive en Parent aunque la llamada sea a través de Child</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CALLS VS EXECUTION THEORY ═══ -->
+    <div class="example-panel" id="ex-callsvs">
+      <div class="example-header">
+        <h3>⚖️ Calls vs Executions — Demostración con Monitor</h3>
+        <p><strong>call</strong> = el acto de llamar a una función (el caller). <strong>execution</strong> = el proceso de ejecutar el código de la función (el callee). C2 hereda de C1 — observa cómo Monitor solo actúa en la ejecución de C1.</p>
+      </div>
+      <div class="example-body">
+        <div class="theory-box">
+          <p><strong>call:</strong> se refiere al acto de pasar el control a una función. Si tienes <code>int x = add(1,2)</code>, eso es una <em>llamada</em>. <br><strong>execution:</strong> es el proceso de ejecutar las instrucciones dentro de la función. Son el mismo momento lógico pero interceptados desde distintos puntos de vista — el caller vs. el callee.</p>
+        </div>
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'cvs-c1')">C1.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'cvs-c2')">C2.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'cvs-monitor')">Monitor.aj</button>
+        </div>
+        <div class="file-panel active" id="cvs-c1">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">C1.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class C1 {
+    public void m() {
+        System.out.println("Inside m().");
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="cvs-c2">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">C2.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class C2 extends C1 {
+    // Hereda m() de C1
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="cvs-monitor">
+          <div class="file-desc">Usando <code>execution</code> se intercepta cuando el código de <code>C1.m()</code> comienza a ejecutarse, independientemente de si se llamó a través de C1 o C2.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Monitor.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect Monitor {
+    // execution: actúa cuando el cuerpo de C1.m() se empieza a ejecutar
+    before() : execution(* C1.m()) {
+        System.out.println("Ejecutando C1.m()");
+    }
+}
+// Si llamas c2.m(), también se dispara porque el cuerpo vive en C1
+// Con call(* C1.m()) NO se dispararía para una llamada a c2.m()</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CONTEXT PASSING ═══ -->
+    <div class="example-panel" id="ex-context">
+      <div class="example-header">
+        <h3>📦 Context Passing — Agregar Estado con Aspectos</h3>
+        <p>AspectJ permite que los aspectos agreguen <strong>campos y métodos</strong> a clases existentes mediante Inter-Type Declarations (ITD). Aquí Logger agrega <code>numberOfMoves</code> y <code>howMany()</code> a Point sin modificarla.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'ctx-logger')">Logger.aj</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'ctx-point')">Point.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'ctx-test')">Test.java</button>
+        </div>
+        <div class="file-panel active" id="ctx-logger">
+          <div class="file-desc">El aspecto declara <code>int Point.numberOfMoves</code> y el método <code>Point.howMany()</code> — se agregan a Point sin tocar su código fuente.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Logger.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect Logger {
+
+    // Inter-Type Declaration: agrega campo a Point
+    int Point.numberOfMoves;
+
+    // Inter-Type Declaration: agrega método a Point
+    public int Point.howMany() {
+        System.out.print("Número de movimientos: ");
+        return this.numberOfMoves;
+    }
+
+    // Captura el objeto Point en el pointcut con this(p)
+    pointcut counts(Point p) :
+            execution(void Point.move(double, double)) &amp;&amp; this(p);
+
+    // Cada vez que Point.move() ejecuta, incrementa el contador
+    after(Point p) : counts(p) {
+        p.numberOfMoves++;
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ctx-point">
+          <div class="file-desc">Point no sabe nada de Logger. El aspecto le agrega estado y comportamiento transparentemente.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Point.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Point {
+    protected double x, y;
+
+    public Point(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Point() {
+        this(0, 0);
+    }
+
+    public void move(double x, double y) {
+        System.out.println("move: x=" + x + " y=" + y);
+        this.x = x;
+        this.y = y;
+    }
+
+    public String toString() {
+        return "x=" + x + " y=" + y;
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ctx-test">
+          <div class="file-desc">Test puede llamar <code>p1.howMany()</code> aunque Point no declare ese método — lo agrega el aspecto Logger.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Test.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        Point p1 = new Point();
+        Point p2 = new Point();
+
+        p1.move(3, 7);
+        p1.move(3, 11);
+        p2.move(10, 10);
+
+        // howMany() es agregado por Logger.aj (ITD)
+        System.out.println(p1.howMany()); // 2
+        System.out.println(p2.howMany()); // 1
+    }
+}</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ASPECT BEHAVIOURS ═══ -->
+    <div class="example-panel" id="ex-behavior">
+      <div class="example-header">
+        <h3>🎭 Aspect Behaviours — Implementar Interfaces vía Aspectos</h3>
+        <p>Con <code>declare parents</code>, un aspecto puede hacer que una clase implemente una interfaz y proporcionar los métodos requeridos. Noble obtiene <code>declare()</code> y <code>speak()</code> sin modificar su código.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'beh-behavior')">Behavior.aj</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-allegiance')">Allegiance.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-noble')">Noble.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-human')">Human.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-demo')">DemoAspectj.java</button>
+        </div>
+        <div class="file-panel active" id="beh-behavior">
+          <div class="file-desc"><code>declare parents</code> hace que Noble implemente Allegiance. Los métodos <code>Noble.declare()</code> y <code>Noble.speak()</code> son proporcionados por el aspecto.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Behavior.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect Behavior {
+
+    // Noble implementa Allegiance (sin modificar Noble.java)
+    declare parents: Noble implements Allegiance;
+
+    // Proporciona la implementación requerida por la interfaz
+    public void Noble.declare() {
+        System.out.println("** Noble.declare() via Behavior aspect **");
+        System.out.println(this.toString() + " Of House " + this.house);
+    }
+
+    // Agrega método adicional a Noble
+    public void Noble.speak() {
+        System.out.println("** Noble.speak() via Behavior aspect **");
+        System.out.println("Good morning, " + this.toString());
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="beh-allegiance">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Allegiance.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public interface Allegiance {
+    public void declare();
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="beh-noble">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Noble.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Noble extends Human {
+    String house;
+
+    public Noble(String name, String house) {
+        super(name);
+        this.house = house;
+    }
+
+    public String toString() {
+        System.out.println("** Noble.toString() original **");
+        return "I am " + this.name + ".";
+    }
+}
+// Noble no implementa Allegiance en su código
+// pero Behavior.aj lo hace por ella</code></pre></div>
+        </div>
+        <div class="file-panel" id="beh-human">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Human.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public abstract class Human {
+    String name;
+
+    public Human(String name) {
+        this.name = name;
+    }
+
+    public void speak() {
+        System.out.println("Hello, " + this.name);
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="beh-demo">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">DemoAspectj.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class DemoAspectj {
+    public static void main(String[] args) {
+        Noble arya = new Noble("Arya", "House of Stark");
+
+        System.out.println("Invocando declare():");
+        arya.declare(); // método agregado por el aspecto
+
+        System.out.println("***********************");
+        System.out.println("Invocando speak():");
+        arya.speak();   // también agregado por el aspecto
+    }
+}</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SECURITY ═══ -->
+    <div class="example-panel" id="ex-security">
+      <div class="example-header">
+        <h3>🔒 Seguridad — Control de Acceso Centralizado</h3>
+        <p>Un aspecto intercepta el método <code>realizarTransaccion()</code> antes de que ejecute y verifica si el usuario tiene permisos. Si no los tiene, lanza <code>SecurityException</code> sin que el método de negocio sepa nada de esa lógica.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'sec-aspect')">AspectoSeguridad.aj</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'sec-servicio')">ServicioTransacciones.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'sec-main')">EjemploSeguridad.java</button>
+        </div>
+        <div class="file-panel active" id="sec-aspect">
+          <div class="file-desc">El aspecto captura los parámetros del método con <code>args()</code> y los usa en el advice before para validar acceso.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">AspectoSeguridad.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect AspectoSeguridad {
+
+    // Captura los 3 parámetros del método en el pointcut
+    pointcut realizarTransaccionPointcut(
+            String usuario, String operacion, int cantidad) :
+        execution(void ServicioTransaccionesSeguro
+                .realizarTransaccion(String, String, int))
+        &amp;&amp; args(usuario, operacion, cantidad);
+
+    // before: se ejecuta ANTES del método de negocio
+    before(String usuario, String operacion, int cantidad)
+            : realizarTransaccionPointcut(usuario, operacion, cantidad) {
+        if (!verificarRoles(usuario, operacion)) {
+            System.out.println("Acceso denegado para: " + usuario);
+            throw new SecurityException(
+                "Usuario no autorizado para: " + operacion);
+        }
+    }
+
+    private boolean verificarRoles(String usuario, String op) {
+        if (usuario.equals("usuario1") &amp;&amp; op.equals("depositar")) return true;
+        if (usuario.equals("usuario2") &amp;&amp; op.equals("retirar")) return true;
+        return false;
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="sec-servicio">
+          <div class="file-desc">El servicio no tiene ninguna lógica de seguridad — toda está en el aspecto.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ServicioTransaccionesSeguro.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class ServicioTransaccionesSeguro {
+    public void realizarTransaccion(
+            String usuario, String operacion, int cantidad) {
+        System.out.println("Usuario: " + usuario
+                + " realiza: " + operacion);
+
+        if (usuario.equals("usuario1") &amp;&amp; operacion.equals("depositar")) {
+            System.out.println("Depósito realizado: " + cantidad);
+        } else if (usuario.equals("usuario2") &amp;&amp; operacion.equals("retirar")) {
+            System.out.println("Retiro realizado: " + cantidad);
+        } else {
+            System.out.println("Operación no reconocida.");
+        }
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="sec-main">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">EjemploSeguridad.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">package EjemploSeguridad;
+
+public class EjemploSeguridad {
+    public static void main(String[] args) {
+        ServicioTransaccionesSeguro servicio =
+                new ServicioTransaccionesSeguro();
+
+        // usuario1 puede depositar → OK
+        servicio.realizarTransaccion("usuario1", "depositar", 100);
+        // usuario2 puede retirar → OK
+        servicio.realizarTransaccion("usuario2", "retirar", 50);
+        // usuario3 no tiene permisos → SecurityException
+        servicio.realizarTransaccion("usuario3", "retirar", 200);
+    }
+}</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TIMING ═══ -->
+    <div class="example-panel" id="ex-timing">
+      <div class="example-header">
+        <h3>⏱️ Tiempo de Ejecución — Performance Monitoring</h3>
+        <p>El aspecto mide el tiempo de ejecución de cualquier método de ProductService automáticamente, sin que la clase de negocio sepa que está siendo cronometrada.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'tim-aspect')">MethodExecutionTimeLogger.aj</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'tim-service')">ProductService.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'tim-main')">ProductosEjemplo.java</button>
+        </div>
+        <div class="file-panel active" id="tim-aspect">
+          <div class="file-desc">Usa <code>before()</code> para guardar el tiempo de inicio y <code>after() returning</code> para calcular la diferencia solo en caso de éxito.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">MethodExecutionTimeLogger.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect MethodExecutionTimeLogger {
+
+    private long startTime;
+
+    // Intercepta TODOS los métodos de ProductService
+    pointcut methodExecutionTime() :
+            execution(* ProductService.*(..));
+
+    before() : methodExecutionTime() {
+        startTime = System.currentTimeMillis();
+        System.out.println("Iniciando: "
+                + thisJoinPoint.getSignature().getName());
+    }
+
+    // Solo ejecuta si el método terminó correctamente
+    after() returning : methodExecutionTime() {
+        long executionTime = System.currentTimeMillis() - startTime;
+        System.out.println("Tiempo de ejecución: "
+                + executionTime + " ms");
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="tim-service">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ProductService.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class ProductService {
+    public void addProduct(String productName) {
+        System.out.println("Producto agregado: " + productName);
+    }
+
+    public void deleteProduct(String productName) {
+        System.out.println("Producto eliminado: " + productName);
+    }
+
+    public void updateProduct(String productName) {
+        System.out.println("Producto actualizado: " + productName);
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="tim-main">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ProductosEjemplo.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class ProductosEjemplo {
+    public static void main(String[] args) {
+        ProductService productService = new ProductService();
+
+        productService.addProduct("Producto 1");
+        productService.addProduct("Producto 2");
+        productService.deleteProduct("Producto 1");
+        productService.updateProduct("Producto 2");
+    }
+}
+// Output:
+// Iniciando: addProduct
+// Producto agregado: Producto 1
+// Tiempo de ejecución: 1 ms
+// ...</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PEDIDO ═══ -->
+    <div class="example-panel" id="ex-pedido">
+      <div class="example-header">
+        <h3>🛒 Realización de Pedido — Sistema con 3 Aspectos</h3>
+        <p>Ejemplo complejo: un sistema de pedidos con inventario y tres aspectos que trabajan juntos: verificar stock antes del pedido, registrar actividad en cada operación, y actualizar stock después de realizar el pedido.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'ped-vstock')">VerificarStock.aj</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'ped-regact')">RegistroActividad.aj</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'ped-actstock')">ActualizacionStock.aj</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-pedido')">Pedido.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-inv')">Inventario.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-helper')">InventarioHelper.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-main')">PedidoEjemplo.java</button>
+        </div>
+        <div class="file-panel active" id="ped-vstock">
+          <div class="file-desc"><strong>before</strong> de <code>realizarPedido()</code> — verifica que haya suficiente stock antes de proceder.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">VerificarStockAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect VerificarStockAspect {
+
+    pointcut realizarPedidoPointcut() :
+            execution(void Pedido.realizarPedido());
+
+    before() : realizarPedidoPointcut() {
+        Pedido pedido = (Pedido) thisJoinPoint.getTarget();
+        for (String producto : pedido.getProductos()) {
+            int cantidad = Collections.frequency(
+                    pedido.getProductos(), producto);
+            if (!InventarioHelper.verificarStock(producto, cantidad)) {
+                System.out.println("Stock insuficiente: " + producto);
+                throw new RuntimeException(
+                        "Stock insuficiente para: " + producto);
+            }
+        }
+        System.out.println("Verificación de stock: OK");
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ped-regact">
+          <div class="file-desc"><strong>before</strong> de <code>agregarProducto</code> y <code>eliminarProducto</code> — registra cada operación sobre el pedido.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">RegistroActividadAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect RegistroActividadAspect {
+
+    pointcut agregarProductoPointcut(String producto) :
+        call(void Pedido.agregarProducto(String)) &amp;&amp; args(producto);
+
+    pointcut eliminarProductoPointcut(String producto) :
+        call(void Pedido.eliminarProducto(String)) &amp;&amp; args(producto);
+
+    before(String producto) : agregarProductoPointcut(producto) {
+        System.out.println("LOG: agregando '" + producto + "' al pedido");
+    }
+
+    before(String producto) : eliminarProductoPointcut(producto) {
+        System.out.println("LOG: eliminando '" + producto + "' del pedido");
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ped-actstock">
+          <div class="file-desc"><strong>after</strong> de <code>realizarPedido()</code> — actualiza el inventario una vez el pedido fue realizado exitosamente.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">ActualizacionStockAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect ActualizacionStockAspect {
+
+    pointcut realizarPedidoPointcut() :
+            execution(void Pedido.realizarPedido());
+
+    after() : realizarPedidoPointcut() {
+        Pedido pedido = (Pedido) thisJoinPoint.getTarget();
+        for (String producto : pedido.getProductos()) {
+            int cantidad = Collections.frequency(
+                    pedido.getProductos(), producto);
+            InventarioHelper.actualizarStock(producto, cantidad);
+        }
+        System.out.println("Stock actualizado correctamente");
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ped-pedido">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Pedido.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">import java.util.ArrayList;
+import java.util.List;
+
+public class Pedido {
+    private int id;
+    private String cliente;
+    private List&lt;String&gt; productos;
+
+    public Pedido(int id, String cliente) {
+        this.id = id;
+        this.cliente = cliente;
+        this.productos = new ArrayList&lt;&gt;();
+    }
+
+    public void agregarProducto(String producto) {
+        productos.add(producto);
+        System.out.println("Producto agregado: " + producto);
+    }
+
+    public void eliminarProducto(String producto) {
+        productos.remove(producto);
+        System.out.println("Producto eliminado: " + producto);
+    }
+
+    public void realizarPedido() {
+        System.out.println("Pedido realizado para: " + cliente);
+    }
+
+    public List&lt;String&gt; getProductos() {
+        return this.productos;
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ped-inv">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Inventario.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">import java.util.HashMap;
+import java.util.Map;
+
+public class Inventario {
+    private Map&lt;String, Integer&gt; stock;
+
+    public Inventario() {
+        stock = new HashMap&lt;&gt;();
+    }
+
+    public void agregarProducto(String producto, int cantidad) {
+        stock.put(producto, cantidad);
+        System.out.println("Inventario: +" + producto + " x" + cantidad);
+    }
+
+    public void eliminarProducto(String producto) {
+        stock.remove(producto);
+    }
+
+    public boolean verificarStock(String producto, int cantidad) {
+        Integer stockActual = stock.get(producto);
+        return stockActual != null &amp;&amp; stockActual &gt;= cantidad;
+    }
+
+    public void actualizarStock(String producto, int cantidad) {
+        Integer stockActual = stock.get(producto);
+        if (stockActual != null) {
+            stock.put(producto, stockActual - cantidad);
+            System.out.println("Stock " + producto
+                    + ": " + (stockActual - cantidad) + " restantes");
+        }
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ped-helper">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">InventarioHelper.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class InventarioHelper {
+    private static Inventario inventario;
+
+    public static void setInventario(Inventario inv) {
+        inventario = inv;
+    }
+
+    public static boolean verificarStock(String producto, int cantidad) {
+        return inventario.verificarStock(producto, cantidad);
+    }
+
+    public static void actualizarStock(String producto, int cantidad) {
+        inventario.actualizarStock(producto, cantidad);
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="ped-main">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">PedidoEjemplo.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class PedidoEjemplo {
+    public static void main(String[] args) {
+        Inventario inventario = new Inventario();
+        InventarioHelper.setInventario(inventario);
+
+        Pedido pedido = new Pedido(1, "John Doe");
+
+        inventario.agregarProducto("Camiseta", 10);
+        inventario.agregarProducto("Pantalón", 5);
+        inventario.agregarProducto("Zapatos", 3);
+
+        pedido.agregarProducto("Camiseta");   // → RegistroActividad.aj
+        pedido.agregarProducto("Pantalón");   // → RegistroActividad.aj
+        pedido.agregarProducto("Zapatos");    // → RegistroActividad.aj
+        pedido.eliminarProducto("Pantalón");  // → RegistroActividad.aj
+
+        // realizarPedido() → VerificarStock.aj (before) + Pedido + ActualizacionStock.aj (after)
+        pedido.realizarPedido();
+        System.out.println("Pedido completado con éxito");
+    }
+}</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CALCULADORA ═══ -->
+    <div class="example-panel" id="ex-calc">
+      <div class="example-header">
+        <h3>🧮 Calculadora con Logs — Trazabilidad de Operaciones</h3>
+        <p>Un aspecto de logging registra en archivo el inicio y fin de cada operación de la calculadora con timestamp preciso, separando completamente la lógica de negocio del registro.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'calc-calc')">Calculadora.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'calc-logcal')">LogCal.aj</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'calc-main')">Main.java</button>
+        </div>
+        <div class="file-panel active" id="calc-calc">
+          <div class="file-desc">La calculadora es pura lógica de negocio — sin ninguna línea de logging o E/S de archivos.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Calculadora.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Calculadora {
+    public double sumar(double n1, double n2) {
+        return n1 + n2;
+    }
+
+    public double restar(double n1, double n2) {
+        return n1 - n2;
+    }
+
+    public double multiplicar(double n1, double n2) {
+        return n1 * n2;
+    }
+
+    public double dividir(double n1, double n2) {
+        return n1 / n2;
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="calc-logcal">
+          <div class="file-desc">El aspecto intercepta los 4 métodos con pointcuts específicos. Cada before/after escribe una línea en <code>log.txt</code> con timestamp.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">LogCal.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Calendar;
+
+public aspect LogCal {
+    Calendar cal = Calendar.getInstance();
+    File file = new File("log.txt");
+
+    pointcut sumMethod()  : execution(* Calculadora.sumar(..));
+    pointcut restMethod() : execution(* Calculadora.restar(..));
+    pointcut multMethod() : execution(* Calculadora.multiplicar(..));
+    pointcut divMethod()  : execution(* Calculadora.dividir(..));
+
+    before() : sumMethod()  { writeLog("Init method sum"); }
+    before() : restMethod() { writeLog("Init method rest"); }
+    before() : multMethod() { writeLog("Init method mult"); }
+    before() : divMethod()  { writeLog("Init method div"); }
+
+    after() : sumMethod()  { writeLog("End method sum"); }
+    after() : restMethod() { writeLog("End method rest"); }
+    after() : multMethod() { writeLog("End method mult"); }
+    after() : divMethod()  { writeLog("End method div"); }
+
+    private void writeLog(String message) {
+        String timestamp = "[" + cal.get(Calendar.DATE) + "-"
+                + cal.get(Calendar.MONTH) + "-"
+                + cal.get(Calendar.YEAR) + " "
+                + cal.get(Calendar.HOUR_OF_DAY) + ":"
+                + cal.get(Calendar.MINUTE) + ":"
+                + cal.get(Calendar.SECOND) + "]";
+        try {
+            if (!file.exists()) file.createNewFile();
+            BufferedWriter bw = new BufferedWriter(
+                    new FileWriter(file, true));
+            bw.write(timestamp + "\t" + message);
+            bw.newLine();
+            bw.close();
+        } catch (IOException e) {
+            System.out.println("Error al escribir log: " + e.getMessage());
+        }
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="calc-main">
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Main.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Main {
+    public static void main(String[] args) {
+        Calculadora calc = new Calculadora();
+        System.out.println(calc.sumar(1, 2));       // 3.0
+        System.out.println(calc.restar(1, 2));      // -1.0
+        System.out.println(calc.multiplicar(1, 2)); // 2.0
+        System.out.println(calc.dividir(1, 2));     // 0.5
+    }
+}
+// Cada llamada genera 2 líneas en log.txt:
+// [24-4-2024 14:30:15]  Init method sum
+// [24-4-2024 14:30:15]  End method sum</code></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARACIÓN -->
+<section id="comparacion">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Comparativa</span>
+      <h2 class="section-title">AspectJ vs <span class="accent">Spring AOP</span></h2>
+      <p class="section-desc">Ambos implementan AOP en Java, pero con diferencias importantes. AspectJ es más poderoso; Spring AOP es más sencillo de configurar.</p>
+    </div>
+    <div class="compare-table-wrap fade-up">
+      <table>
+        <thead>
+          <tr>
+            <th class="th-feature">Característica</th>
+            <th class="th-aspectj">AspectJ (compile-time)</th>
+            <th class="th-spring">Spring AOP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tipos de Join Points</strong></td>
+            <td>Métodos, constructores, campos, excepciones, inicialización</td>
+            <td>Solo métodos públicos</td>
+          </tr>
+          <tr>
+            <td><strong>Clases interceptables</strong></td>
+            <td>Cualquier clase Java</td>
+            <td>Solo beans de Spring</td>
+          </tr>
+          <tr>
+            <td><strong>Performance</strong></td>
+            <td><span class="check">✓</span> Mejor (sin overhead en runtime)</td>
+            <td><span class="mid">~</span> Pequeño overhead por proxy</td>
+          </tr>
+          <tr>
+            <td><strong>Configuración</strong></td>
+            <td>Requiere plugin Maven/Gradle</td>
+            <td><span class="check">✓</span> Automática con Spring Boot</td>
+          </tr>
+          <tr>
+            <td><strong>Weaving</strong></td>
+            <td>Compile-time, Load-time</td>
+            <td>Runtime (proxies dinámicos)</td>
+          </tr>
+          <tr>
+            <td><strong>Inter-type declarations</strong></td>
+            <td><span class="check">✓</span> Sí (agregar campos/métodos)</td>
+            <td><span class="cross">✗</span> No</td>
+          </tr>
+          <tr>
+            <td><strong>declare parents</strong></td>
+            <td><span class="check">✓</span> Sí</td>
+            <td><span class="cross">✗</span> No</td>
+          </tr>
+          <tr>
+            <td><strong>Curva de aprendizaje</strong></td>
+            <td>Mayor</td>
+            <td><span class="check">✓</span> Menor</td>
+          </tr>
+          <tr>
+            <td><strong>Casos de uso</strong></td>
+            <td>Máximo control, sin Spring, sistemas legados</td>
+            <td>Apps Spring típicas de producción</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--bg3);border-radius:var(--radius-sm);border-left:3px solid var(--green);font-size:.88rem;color:var(--text2)" class="fade-up">
+      <strong style="color:var(--green)">En el mundo real:</strong> Spring usa AspectJ internamente. <code style="font-family:var(--mono);color:var(--cyan)">@Transactional</code>, <code style="font-family:var(--mono);color:var(--cyan)">@Cacheable</code>, <code style="font-family:var(--mono);color:var(--cyan)">@Secured</code> y <code style="font-family:var(--mono);color:var(--cyan)">@Async</code> son todos aspectos bajo el capó.
+    </div>
+  </div>
+</section>
+
+<!-- CUÁNDO USAR -->
+<section id="cuando-usar">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Mejores Prácticas</span>
+      <h2 class="section-title">¿Cuándo <span class="accent">usar AOP</span>?</h2>
+      <p class="section-desc">AOP no es una bala de plata. Úsalo cuando el beneficio de separación supera la complejidad añadida.</p>
+    </div>
+    <div class="use-grid fade-up">
+      <div class="use-card">
+        <h3 style="color:var(--green)">✓ Úsalo para...</h3>
+        <ul class="use-list use-yes">
+          <li>Logging y trazabilidad de métodos</li>
+          <li>Medición de performance / métricas</li>
+          <li>Autenticación y autorización centralizada</li>
+          <li>Manejo de transacciones de base de datos</li>
+          <li>Auditoría y registro de actividad</li>
+          <li>Retry automático con backoff</li>
+          <li>Caché de resultados de métodos</li>
+          <li>Validación de parámetros de entrada</li>
+        </ul>
+      </div>
+      <div class="use-card">
+        <h3 style="color:var(--red)">✗ No lo uses para...</h3>
+        <ul class="use-list use-no">
+          <li>Lógica de negocio principal del dominio</li>
+          <li>Proyectos pequeños o scripts simples</li>
+          <li>Cuando el equipo no conoce AOP</li>
+          <li>Cuando la "magia" dificulta el debugging</li>
+          <li>Reemplazar inyección de dependencias</li>
+          <li>Lógica que varía por cada clase individualmente</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSIONES -->
+<section id="conclusiones">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Resumen Final</span>
+      <h2 class="section-title">Lo que <span class="accent">aprendimos</span></h2>
+    </div>
+    <div class="conclusion-grid fade-up">
+      <div class="conclusion-card">
+        <h3>El problema que resuelve AOP</h3>
+        <p>Los cross-cutting concerns (logging, seguridad, transacciones) se repiten en decenas de clases con OOP puro, violando DRY y SRP. AOP externaliza ese código a Aspectos.</p>
+      </div>
+      <div class="conclusion-card">
+        <h3>Los 5 conceptos esenciales</h3>
+        <p><strong>Aspect</strong> → módulo del concern. <strong>Join Point</strong> → dónde puede actuar. <strong>Pointcut</strong> → dónde QUIERO que actúe. <strong>Advice</strong> → qué hace. <strong>Weaving</strong> → cómo se combina.</p>
+      </div>
+      <div class="conclusion-card">
+        <h3>OOP y AOP: Complementarios</h3>
+        <p>OOP modela el dominio (clases, herencia, polimorfismo). AOP maneja la infraestructura transversal. Los dos paradigmas trabajan juntos en cualquier aplicación real.</p>
+      </div>
+      <div class="conclusion-card">
+        <h3>AspectJ en producción</h3>
+        <p>Spring Framework usa AOP internamente para <code>@Transactional</code>, <code>@Cacheable</code>, <code>@Secured</code>. Hibernate usa AOP para lazy loading. Mockito usa proxies AOP.</p>
+      </div>
+    </div>
+    <div class="quote-box fade-up">
+      "AOP no es una bala de plata, pero es una herramienta poderosa en el arsenal del desarrollador. El secreto está en usarla con juicio: cuando el código de negocio empieza a llenarse de lógica de infraestructura repetida, ese es el momento de crear un Aspecto."
+    </div>
+    <div style="margin-top:2rem" class="fade-up">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">Recursos para seguir aprendiendo:</h3>
+      <div class="resources-grid">
+        <a class="resource-link" href="https://www.eclipse.org/aspectj/docs.php" target="_blank">📖 Documentación oficial AspectJ</a>
+        <a class="resource-link" href="https://www.eclipse.org/aspectj/doc/released/progguide/index.html" target="_blank">📚 AspectJ Programming Guide</a>
+        <a class="resource-link" href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#aop" target="_blank">🍃 Spring AOP Docs</a>
+        <a class="resource-link" href="https://martinfowler.com/aop.html" target="_blank">✍️ Martin Fowler — AOP</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">&lt;AspectJ Tutorial /&gt;</div>
+  <p>Universidad Nacional de Colombia · Lenguajes de Programación · Paradigmas de Programación</p>
+  <p style="margin-top:.5rem;font-size:.75rem;color:var(--text3)">Programación Orientada a Aspectos en Java</p>
+</footer>
+
+<div id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<script>
+// ── HIGHLIGHT.JS ──
+document.addEventListener('DOMContentLoaded', () => {
+  hljs.configure({ ignoreUnescapedHTML: true });
+  hljs.highlightAll();
+  initScrollSpy();
+  initScrollAnimations();
+  initExampleTabs();
+  initProgressBar();
+  initBackTop();
+  initCanvas();
+});
+
+// ── PROGRESS BAR ──
+function initProgressBar() {
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+}
+
+// ── BACK TO TOP ──
+function initBackTop() {
+  const btn = document.getElementById('back-top');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('show', window.scrollY > 400);
+  });
+}
+
+// ── SCROLL SPY ──
+function initScrollSpy() {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-links a');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => obs.observe(s));
+}
+
+// ── SCROLL ANIMATIONS ──
+function initScrollAnimations() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+}
+
+// ── EXAMPLE TABS ──
+function initExampleTabs() {
+  const btns = document.querySelectorAll('.ex-btn');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.example-panel').forEach(p => p.classList.remove('active'));
+      const panel = document.getElementById('ex-' + btn.dataset.ex);
+      if (panel) {
+        panel.classList.add('active');
+        // activate first file tab
+        const firstTab = panel.querySelector('.file-tab');
+        if (firstTab) firstTab.click();
+        hljs.highlightAll();
+      }
+    });
+  });
+  // init file tabs for first panel
+  const firstPanel = document.querySelector('.example-panel.active');
+  if (firstPanel) {
+    const firstTab = firstPanel.querySelector('.file-tab');
+    if (firstTab) activateFileTab(firstTab);
+  }
+}
+
+// ── FILE TABS ──
+function switchFile(tab, panelId) {
+  const container = tab.closest('.example-body');
+  container.querySelectorAll('.file-tab').forEach(t => t.classList.remove('active'));
+  container.querySelectorAll('.file-panel').forEach(p => p.classList.remove('active'));
+  tab.classList.add('active');
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+}
+
+function activateFileTab(tab) {
+  const container = tab.closest('.example-body');
+  if (!container) return;
+  container.querySelectorAll('.file-tab').forEach(t => t.classList.remove('active'));
+  container.querySelectorAll('.file-panel').forEach(p => p.classList.remove('active'));
+  tab.classList.add('active');
+}
+
+// ── COPY TO CLIPBOARD ──
+function copyCode(btn) {
+  const pre = btn.closest('.code-wrap').querySelector('pre code');
+  if (!pre) return;
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── CANVAS PARTICLES ──
+function initCanvas() {
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  const symbols = ['@', 'aspect', 'pointcut', 'advice', '{', '}', '*', '()', '=>', 'AOP', 'before', 'after', 'around', 'weave'];
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function createParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      alpha: Math.random() * 0.4 + 0.05,
+      size: Math.random() * 10 + 9,
+      symbol: symbols[Math.floor(Math.random() * symbols.length)]
+    };
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 40; i++) particles.push(createParticle());
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = '#00d9ff';
+      ctx.font = `${p.size}px 'JetBrains Mono', monospace`;
+      ctx.fillText(p.symbol, p.x, p.y);
+      ctx.restore();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+</script>
+</body>
+</html>
