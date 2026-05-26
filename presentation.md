@@ -80,12 +80,16 @@ pre code {
 }
 
 /* Tabla */
-table { width: 100%; border-collapse: collapse; font-size: 0.78em; }
+table { width: 100%; border-collapse: collapse; font-size: 0.78em;
+        background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
 thead tr { background: var(--bg3); }
-th { padding: 0.6em 1em; text-align: left; color: var(--text2); font-weight: 700;
+tbody tr { background: var(--bg2); }
+tbody tr:nth-child(even) { background: #0d1117; }
+th { padding: 0.6em 1em; text-align: left; color: var(--cyan); font-weight: 700;
      text-transform: uppercase; font-size: 0.85em; letter-spacing: 0.07em;
-     border-bottom: 1px solid var(--border); }
-td { padding: 0.55em 1em; border-bottom: 1px solid #21262d; }
+     border-bottom: 2px solid var(--border); }
+td { padding: 0.55em 1em; border-bottom: 1px solid #21262d;
+     color: var(--text); }
 tr:last-child td { border: none; }
 
 /* Blockquote → caja de info */
@@ -238,7 +242,15 @@ de los conceptos básicos a ejemplos prácticos.
 
 # <span class="accent">¿Por qué AOP?</span>
 
-El problema que OOP no puede resolver solo
+En OOP, ciertos comportamientos **se repiten en todas las clases** sin poder centralizarse:
+
+- 🪵 **Logging** — registrar cada método en decenas de clases
+- 🔒 **Seguridad** — verificar permisos antes de cualquier operación
+- ⏱️ **Métricas** — medir tiempos de ejecución en todo el sistema
+- 🔄 **Transacciones** — abrir/cerrar transacciones en cada acceso a BD
+- 🐛 **Auditoría** — rastrear quién hizo qué y cuándo
+
+Esto viola **DRY** y **SRP** — AOP resuelve exactamente eso.
 
 ---
 
@@ -321,7 +333,13 @@ La programación en AspectJ es una extensión *natural* de Java.
 
 # <span class="accent">Conceptos Clave</span>
 
-Los 5 pilares de AOP
+Los 5 pilares fundamentales de AOP:
+
+1. 🧩 **Aspect** — módulo que encapsula el concern transversal
+2. 📍 **Join Point** — punto de ejecución donde puede actuar un aspecto
+3. 🎯 **Pointcut** — expresión que selecciona los Join Points deseados
+4. ⚡ **Advice** — código que se ejecuta en el Join Point seleccionado
+5. 🔗 **Weaving** — proceso que combina aspectos con el código base
 
 ---
 
@@ -329,7 +347,7 @@ Los 5 pilares de AOP
 
 ## Los 5 conceptos esenciales
 
-<div class="cards cards-2" style="margin-top: 0.8em">
+<div class="cards cards-3" style="margin-top: 0.8em">
 <div class="card">
 
 #### 🧩 Aspect
@@ -351,7 +369,13 @@ Expresión que selecciona *cuáles* Join Points nos interesan. Define **dónde**
 <div class="card green">
 
 #### ⚡ Advice
-Código que se ejecuta en el Join Point seleccionado. Puede ser before, after, around...
+Código que se ejecuta en el Join Point seleccionado. Puede ser `before`, `after` o `around`.
+
+</div>
+<div class="card red" style="grid-column: span 2;">
+
+#### 🔗 Weaving
+Proceso que **combina** los aspectos con el código base. Puede ocurrir en compile-time (`ajc`), load-time (agente JVM) o runtime (proxies dinámicos como en Spring AOP).
 
 </div>
 </div>
@@ -1091,30 +1115,24 @@ Spring, Hibernate, Mockito y decenas de frameworks usan AOP internamente. Conoce
 
 # <span class="accent">Gracias</span>
 
-Universidad Nacional de Colombia
-Lenguajes de Programación · Paradigmas de Programación
-
-<div style="margin-top: 2em; display: flex; gap: 3em;">
-<div>
-<div style="font-family: 'JetBrains Mono', monospace; color: #00d9ff; font-size: 0.7em">Tutorial completo</div>
-<div style="color: #8b949e; font-size: 0.6em">index.html</div>
-</div>
-<div>
-<div style="font-family: 'JetBrains Mono', monospace; color: #a78bfa; font-size: 0.7em">Documentación oficial</div>
-<div style="color: #8b949e; font-size: 0.6em">eclipse.org/aspectj</div>
-</div>
-</div>
-
 ---
 
-> **Para exportar a PDF con VS Code:**
-> 1. Instala la extensión **Marp for VS Code**
-> 2. Abre `presentation.md`
-> 3. Click en el icono Marp (esquina superior derecha)
-> 4. `Export Slide Deck` → elige PDF, HTML o PPTX
+<div class="tag">Bibliografía</div>
 
-> **Para exportar con CLI:**
-> ```bash
-> npx @marp-team/marp-cli presentation.md --pdf
-> npx @marp-team/marp-cli presentation.md --pptx
-> ```
+## Referencias
+
+<div style="font-size: 0.72em; line-height: 1.9;">
+
+**[1]** Kiczales, G., Lamping, J., Mendhekar, A., Maeda, C., Lopes, C. V., Loingtier, J. M., & Irwin, J. (1997). *Aspect-Oriented Programming*. En M. Akşit & S. Matsuoka (Eds.), *ECOOP '97 — Object-Oriented Programming*, Lecture Notes in Computer Science, vol. 1241, pp. 220–242. Springer. https://doi.org/10.1007/BFb0053381
+
+**[2]** Kiczales, G., Hilsdale, E., Hugunin, J., Kersten, M., Palm, J., & Griswold, W. G. (2001). *An overview of AspectJ*. En J. L. Knudsen (Ed.), *ECOOP 2001*, Lecture Notes in Computer Science, vol. 2072, pp. 327–354. Springer. https://doi.org/10.1007/3-540-45337-6_18
+
+**[3]** Laddad, R. (2003). *AspectJ in Action: Practical Aspect-Oriented Programming*. Manning Publications.
+
+**[4]** Eclipse AspectJ Development Tools. (2024). *AspectJ Programming Guide*. The Eclipse Foundation. https://www.eclipse.org/aspectj/doc/released/progguide/index.html
+
+**[5]** Spring Framework Team. (2024). *Aspect Oriented Programming with Spring* (v6.x). VMware / Spring. https://docs.spring.io/spring-framework/reference/core/aop.html
+
+**[6]** Eclipse Foundation. (2024). *AspectJ 1.9.x — Release Notes and Downloads*. https://www.eclipse.org/aspectj/
+
+</div>
