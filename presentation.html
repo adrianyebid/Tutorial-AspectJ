@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AspectJ & AOP — Presentación</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cyan:   #00d9ff;
+  --purple: #a78bfa;
+  --orange: #fb923c;
+  --green:  #34d399;
+  --red:    #f87171;
+  --bg:     #0d1117;
+  --bg2:    #161b22;
+  --bg3:    #1c2333;
+  --border: #30363d;
+  --text2:  #8b949e;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
+}
+
+.reveal { font-family: var(--sans); background: var(--bg); }
+.reveal .slides section { text-align: left; }
+.reveal h1,.reveal h2,.reveal h3,.reveal h4 { font-family: var(--sans); text-transform: none; letter-spacing: -.02em; }
+.reveal h1 { font-size: 2.4em; font-weight: 900; }
+.reveal h2 { font-size: 1.6em; font-weight: 800; }
+.reveal h3 { font-size: 1.1em; font-weight: 700; }
+.reveal p, .reveal li { font-size: .88em; line-height: 1.7; color: #c9d1d9; }
+.reveal ul { padding-left: 1.2em; }
+.reveal code { font-family: var(--mono); background: var(--bg2); padding: .1em .4em; border-radius: 4px; font-size: .85em; color: var(--cyan); }
+.reveal pre { margin: .6em 0; border-radius: 8px; box-shadow: 0 0 0 1px var(--border); font-size: .58em; }
+.reveal pre code { padding: 1em 1.2em; line-height: 1.6; font-family: var(--mono); border-radius: 8px; }
+
+/* ── accents ── */
+.accent  { background: linear-gradient(135deg, var(--cyan), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.tag     { display: inline-block; font-family: var(--mono); font-size: .55em; padding: .2em .7em; border-radius: 100px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; margin-bottom: .5em; color: var(--cyan); background: rgba(0,217,255,.12); border: 1px solid rgba(0,217,255,.25); }
+.tag-purple { color: var(--purple); background: rgba(167,139,250,.12); border-color: rgba(167,139,250,.25); }
+.tag-orange { color: var(--orange); background: rgba(251,146,60,.12); border-color: rgba(251,146,60,.25); }
+.tag-green  { color: var(--green);  background: rgba(52,211,153,.12);  border-color: rgba(52,211,153,.25); }
+.tag-red    { color: var(--red);    background: rgba(248,113,113,.12); border-color: rgba(248,113,113,.25); }
+
+/* ── cards ── */
+.cards { display: grid; grid-template-columns: repeat(3,1fr); gap: .7em; margin-top: .8em; }
+.cards-2 { grid-template-columns: repeat(2,1fr); }
+.cards-5 { grid-template-columns: repeat(5,1fr); }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: .9em 1em; }
+.card h4 { font-size: .8em; font-weight: 700; margin: 0 0 .4em; color: var(--cyan); }
+.card.purple h4 { color: var(--purple); }
+.card.orange h4 { color: var(--orange); }
+.card.green  h4 { color: var(--green); }
+.card.red    h4 { color: var(--red); }
+.card p { font-size: .72em; color: var(--text2); margin: 0; line-height: 1.5; }
+
+/* ── title slide ── */
+.cover-badge { display: inline-flex; align-items: center; gap: .5em; background: rgba(0,217,255,.1); border: 1px solid rgba(0,217,255,.3); border-radius: 100px; padding: .3em 1em; font-size: .45em; font-weight: 600; color: var(--cyan); letter-spacing: .06em; text-transform: uppercase; margin-bottom: .8em; }
+.cover-sub { font-size: .55em; color: var(--text2); margin-top: .4em; }
+.stats-row { display: flex; gap: 2.5em; margin-top: 1.4em; }
+.stat-n { font-family: var(--mono); font-size: 1.8em; font-weight: 800; color: var(--cyan); line-height: 1; }
+.stat-l { font-size: .4em; color: var(--text2); text-transform: uppercase; letter-spacing: .1em; }
+
+/* ── info box ── */
+.info { background: var(--bg2); border-left: 3px solid var(--cyan); border-radius: 0 8px 8px 0; padding: .7em 1em; font-size: .78em; color: var(--text2); margin: .6em 0; line-height: 1.6; }
+.info.purple { border-color: var(--purple); }
+.info.green  { border-color: var(--green); }
+.info.orange { border-color: var(--orange); }
+.info.red    { border-color: var(--red); }
+
+/* ── two-col ── */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; align-items: start; }
+.cols-6040 { grid-template-columns: 6fr 4fr; }
+.cols-4060 { grid-template-columns: 4fr 6fr; }
+
+/* ── advice flow ── */
+.flow { display: flex; align-items: center; gap: .4em; flex-wrap: wrap; margin: .8em 0; }
+.flow-box { padding: .35em .8em; border-radius: 6px; font-family: var(--mono); font-size: .52em; font-weight: 600; }
+.fb-method  { background: var(--bg3); border: 1px solid var(--border); }
+.fb-before  { background: rgba(0,217,255,.15); border: 1px solid rgba(0,217,255,.3); color: var(--cyan); }
+.fb-after   { background: rgba(167,139,250,.15); border: 1px solid rgba(167,139,250,.3); color: var(--purple); }
+.fb-around  { background: rgba(251,146,60,.15); border: 1px solid rgba(251,146,60,.3); color: var(--orange); }
+.flow-arr { color: var(--border); font-size: .7em; }
+
+/* ── syntax block ── */
+.syntax { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: .7em 1.1em; font-family: var(--mono); font-size: .6em; color: var(--purple); line-height: 1.8; margin: .6em 0; }
+.syntax .kw { color: var(--cyan); }
+
+/* ── table ── */
+.reveal table { width: 100%; font-size: .6em; border-collapse: collapse; }
+.reveal table th { background: var(--bg3); padding: .6em .8em; font-size: .9em; color: var(--text2); text-transform: uppercase; letter-spacing: .07em; border-bottom: 1px solid var(--border); text-align: left; }
+.reveal table td { padding: .55em .8em; border-bottom: 1px solid rgba(48,54,61,.5); vertical-align: top; }
+.reveal table tr:last-child td { border-bottom: none; }
+.th-aj { color: var(--cyan); }
+.th-sp { color: var(--green); }
+.chk { color: var(--green); font-weight: 700; }
+.crs { color: var(--red); font-weight: 700; }
+.mid { color: var(--orange); font-weight: 700; }
+
+/* ── progress dot nav ── */
+.reveal .progress { background: rgba(0,217,255,.15); }
+.reveal .progress span { background: var(--cyan); }
+.reveal .controls { color: var(--cyan); }
+
+/* ── fragment styles ── */
+.reveal .fragment.highlight-cyan.visible { color: var(--cyan); }
+
+/* ── use lists ── */
+.use-yes li::marker { color: var(--green); }
+.use-no  li::marker { color: var(--red); }
+.use-yes li, .use-no li { font-size: .78em; line-height: 1.6; color: #c9d1d9; }
+
+/* ── number badge ── */
+.num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--cyan); color: #000; font-size: .55em; font-weight: 800; flex-shrink: 0; margin-right: .5em; }
+
+/* ── concern grid ── */
+.concern-cols { display: grid; grid-template-columns: repeat(3,1fr); gap: .6em; }
+.cc { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.cc-head { padding: .4em .7em; font-size: .6em; font-weight: 700; text-align: center; background: var(--bg3); color: var(--text2); }
+.cc-body { padding: .5em .7em; display: flex; flex-direction: column; gap: .35em; }
+.cc-item { border-radius: 4px; padding: .25em .5em; font-size: .58em; font-weight: 600; text-align: center; }
+.ci-log  { background: rgba(0,217,255,.12);    color: var(--cyan); }
+.ci-sec  { background: rgba(248,113,113,.12);  color: var(--red); }
+.ci-tx   { background: rgba(52,211,153,.12);   color: var(--green); }
+.ci-biz  { background: var(--bg3); color: var(--text2); }
+
+/* ── slide backgrounds ── */
+.reveal section[data-background-color] h2 { color: #fff; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ══════════════════════════════════════════════════
+     PORTADA
+══════════════════════════════════════════════════ -->
+<section data-transition="fade">
+  <div class="cover-badge">Universidad Nacional de Colombia &nbsp;·&nbsp; Lenguajes de Programación</div>
+  <h1>Tutorial<br><span class="accent">AspectJ &amp; AOP</span></h1>
+  <p class="cover-sub">Programación Orientada a Aspectos en Java —<br>de los conceptos básicos a ejemplos prácticos.</p>
+  <div class="stats-row">
+    <div><div class="stat-n">5</div><div class="stat-l">Conceptos clave</div></div>
+    <div><div class="stat-n">3</div><div class="stat-l">Tutoriales originales</div></div>
+    <div><div class="stat-n">5</div><div class="stat-l">Tipos de advice</div></div>
+    <div><div class="stat-n">2</div><div class="stat-l">Compiladores</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     AGENDA
+══════════════════════════════════════════════════ -->
+<section data-transition="slide">
+  <div class="tag">Contenido</div>
+  <h2>¿Qué vamos a ver?</h2>
+  <div class="cols">
+    <ul>
+      <li class="fragment">¿Qué es AOP y por qué existe?</li>
+      <li class="fragment">Compatibilidad con Java</li>
+      <li class="fragment">5 conceptos clave</li>
+      <li class="fragment">Declaración de aspectos</li>
+      <li class="fragment">Compiladores: <code>ajc</code> y <code>abc</code></li>
+      <li class="fragment">Instalación con Maven</li>
+    </ul>
+    <ul>
+      <li class="fragment">5 tipos de Advice</li>
+      <li class="fragment">11 ejemplos de código</li>
+      <li class="fragment">3 tutoriales originales</li>
+      <li class="fragment">AspectJ vs Spring AOP</li>
+      <li class="fragment">¿Cuándo usar AOP?</li>
+      <li class="fragment">Conclusiones</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     QUÉ ES AOP — sección
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag">El Problema</div>
+    <h2>¿Por qué necesitamos <span class="accent">AOP</span>?</h2>
+    <p>La POO es excelente para modelar el dominio, pero falla con los <strong>cross-cutting concerns</strong>: comportamientos que se repiten en todas las clases.</p>
+    <div class="concern-cols" style="margin-top:.9em">
+      <div class="cc"><div class="cc-head">Módulo Usuarios</div><div class="cc-body"><div class="cc-item ci-log">Logging</div><div class="cc-item ci-sec">Seguridad</div><div class="cc-item ci-tx">Transacciones</div><div class="cc-item ci-biz">Lógica de negocio</div></div></div>
+      <div class="cc"><div class="cc-head">Módulo Pedidos</div><div class="cc-body"><div class="cc-item ci-log">Logging</div><div class="cc-item ci-sec">Seguridad</div><div class="cc-item ci-tx">Transacciones</div><div class="cc-item ci-biz">Lógica de negocio</div></div></div>
+      <div class="cc"><div class="cc-head">Módulo Productos</div><div class="cc-body"><div class="cc-item ci-log">Logging</div><div class="cc-item ci-sec">Seguridad</div><div class="cc-item ci-tx">Transacciones</div><div class="cc-item ci-biz">Lógica de negocio</div></div></div>
+    </div>
+    <p style="font-size:.6em;color:var(--text2);margin-top:.7em;text-align:center">Con AOP, logging, seguridad y transacciones se definen <strong style="color:var(--cyan)">una sola vez</strong> en un Aspecto.</p>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Sin AOP</div>
+    <h2>El problema: código <span class="accent">repetido</span></h2>
+    <pre><code class="language-java">// Esto se repite en las 50 clases del sistema:
+public void procesarPedido(Pedido p) {
+    log.info("Inicio procesarPedido");    // logging
+    checkAuth(usuario);                    // seguridad
+    long t = System.currentTimeMillis();  // timing
+
+    pedidoRepo.save(p);  // ← lógica real
+
+    log.info("Fin: " + (System.currentTimeMillis()-t) + "ms");
+}
+// → Cambiar el formato del log = tocar 50 clases</code></pre>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Con AOP</div>
+    <h2>La solución: <span class="accent">separación</span> de concerns</h2>
+    <pre><code class="language-java">// Se define UNA vez, aplica en toda la app:
+public aspect LoggingAspect {
+    pointcut serviceMethods() :
+        execution(* com.app.service.*.*(..));
+
+    before() : serviceMethods() {
+        System.out.println("Inicio: "
+            + thisJoinPoint.getSignature());
+    }
+    after() : serviceMethods() {
+        System.out.println("Fin del método");
+    }
+}
+// El servicio queda completamente limpio</code></pre>
+  </section>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     COMPATIBILIDAD
+══════════════════════════════════════════════════ -->
+<section data-transition="slide">
+  <div class="tag">Compatibilidad</div>
+  <h2>AspectJ es <span class="accent">compatible con Java</span></h2>
+  <p style="font-size:.75em;color:var(--text2)">Creado en PARC (Palo Alto Research Center) por el equipo Xerox, liderado por Gregor Kiczales.</p>
+  <div class="cards" style="margin-top:.9em">
+    <div class="card">
+      <h4>Base</h4>
+      <p>Todo programa Java válido es un programa AspectJ válido.</p>
+    </div>
+    <div class="card purple">
+      <h4>Plataforma</h4>
+      <p>Todo programa AspectJ corre sobre la JVM estándar sin modificaciones.</p>
+    </div>
+    <div class="card green">
+      <h4>Programación</h4>
+      <p>AspectJ es una extensión <em>natural</em> de Java, estáticamente tipada.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     CONCEPTOS CLAVE — sección
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag">Vocabulario</div>
+    <h2>Los 5 conceptos <span class="accent">clave</span></h2>
+    <div class="cards cards-5" style="margin-top:.9em">
+      <div class="card"><h4>🧩 Aspect</h4><p>Módulo que encapsula un cross-cutting concern.</p></div>
+      <div class="card purple"><h4>📍 Join Point</h4><p>Punto en la ejecución donde puede actuar un aspecto.</p></div>
+      <div class="card orange"><h4>🎯 Pointcut</h4><p>Expresión que selecciona qué Join Points nos interesan.</p></div>
+      <div class="card green"><h4>⚡ Advice</h4><p>Código que se ejecuta en el Join Point seleccionado.</p></div>
+      <div class="card red"><h4>🔗 Weaving</h4><p>Proceso de combinar aspectos con el código base.</p></div>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Aspect</div>
+    <h2>Aspect — el módulo <span class="accent">transversal</span></h2>
+    <div class="cols">
+      <div>
+        <p>Equivale a una clase en OOP, pero para comportamiento transversal. Se declara con la palabra reservada <code>aspect</code> y puede ir en un archivo <code>.aj</code>.</p>
+        <div class="info">Un aspecto es la unidad de modularización en AOP, como las clases son en OOP.</div>
+      </div>
+      <pre><code class="language-java">public aspect LogAspect {
+    // pointcuts, advices
+    // e inter-type declarations
+    // van aquí adentro
+}</code></pre>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Join Point</div>
+    <h2>Join Point — ¿<span class="accent">dónde</span> puede actuar?</h2>
+    <p>Punto bien definido en la ejecución del programa:</p>
+    <div class="cards cards-2" style="margin-top:.6em">
+      <div class="card"><h4>Llamada a método</h4><p><code>call(* Service.*(..))</code></p></div>
+      <div class="card purple"><h4>Ejecución de método</h4><p><code>execution(* Service.*(..))</code></p></div>
+      <div class="card orange"><h4>Constructor</h4><p><code>initialization(Clase.new(..))</code></p></div>
+      <div class="card green"><h4>Acceso a campo</h4><p><code>get(int Clase.campo)</code></p></div>
+      <div class="card red"><h4>Handler de excepción</h4><p><code>handler(Exception)</code></p></div>
+      <div class="card"><h4>Inicialización estática</h4><p><code>staticinitialization(Clase)</code></p></div>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Pointcut</div>
+    <h2>Pointcut — ¿<span class="accent">cuáles</span> Join Points?</h2>
+    <p>Expresión que selecciona un conjunto de Join Points. Soporta comodines y operadores lógicos.</p>
+    <pre><code class="language-java">// Todos los métodos de cualquier clase Service
+pointcut serviceMethods() :
+    execution(* com.app.service.*.*(..));
+
+// Métodos que reciben exactamente un String
+pointcut withString() :
+    execution(* *.*(String));
+
+// Combinando: service Y que reciban String
+pointcut serviceWithString() :
+    serviceMethods() && withString();
+
+// Comodines:
+// *  → exactamente un token (paquete, clase, método, parámetro)
+// .. → cero o más tokens (paquetes o parámetros)</code></pre>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Weaving</div>
+    <h2>Weaving — tipos de <span class="accent">tejido</span></h2>
+    <div class="cards" style="margin-top:.8em">
+      <div class="card">
+        <h4>Compile-time</h4>
+        <p>El compilador <code>ajc</code> teje los aspectos durante la compilación. Mejor rendimiento, sin overhead en runtime.</p>
+      </div>
+      <div class="card orange">
+        <h4>Load-time</h4>
+        <p>El agente de AspectJ teje cuando la JVM carga las clases. No requiere recompilar.</p>
+      </div>
+      <div class="card green">
+        <h4>Runtime</h4>
+        <p>Usado por Spring AOP mediante proxies dinámicos. Más simple pero limitado a métodos públicos de beans.</p>
+      </div>
+    </div>
+  </section>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     DECLARACIÓN DE ASPECTOS
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag">Sintaxis</div>
+    <h2>Declaración de <span class="accent">Aspectos</span></h2>
+    <div class="syntax">
+      [ <span class="kw">privileged</span> ] <span class="kw">aspect</span> Id<br>
+      &nbsp;&nbsp;[ <span class="kw">extends</span> Type ]<br>
+      &nbsp;&nbsp;[ <span class="kw">implements</span> TypeList ]<br>
+      &nbsp;&nbsp;[ <span class="kw">Per Clause</span> ]<br>
+      { Body }
+    </div>
+    <div class="info" style="margin-top:.8em">Un aspecto puede declararse como cualquier clase de Java, con modificadores que controlan acceso, herencia e instanciación.</div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag tag-purple">privileged</div>
+    <h2><code>privileged</code> — acceso <span class="accent">total</span></h2>
+    <div class="cols">
+      <div>
+        <p>Permite al aspecto acceder a miembros <code>private</code> de clases externas sin getters/setters.</p>
+        <div class="info purple">Útil para aspectos de logging que necesitan inspeccionar estado interno sin modificar la API pública de la clase.</div>
+      </div>
+      <pre><code class="language-java">privileged aspect AuditAspect {
+    before() : execution(* Account.*(..)) {
+        Account a =
+          (Account) thisJoinPoint.getTarget();
+        // Accede a 'balance' aunque sea private
+        System.out.println(
+          "Balance: " + a.balance);
+    }
+}</code></pre>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag tag-orange">extends / implements</div>
+    <h2>Herencia en <span class="accent">Aspectos</span></h2>
+    <pre><code class="language-java">// Aspecto abstracto base con pointcut abstracto
+public abstract aspect AbstractLogging {
+    abstract pointcut loggedMethods();
+
+    before() : loggedMethods() {
+        System.out.println("Entering: " + thisJoinPoint.getSignature());
+    }
+}
+
+// Aspecto concreto que extiende el abstracto
+public aspect ServiceLogging extends AbstractLogging {
+    pointcut loggedMethods() :
+        execution(* com.app.service.*.*(..));
+}</code></pre>
+    <div class="cards cards-2" style="margin-top:.5em;font-size:.85em">
+      <div class="card red"><h4>Reglas importantes</h4><p>Un aspecto no se puede instanciar con <code>new</code>.<br>Una clase no puede extender un aspecto.<br>Un aspecto no puede extender un aspecto no abstracto.</p></div>
+      <div class="card"><h4>Beneficio</h4><p>Permite definir el <em>comportamiento</em> base una vez y reutilizarlo para distintos pointcuts en múltiples aspectos.</p></div>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag tag-green">Per Clause</div>
+    <h2>Per Clause — <span class="accent">instanciación</span></h2>
+    <p style="font-size:.8em">Por defecto los aspectos son <strong>singleton</strong>. Las Per Clauses controlan cuántas instancias existen:</p>
+    <div class="cards cards-2" style="margin-top:.5em">
+      <div class="card"><h4>issingleton()</h4><p>Una instancia global. Comportamiento por defecto.</p></div>
+      <div class="card purple"><h4>perthis(pc)</h4><p>Una instancia por objeto en el que actúa el aspecto.</p></div>
+      <div class="card orange"><h4>pertarget(pc)</h4><p>Una instancia por objeto <em>destino</em> del join point.</p></div>
+      <div class="card green"><h4>percflow(pc)</h4><p>Una instancia por flujo de control que alcanza el pc.</p></div>
+    </div>
+    <pre style="margin-top:.5em"><code class="language-java">// Una instancia del aspecto por cada objeto Account
+public aspect AccountAudit perthis(execution(* Account.*(..))) {
+    private int ops = 0;
+    after() : execution(* Account.*(..)) { ops++; }
+}</code></pre>
+  </section>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     COMPILADORES
+══════════════════════════════════════════════════ -->
+<section data-transition="slide">
+  <div class="tag">Compiladores</div>
+  <h2>Compiladores para <span class="accent">AspectJ</span></h2>
+  <div class="cols" style="margin-top:.8em">
+    <div class="card" style="border-top: 3px solid var(--cyan)">
+      <h4 style="font-size:1.2em">ajc</h4>
+      <p>Compilador oficial, parte de las herramientas del proyecto <strong>Eclipse</strong>. Estándar de producción.</p>
+      <br>
+      <p>Se integra con Maven/Gradle mediante el <code>aspectj-maven-plugin</code>. Soporta compile-time y load-time weaving.</p>
+    </div>
+    <div class="card" style="border-top: 3px solid var(--purple)">
+      <h4 style="font-size:1.2em;color:var(--purple)">abc</h4>
+      <p>AspectBench Compiler — diseñado para <strong>investigación</strong>. Extensible y optimizado.</p>
+      <br>
+      <p>Permite agregar extensiones al lenguaje de aspectos. Producido en <code>aspectbench.org</code>.</p>
+    </div>
+  </div>
+  <div class="info" style="margin-top:.8em">En la práctica: <code>ajc</code> es el compilador para proyectos reales. <code>mvn compile</code> con el plugin lo invoca automáticamente y realiza el weaving.</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     INSTALACIÓN
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag">Setup</div>
+    <h2>Instalación con <span class="accent">Maven</span></h2>
+    <pre><code class="language-xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+    &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;
+    &lt;version&gt;1.9.21&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+&lt;build&gt;&lt;plugins&gt;
+  &lt;plugin&gt;
+    &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+    &lt;artifactId&gt;aspectj-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;1.15.0&lt;/version&gt;
+    &lt;configuration&gt;
+      &lt;complianceLevel&gt;17&lt;/complianceLevel&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;&lt;execution&gt;
+      &lt;goals&gt;&lt;goal&gt;compile&lt;/goal&gt;&lt;/goals&gt;
+    &lt;/execution&gt;&lt;/executions&gt;
+  &lt;/plugin&gt;
+&lt;/plugins&gt;&lt;/build&gt;</code></pre>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Setup</div>
+    <h2>Pasos de <span class="accent">configuración</span></h2>
+    <div style="display:flex;flex-direction:column;gap:.6em;margin-top:.6em">
+      <div class="info" style="display:flex;align-items:center;gap:.6em"><span class="num">1</span> Verificar Java 11+ y Maven 3.6+: <code>java -version</code> &nbsp; <code>mvn -version</code></div>
+      <div class="info purple" style="display:flex;align-items:center;gap:.6em"><span class="num" style="background:var(--purple)">2</span> IntelliJ: File → Settings → Plugins → Marketplace → <strong>"AspectJ Support"</strong></div>
+      <div class="info green" style="display:flex;align-items:center;gap:.6em"><span class="num" style="background:var(--green)">3</span> Compilar: <code>mvn clean compile</code></div>
+      <div class="info orange" style="display:flex;align-items:center;gap:.6em"><span class="num" style="background:var(--orange)">4</span> Ejecutar: <code>mvn exec:java -Dexec.mainClass="com.app.Main"</code></div>
+    </div>
+  </section>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TIPOS DE ADVICE — sección
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag">Advice</div>
+    <h2>Los 5 tipos de <span class="accent">Advice</span></h2>
+    <p>El advice define <em>cuándo</em> y <em>cómo</em> actúa el aspecto respecto al Join Point.</p>
+    <div class="flow" style="margin:.8em 0">
+      <div class="flow-box fb-around">around() { inicio...</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box fb-before">before()</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box fb-method">método()</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box fb-after">after()</div>
+      <div class="flow-arr">→</div>
+      <div class="flow-box fb-around">...fin }</div>
+    </div>
+    <div class="cards cards-5">
+      <div class="card"><h4>before()</h4><p>Antes del método</p></div>
+      <div class="card purple"><h4>after()</h4><p>Siempre al final (como finally)</p></div>
+      <div class="card green"><h4>after() returning</h4><p>Solo en éxito</p></div>
+      <div class="card red"><h4>after() throwing</h4><p>Solo si hay excepción</p></div>
+      <div class="card orange"><h4>around()</h4><p>Envuelve completamente</p></div>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">before / after</div>
+    <h2><code>before()</code> y <code>after()</code></h2>
+    <pre><code class="language-java">public aspect TimingAspect {
+
+    pointcut serviceMethods() :
+        execution(* com.app.service.*.*(..));
+
+    // Antes del método — no puede detener la ejecución (salvo excepción)
+    before() : serviceMethods() {
+        System.out.println("Inicio: " + thisJoinPoint.getSignature());
+    }
+
+    // Siempre al final — éxito O excepción (equivale a finally)
+    after() : serviceMethods() {
+        System.out.println("Fin: " + thisJoinPoint.getSignature());
+    }
+}</code></pre>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag tag-green">after returning / throwing</div>
+    <h2><code>after() returning</code> y <code>throwing</code></h2>
+    <pre><code class="language-java">public aspect ResultAspect {
+
+    pointcut query() : execution(* Repository.find*(..));
+
+    // Solo si terminó sin excepción — puede acceder al valor de retorno
+    after() returning(Object result) : query() {
+        System.out.println("Resultado: " + result);
+    }
+
+    // Solo si lanzó excepción — puede acceder a la excepción
+    after() throwing(Exception ex) : query() {
+        System.err.println("Error en consulta: " + ex.getMessage());
+    }
+}</code></pre>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag tag-orange">around</div>
+    <h2><code>around()</code> — control <span class="accent">total</span></h2>
+    <pre><code class="language-java">public aspect CacheAspect {
+
+    Object around() : execution(* ProductService.getProduct(String)) {
+        String key = (String) thisJoinPoint.getArgs()[0];
+
+        if (cache.containsKey(key)) {
+            return cache.get(key);  // NO llama proceed()
+        }
+
+        Object result = proceed(); // ejecuta el método real
+        cache.put(key, result);    // guarda en caché
+        return result;
+    }
+}
+// around() puede:
+// ✓ Modificar argumentos antes de proceed()
+// ✓ Cambiar o reemplazar el valor de retorno
+// ✓ Evitar completamente la ejecución del método</code></pre>
+    <div class="info orange">Requiere declarar tipo de retorno. Siempre llamar <code>proceed()</code> a menos que intencionalmente quieras bloquear la ejecución.</div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">thisJoinPoint</div>
+    <h2>Atributos del <span class="accent">Join Point</span></h2>
+    <pre><code class="language-java">before() : execution(* *.*(..)) {
+    // Información dinámica del join point actual
+    thisJoinPoint.getSignature();       // firma completa del método
+    thisJoinPoint.getArgs();            // argumentos pasados
+    thisJoinPoint.getTarget();          // objeto receptor
+    thisJoinPoint.getThis();            // objeto del aspecto
+
+    // Parte estática — más eficiente (sin overhead en runtime)
+    thisJoinPointStaticPart.getSignature();
+    thisJoinPointStaticPart.getSourceLocation();
+
+    // Join point que encierra a este (contexto padre)
+    thisEnclosingJoinPointStaticPart.getSignature();
+}</code></pre>
+  </section>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     EJEMPLOS — sección
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag" style="background:rgba(251,146,60,.12);color:var(--orange);border-color:rgba(251,146,60,.25)">Código en Acción</div>
+    <h2>Ejemplos <span class="accent">Prácticos</span></h2>
+    <div class="cards" style="margin-top:.8em">
+      <div class="card"><h4>👋 Hello World</h4><p>El aspecto más simple posible.</p></div>
+      <div class="card purple"><h4>✳️ Comodines *</h4><p>Selección flexible de métodos.</p></div>
+      <div class="card orange"><h4>📞 Call vs Execution</h4><p>Diferencia caller vs callee.</p></div>
+      <div class="card green"><h4>📦 Context Passing</h4><p>Inter-Type Declarations (ITD).</p></div>
+      <div class="card red"><h4>🎭 Aspect Behaviours</h4><p>declare parents + ITD.</p></div>
+      <div class="card"><h4>🔒 Seguridad</h4><p>Control de acceso centralizado.</p></div>
+      <div class="card purple"><h4>⏱️ Tiempo ejecución</h4><p>Performance monitoring.</p></div>
+      <div class="card orange"><h4>🧮 Calculadora</h4><p>Logs en archivo con timestamp.</p></div>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Hello World</div>
+    <h2>El aspecto <span class="accent">más simple</span></h2>
+    <div class="cols">
+      <pre><code class="language-java">// Hello.java
+public class Hello {
+    public static void main(String[] args){
+        sayHello();
+    }
+    public static void sayHello() {
+        System.out.print("Hello ");
+    }
+}</code></pre>
+      <pre><code class="language-java">// World.aj
+public aspect World {
+    pointcut greeting() :
+        execution(* Hello.sayHello(..));
+
+    after() returning() : greeting() {
+        System.out.println("World");
+    }
+}
+// Output: Hello World</code></pre>
+    </div>
+    <div class="info" style="margin-top:.5em">Hello.java no tiene ninguna referencia a AspectJ. El aspecto añade "World" <strong>sin modificar</strong> la clase original.</div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Call vs Execution</div>
+    <h2><code>call</code> vs <code>execution</code> — diferencia <span class="accent">clave</span></h2>
+    <div class="cards cards-2" style="margin-top:.6em">
+      <div class="card">
+        <h4>call()</h4>
+        <p>Se activa en el <strong>lugar desde donde se llama</strong> al método (el caller). El join point vive fuera del cuerpo del método.</p>
+      </div>
+      <div class="card purple">
+        <h4>execution()</h4>
+        <p>Se activa <strong>dentro del cuerpo</strong> del método (el callee). Si Child hereda de Parent, la ejecución sigue viviendo en Parent.</p>
+      </div>
+    </div>
+    <pre style="margin-top:.5em"><code class="language-java">public aspect Tracer {
+    // call: actúa donde se hace la invocación
+    before() : call(* Child.*()) { System.out.println("CALL"); }
+
+    // execution: actúa dentro del método heredado de Parent
+    after() : execution(* Parent.greet()) { System.out.println("EXEC"); }
+}
+// person.greet() siendo Child: dispara CALL y EXEC</code></pre>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">ITD — Context Passing</div>
+    <h2>Inter-Type Declarations — <span class="accent">agregar estado</span></h2>
+    <pre><code class="language-java">public aspect Logger {
+
+    // ITD: agrega campo a Point sin tocar Point.java
+    int Point.numberOfMoves;
+
+    // ITD: agrega método a Point
+    public int Point.howMany() {
+        return this.numberOfMoves;
+    }
+
+    pointcut counts(Point p) :
+        execution(void Point.move(double, double)) && this(p);
+
+    after(Point p) : counts(p) {
+        p.numberOfMoves++;
+    }
+}
+
+// Test puede llamar p.howMany() aunque Point no lo declare
+Point p1 = new Point();
+p1.move(3, 7);
+p1.move(3, 11);
+System.out.println(p1.howMany()); // 2</code></pre>
+  </section>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     TUTORIALES — sección
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag tag-orange">Proyectos Guiados</div>
+    <h2>Tutoriales <span class="accent">Originales</span></h2>
+    <div class="cards" style="margin-top:.9em">
+      <div class="card" style="border-top:3px solid var(--cyan)">
+        <h4>📚 Biblioteca</h4>
+        <p><strong>3 aspectos coordinados:</strong> validación de deuda (before), límite de préstamos (around), log de actividad (after returning).</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <h4>🎓 Calificaciones</h4>
+        <p><strong>args() + after returning:</strong> valida rango 0-5 y notifica automáticamente cuando un estudiante está en riesgo académico.</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--orange)">
+        <h4>⚡ Caché</h4>
+        <p><strong>around() como patrón de optimización:</strong> sirve resultados desde caché sin llamar proceed(), invalida cuando los datos cambian.</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Tutorial 1 — Biblioteca</div>
+    <h2>Sistema de Biblioteca — <span class="accent">3 aspectos</span></h2>
+    <div class="cols cols-4060">
+      <div>
+        <p style="font-size:.75em">El objetivo: controlar la biblioteca <strong>sin modificar Library.java</strong>.</p>
+        <div class="info" style="font-size:.72em"><span class="num">1</span> <strong>DebtCheckAspect</strong> — <code>before</code> rechaza préstamo si el socio tiene deuda.</div>
+        <div class="info purple" style="font-size:.72em"><span class="num" style="background:var(--purple)">2</span> <strong>LoanLimitAspect</strong> — <code>around</code> bloquea si el socio ya tiene 3 libros.</div>
+        <div class="info green" style="font-size:.72em"><span class="num" style="background:var(--green)">3</span> <strong>ActivityLogAspect</strong> — <code>after returning</code> registra solo operaciones exitosas.</div>
+      </div>
+      <pre><code class="language-java">// LoanLimitAspect.aj
+public aspect LoanLimitAspect {
+    private static final int MAX = 3;
+
+    pointcut lending(Member m, Book b) :
+        execution(void Library.lendBook(Member,Book))
+        && args(m, b);
+
+    void around(Member m, Book b) : lending(m, b) {
+        if (m.loanCount() >= MAX) {
+            System.out.println("Límite alcanzado.");
+            return; // bloquea sin lanzar excepción
+        }
+        proceed(m, b); // ejecuta Library.lendBook
+    }
+}</code></pre>
+    </div>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Tutorial 2 — Calificaciones</div>
+    <h2>Calificaciones — <span class="accent">args() + after returning</span></h2>
+    <pre><code class="language-java">// GradeValidationAspect.aj — valida rango 0.0-5.0
+public aspect GradeValidationAspect {
+    pointcut gradeRecording(Student s, String subject, double grade) :
+        execution(void GradeBook.recordGrade(Student, String, double))
+        && args(s, subject, grade);
+
+    before(Student s, String subject, double grade)
+            : gradeRecording(s, subject, grade) {
+        if (grade < 0.0 || grade > 5.0)
+            throw new IllegalArgumentException(
+                "Nota inválida: " + grade + " para " + s.getName());
+    }
+}
+
+// AcademicRiskAspect.aj — alerta si promedio < 3.0
+public aspect AcademicRiskAspect {
+    after(Student s) returning(double avg)
+            : execution(double GradeBook.computeAverage(Student, ..)) && args(s,*) {
+        if (avg < 3.0)
+            System.out.println("[ALERTA] " + s.getName()
+                + " en riesgo académico. Promedio: " + avg);
+    }
+}</code></pre>
+  </section>
+
+  <section data-transition="slide">
+    <div class="tag">Tutorial 3 — Caché</div>
+    <h2>Caché con <span class="accent">around()</span></h2>
+    <pre><code class="language-java">public aspect CacheAspect {
+
+    private Map&lt;String, Double&gt; cache = new HashMap&lt;&gt;();
+
+    pointcut priceQuery(String id) :
+        execution(double ProductCatalog.getPrice(String)) && args(id);
+
+    pointcut priceUpdate(String id) :
+        execution(void ProductCatalog.updatePrice(String, double)) && args(id, *);
+
+    // Cache hit → retorna sin tocar la BD
+    double around(String id) : priceQuery(id) {
+        if (cache.containsKey(id)) {
+            System.out.println("[CACHE HIT] " + id);
+            return cache.get(id);
+        }
+        double result = proceed(id); // consulta real
+        cache.put(id, result);
+        System.out.println("[CACHE SET] " + id + " = " + result);
+        return result;
+    }
+
+    // Invalida caché cuando el precio cambia
+    after(String id) : priceUpdate(id) { cache.remove(id); }
+}</code></pre>
+  </section>
+
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     ASPECTJ VS SPRING
+══════════════════════════════════════════════════ -->
+<section data-transition="slide">
+  <div class="tag">Comparativa</div>
+  <h2>AspectJ vs <span class="accent">Spring AOP</span></h2>
+  <table style="margin-top:.6em">
+    <thead>
+      <tr>
+        <th>Característica</th>
+        <th class="th-aj">AspectJ</th>
+        <th class="th-sp">Spring AOP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Join Points soportados</td><td>Métodos, constructores, campos, excepciones</td><td>Solo métodos públicos de beans</td></tr>
+      <tr><td>Clases interceptables</td><td>Cualquier clase Java</td><td>Solo Spring beans</td></tr>
+      <tr><td>Performance</td><td><span class="chk">✓</span> Sin overhead en runtime</td><td><span class="mid">~</span> Proxies dinámicos</td></tr>
+      <tr><td>Configuración</td><td>Plugin Maven/Gradle</td><td><span class="chk">✓</span> Automática con Spring Boot</td></tr>
+      <tr><td>Inter-type declarations</td><td><span class="chk">✓</span> Sí</td><td><span class="crs">✗</span> No</td></tr>
+      <tr><td>declare parents</td><td><span class="chk">✓</span> Sí</td><td><span class="crs">✗</span> No</td></tr>
+      <tr><td>Curva de aprendizaje</td><td>Mayor</td><td><span class="chk">✓</span> Menor</td></tr>
+    </tbody>
+  </table>
+  <div class="info green" style="margin-top:.6em;font-size:.72em">En el mundo real: Spring usa AspectJ internamente. <code>@Transactional</code>, <code>@Cacheable</code>, <code>@Secured</code> son todos aspectos bajo el capó.</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     CUÁNDO USAR
+══════════════════════════════════════════════════ -->
+<section data-transition="slide">
+  <div class="tag">Mejores Prácticas</div>
+  <h2>¿Cuándo <span class="accent">usar AOP</span>?</h2>
+  <div class="cols">
+    <div>
+      <h3 style="color:var(--green);margin-bottom:.5em">✓ Úsalo para...</h3>
+      <ul class="use-yes">
+        <li>Logging y trazabilidad</li>
+        <li>Medición de performance</li>
+        <li>Autenticación y autorización</li>
+        <li>Manejo de transacciones de BD</li>
+        <li>Auditoría y registro de actividad</li>
+        <li>Caché de resultados</li>
+        <li>Validación de parámetros de entrada</li>
+        <li>Retry automático con backoff</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--red);margin-bottom:.5em">✗ No lo uses para...</h3>
+      <ul class="use-no">
+        <li>Lógica de negocio principal</li>
+        <li>Proyectos pequeños o scripts</li>
+        <li>Cuando el equipo no conoce AOP</li>
+        <li>Cuando la "magia" dificulta el debug</li>
+        <li>Reemplazar inyección de dependencias</li>
+        <li>Lógica diferente por cada clase</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     CONCLUSIONES
+══════════════════════════════════════════════════ -->
+<section>
+
+  <section data-transition="slide">
+    <div class="tag">Resumen</div>
+    <h2>Lo que <span class="accent">aprendimos</span></h2>
+    <div class="cards cards-2" style="margin-top:.7em">
+      <div class="card">
+        <h4>El problema que resuelve AOP</h4>
+        <p>Los cross-cutting concerns se repiten en decenas de clases con OOP puro, violando DRY y SRP. AOP los externaliza a Aspectos.</p>
+      </div>
+      <div class="card purple">
+        <h4>Los 5 conceptos esenciales</h4>
+        <p><strong>Aspect</strong> → módulo. <strong>Join Point</strong> → dónde puede. <strong>Pointcut</strong> → dónde quiero. <strong>Advice</strong> → qué hace. <strong>Weaving</strong> → cómo se combina.</p>
+      </div>
+      <div class="card green">
+        <h4>OOP y AOP: Complementarios</h4>
+        <p>OOP modela el dominio. AOP maneja la infraestructura transversal. Los dos paradigmas trabajan juntos en cualquier aplicación real.</p>
+      </div>
+      <div class="card orange">
+        <h4>AspectJ en producción</h4>
+        <p>Spring usa AOP internamente para <code>@Transactional</code>, <code>@Cacheable</code>, <code>@Secured</code>. Hibernate usa AOP para lazy loading.</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-transition="fade">
+    <div style="text-align:center;padding:2em 0">
+      <div class="tag" style="margin-bottom:1em">Universidad Nacional de Colombia</div>
+      <h1 style="font-size:2.2em"><span class="accent">Gracias</span></h1>
+      <p style="font-size:.7em;color:var(--text2);margin-top:.6em">Lenguajes de Programación · Paradigmas de Programación</p>
+      <div style="margin-top:1.8em;display:flex;justify-content:center;gap:2em">
+        <div style="text-align:center">
+          <div style="font-family:var(--mono);font-size:.7em;color:var(--cyan)">Tutorial completo</div>
+          <div style="font-size:.6em;color:var(--text2)">index.html</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:var(--mono);font-size:.7em;color:var(--purple)">Documentación oficial</div>
+          <div style="font-size:.6em;color:var(--text2)">eclipse.org/aspectj</div>
+        </div>
+      </div>
+      <div class="info" style="margin-top:1.5em;font-size:.65em;text-align:left">
+        <strong style="color:var(--cyan)">Tip para exportar a PDF:</strong> Abre esta presentación en Chrome → añade <code>?print-pdf</code> al URL → Ctrl+P → Guardar como PDF
+      </div>
+    </div>
+  </section>
+
+</section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  transition: 'slide',
+  transitionSpeed: 'fast',
+  backgroundTransition: 'fade',
+  center: false,
+  margin: 0.06,
+  width: 1280,
+  height: 720,
+  plugins: [ RevealHighlight, RevealNotes ],
+  highlight: {
+    highlightOnLoad: true,
+    beforeHighlight: (hljs) => hljs.configure({ ignoreUnescapedHTML: true })
+  }
+});
+</script>
+</body>
+</html>
