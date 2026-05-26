@@ -367,7 +367,7 @@ footer .footer-brand{font-family:var(--mono);color:var(--cyan);font-size:1rem;fo
     </div>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">5</div><div class="stat-label">Conceptos Clave</div></div>
-      <div class="stat"><div class="stat-num">11</div><div class="stat-label">Ejemplos de Código</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">Ejemplos de Código</div></div>
       <div class="stat"><div class="stat-num">3</div><div class="stat-label">Tipos de Weaving</div></div>
       <div class="stat"><div class="stat-num">5</div><div class="stat-label">Tipos de Advice</div></div>
     </div>
@@ -777,958 +777,519 @@ mvn exec:java \
     <div class="section-header fade-up">
       <span class="section-tag">// Código en Acción</span>
       <h2 class="section-title">Ejemplos <span class="accent">Prácticos</span></h2>
-      <p class="section-desc">11 ejemplos progresivos para dominar AspectJ — desde Hello World hasta sistemas reales con múltiples aspectos.</p>
+      <p class="section-desc">7 ejemplos originales — cada uno enfocado en un concepto distinto, desde la estructura básica hasta control de flujo e inyección de tipos.</p>
     </div>
 
     <div class="examples-selector fade-up">
-      <button class="ex-btn active" data-ex="hello"><span class="ex-btn-icon">👋</span><span class="ex-btn-name">Hello World</span><span class="ex-btn-files">2 archivos</span></button>
-      <button class="ex-btn" data-ex="testasp"><span class="ex-btn-icon">🔧</span><span class="ex-btn-name">TestAsp</span><span class="ex-btn-files">2 archivos</span></button>
-      <button class="ex-btn" data-ex="wildcards"><span class="ex-btn-icon">✳️</span><span class="ex-btn-name">Comodines *</span><span class="ex-btn-files">2 archivos</span></button>
-      <button class="ex-btn" data-ex="callexec"><span class="ex-btn-icon">📞</span><span class="ex-btn-name">Call y Execution</span><span class="ex-btn-files">3 archivos</span></button>
-      <button class="ex-btn" data-ex="callsvs"><span class="ex-btn-icon">⚖️</span><span class="ex-btn-name">Calls vs Exec.</span><span class="ex-btn-files">3 archivos</span></button>
-      <button class="ex-btn" data-ex="context"><span class="ex-btn-icon">📦</span><span class="ex-btn-name">Context Passing</span><span class="ex-btn-files">3 archivos</span></button>
-      <button class="ex-btn" data-ex="behavior"><span class="ex-btn-icon">🎭</span><span class="ex-btn-name">Aspect Behaviours</span><span class="ex-btn-files">5 archivos</span></button>
-      <button class="ex-btn" data-ex="security"><span class="ex-btn-icon">🔒</span><span class="ex-btn-name">Seguridad</span><span class="ex-btn-files">3 archivos</span></button>
-      <button class="ex-btn" data-ex="timing"><span class="ex-btn-icon">⏱️</span><span class="ex-btn-name">Tiempo Ejecución</span><span class="ex-btn-files">3 archivos</span></button>
-      <button class="ex-btn" data-ex="pedido"><span class="ex-btn-icon">🛒</span><span class="ex-btn-name">Realiz. Pedido</span><span class="ex-btn-files">7 archivos</span></button>
-      <button class="ex-btn" data-ex="calc"><span class="ex-btn-icon">🧮</span><span class="ex-btn-name">Calculadora Logs</span><span class="ex-btn-files">3 archivos</span></button>
+      <button class="ex-btn active" data-ex="cajero"><span class="ex-btn-icon">🏧</span><span class="ex-btn-name">Cajero ATM</span><span class="ex-btn-files">before · after</span></button>
+      <button class="ex-btn" data-ex="restaurante"><span class="ex-btn-icon">🍽️</span><span class="ex-btn-name">Restaurante</span><span class="ex-btn-files">comodines *</span></button>
+      <button class="ex-btn" data-ex="trafico"><span class="ex-btn-icon">🚗</span><span class="ex-btn-name">Tráfico</span><span class="ex-btn-files">call vs exec</span></button>
+      <button class="ex-btn" data-ex="agenda"><span class="ex-btn-icon">📋</span><span class="ex-btn-name">Agenda</span><span class="ex-btn-files">ITD</span></button>
+      <button class="ex-btn" data-ex="termostato"><span class="ex-btn-icon">🌡️</span><span class="ex-btn-name">Termostato</span><span class="ex-btn-files">declare parents</span></button>
+      <button class="ex-btn" data-ex="formulario"><span class="ex-btn-icon">📝</span><span class="ex-btn-name">Formulario</span><span class="ex-btn-files">args · throwing</span></button>
+      <button class="ex-btn" data-ex="procesador"><span class="ex-btn-icon">⚡</span><span class="ex-btn-name">Procesador</span><span class="ex-btn-files">around</span></button>
     </div>
 
-    <!-- ═══ HELLO WORLD ═══ -->
-    <div class="example-panel active" id="ex-hello">
+    <!-- ═══ CAJERO ═══ -->
+    <div class="example-panel active" id="ex-cajero">
       <div class="example-header">
-        <h3>👋 Hello World AspectJ</h3>
-        <p>El ejemplo más sencillo posible. Una clase Java imprime "Hello " y un aspecto agrega "World" automáticamente <em>sin modificar</em> la clase original.</p>
+        <h3>🏧 Cajero Automático — <code>before()</code> y <code>after()</code></h3>
+        <p>El aspecto registra el inicio y fin de cada operación usando <code>before()</code> y <code>after()</code>. <code>thisJoinPoint</code> permite acceder al nombre del método y sus argumentos en tiempo de ejecución, sin hardcodear nada en el aspecto.</p>
       </div>
       <div class="example-body">
         <div class="file-tabs">
-          <button class="file-tab active" data-type="java" onclick="switchFile(this,'hello-java')">Hello.java</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'hello-aj')">World.aj</button>
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'cajero-java')">CajeroAutomatico.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'cajero-aj')">AuditoriaAspect.aj</button>
         </div>
-        <div class="file-panel active" id="hello-java">
-          <div class="file-desc">Clase Java normal — no tiene ninguna referencia a AspectJ. Solo llama a <code>sayHello()</code>.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Hello.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class Hello {
-    public static void main(String[] args) {
-        sayHello();
+        <div class="file-panel active" id="cajero-java">
+          <div class="file-desc">Lógica de negocio pura — sin una sola línea de logging. Todo el registro lo maneja el aspecto de forma transparente.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">CajeroAutomatico.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class CajeroAutomatico {
+    private double saldo;
+
+    public CajeroAutomatico(double saldoInicial) { this.saldo = saldoInicial; }
+
+    public double consultarSaldo() { return saldo; }
+
+    public void depositar(double monto) {
+        saldo += monto;
+        System.out.println("Depósito realizado: +" + monto);
     }
 
-    public static void sayHello() {
-        System.out.print("Hello ");
+    public void retirar(double monto) {
+        if (monto &gt; saldo) throw new IllegalStateException("Fondos insuficientes");
+        saldo -= monto;
+        System.out.println("Retiro realizado: -" + monto);
+    }
+
+    public static void main(String[] args) {
+        CajeroAutomatico cajero = new CajeroAutomatico(1000.0);
+        cajero.depositar(500.0);
+        cajero.retirar(200.0);
+        System.out.println("Saldo final: " + cajero.consultarSaldo());
     }
 }</code></pre></div>
         </div>
-        <div class="file-panel" id="hello-aj">
-          <div class="file-desc">El aspecto intercepta la ejecución de <code>sayHello()</code> y añade "World" después de que retorna.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">World.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect World {
-    pointcut greeting() : execution(* Hello.sayHello(..));
+        <div class="file-panel" id="cajero-aj">
+          <div class="file-desc"><code>before()</code> se ejecuta antes de cada operación; <code>after()</code> siempre al final (como <code>finally</code>). <code>thisJoinPoint</code> da acceso al contexto de ejecución.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">AuditoriaAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">import java.util.Arrays;
 
-    after() returning() : greeting() {
-        System.out.println("World");
+public aspect AuditoriaAspect {
+
+    // Intercepta todos los métodos del cajero excepto main()
+    pointcut operaciones() :
+        execution(* CajeroAutomatico.*(..))
+        &amp;&amp; !execution(* CajeroAutomatico.main(..));
+
+    before() : operaciones() {
+        System.out.println("[ANTES] " + thisJoinPoint.getSignature().getName()
+            + " | args: " + Arrays.toString(thisJoinPoint.getArgs()));
+    }
+
+    after() : operaciones() {
+        System.out.println("[DESPUÉS] " + thisJoinPoint.getSignature().getName()
+            + " completado\n");
     }
 }
-// Output: Hello World</code></pre></div>
+// [ANTES] depositar | args: [500.0]
+// Depósito realizado: +500.0
+// [DESPUÉS] depositar completado</code></pre></div>
         </div>
       </div>
     </div>
 
-    <!-- ═══ TESTASP ═══ -->
-    <div class="example-panel" id="ex-testasp">
+    <!-- ═══ RESTAURANTE ═══ -->
+    <div class="example-panel" id="ex-restaurante">
       <div class="example-header">
-        <h3>🔧 Ejemplo con Clase Java — TestAsp &amp; Aspect</h3>
-        <p>Demostración de múltiples pointcuts con comodines, manejo de excepciones, constructores, y el advice <code>around()</code> para envolver todos los métodos.</p>
+        <h3>🍽️ Restaurante — comodines <code>*</code> en pointcuts</h3>
+        <p>El comodín <code>*</code> en el nombre del método coincide con cualquier secuencia de caracteres. <code>preparar*</code> selecciona <em>todos</em> los métodos que empiezan con "preparar" — sin importar cuántos sean ni qué nombre tengan después.</p>
       </div>
       <div class="example-body">
         <div class="file-tabs">
-          <button class="file-tab active" data-type="java" onclick="switchFile(this,'testasp-java')">TestAsp.java</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'testasp-aj')">Aspect.aj</button>
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'rest-java')">Restaurante.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'rest-aj')">OrdenAspect.aj</button>
         </div>
-        <div class="file-panel active" id="testasp-java">
-          <div class="file-desc">Clase con métodos sobrecargados (<code>metodo1</code>, <code>metodo2</code>, <code>metodo3</code>) y un bloque try-catch para división por cero.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">TestAsp.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class TestAsp {
-    public void metodo1(int numero) {
-        System.out.println("Metodo1 con numero: " + numero);
+        <div class="file-panel active" id="rest-java">
+          <div class="file-desc">Tres métodos de preparación y uno de cobro. Los comodines los distinguen automáticamente por nombre.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Restaurante.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Restaurante {
+
+    public void prepararEntrada(String plato) {
+        System.out.println("  Preparando entrada: " + plato);
     }
-    public void metodo1(int numero, String string) {
-        System.out.println("Metodo1 con numero y cadena: "
-                + numero + ", " + string);
+
+    public void prepararPrincipal(String plato) {
+        System.out.println("  Preparando principal: " + plato);
     }
-    public void metodo2(int numero) {
-        System.out.println("Metodo2 con numero: " + numero);
+
+    public void prepararPostre(String plato) {
+        System.out.println("  Preparando postre: " + plato);
     }
-    public void metodo3() {
-        System.out.println("Metodo3 sin parametros");
+
+    public double cobrar(int numMesa) {
+        System.out.println("  Cobrando mesa " + numMesa);
+        return 45.50;
     }
 
     public static void main(String[] args) {
-        TestAsp asp = new TestAsp();
-        asp.metodo1(1);
-        asp.metodo1(1, "HOLA");
-        asp.metodo2(1);
-        asp.metodo3();
-
-        try {
-            System.out.println(1 / 0);
-        } catch (Exception e) {
-            System.out.println("No se puede dividir en 0");
-        }
+        Restaurante r = new Restaurante();
+        r.prepararEntrada("Ensalada César");
+        r.prepararPrincipal("Pasta Carbonara");
+        r.prepararPostre("Tiramisú");
+        r.cobrar(5);
     }
 }</code></pre></div>
         </div>
-        <div class="file-panel" id="testasp-aj">
-          <div class="file-desc">Aspecto con 7 pointcuts distintos: comodines <code>*1</code>, <code>*2</code>, firmas específicas, handler de excepciones, constructor e inicialización.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Aspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect Aspect {
+        <div class="file-panel" id="rest-aj">
+          <div class="file-desc"><code>preparar*</code> captura los 3 métodos de cocina. <code>*(..)</code> captura todos. La exclusión <code>!cocina()</code> aísla solo <code>cobrar()</code>.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">OrdenAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect OrdenAspect {
 
-    static int i = 0;
+    // preparar* → prepararEntrada, prepararPrincipal, prepararPostre
+    // (..)       → cualquier número de parámetros
+    pointcut cocina() : call(void Restaurante.preparar*(..));
 
-    // Todos los métodos de TestAsp
-    pointcut all() : call(* TestAsp.*(..));
-    // Métodos cuyo nombre termina en "1"
-    pointcut cut_metodo1() : call(* TestAsp.*1(..));
-    // Métodos cuyo nombre termina en "2", solo si i &lt;= 2
-    pointcut cut_metodo2() : call(* TestAsp.*2(..)) &amp;&amp; if(i &lt;= 2);
-    // metodo1 con un entero
-    pointcut cut_metodo1_int() : call(* TestAsp.*1(int));
-    // metodo1 con entero y String
-    pointcut cut_metodo1_IyS() : call(* TestAsp.*1(int, String));
-    // Interceptar el handler de Exception
-    pointcut exception() : handler(Exception);
-    // Interceptar el constructor
-    pointcut inita() : initialization(TestAsp.new());
+    // *(..) : cualquier nombre, cualquier parámetro
+    pointcut cualquiera() : call(* Restaurante.*(..));
 
-    before() : exception() {
-        System.out.println("Alguien dividio por 0!");
+    before() : cocina() {
+        System.out.println("[COCINA] Orden recibida: "
+            + thisJoinPoint.getSignature().getName());
     }
 
-    before() : inita() {
-        System.out.println("Entrando al constructor "
-                + thisJoinPoint.getSignature());
-    }
-
-    after() : cut_metodo1() {
-        System.out.println("Despues de metodo1, i=" + i);
-        i++;
-    }
-
-    after() : cut_metodo2() {
-        System.out.println("Despues de metodo2, i=" + i);
-        i++;
-    }
-
-    after() : cut_metodo1_int() {
-        System.out.println("Despues de metodo1(int)");
-    }
-
-    after() : cut_metodo1_IyS() {
-        System.out.println("Despues de metodo1(int,String)");
-    }
-
-    void around() : all() {
-        System.out.println("----------------");
-        proceed();
-        System.out.println("----------------");
-    }
-}</code></pre></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ WILDCARDS ═══ -->
-    <div class="example-panel" id="ex-wildcards">
-      <div class="example-header">
-        <h3>✳️ Comodines "*" en Pointcuts</h3>
-        <p>Los comodines permiten seleccionar múltiples métodos con una sola expresión. <code>*</code> coincide con exactamente un parámetro, <code>..</code> con cero o más.</p>
-      </div>
-      <div class="example-body">
-        <div class="file-tabs">
-          <button class="file-tab active" data-type="java" onclick="switchFile(this,'wc-java')">AOPDemo.java</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'wc-aj')">DemoAspect.aj</button>
-        </div>
-        <div class="file-panel active" id="wc-java">
-          <div class="file-desc">Clase con métodos sobrecargados. Observa cómo los pointcuts los seleccionan selectivamente.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">AOPDemo.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class AOPDemo {
-    public static void main(String[] args) {
-        AOPDemo demo = new AOPDemo();
-        demo.method1(99);
-        demo.method1(99, "stringvalue");
-        demo.method2("stringvalue");
-    }
-
-    public void method1(int number) {
-        System.out.println("executing method1(int)");
-    }
-
-    public void method1(int number, String value) {
-        System.out.println("executing method1(int,String)");
-    }
-
-    public void method2(String value) {
-        System.out.println("executing method2(String)");
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="wc-aj">
-          <div class="file-desc">Tres pointcuts distintos usando comodines: <code>(*,*)</code> = exactamente dos params, <code>(..)</code> = cualquier número, <code>(*)</code> = exactamente uno.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">DemoAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect DemoAspect {
-    // Coincide: method1(int, String)  → dos parámetros exactos
-    pointcut callDemoAspectPointcut() :
-            call(void AOPDemo.method1(*, *));
-
-    // Coincide: method1(int), method1(int,String), method2(String)
-    pointcut callDemoAspectPointcut2() :
-            call(void AOPDemo.*(..));
-
-    // Coincide: method1(int) y method2(String) → un parámetro exacto
-    pointcut callDemoAspectPointcut3() :
-            call(void AOPDemo.method1(*));
-
-    after() : callDemoAspectPointcut3() {
-        System.out.println("Demo Aspect Pointcut - after");
-    }
-
-    before() : callDemoAspectPointcut3() {
-        System.out.println("Demo Aspect Pointcut - before");
+    // cualquiera() && !cocina() captura solo cobrar()
+    after() : cualquiera() &amp;&amp; !cocina() {
+        System.out.println("[CAJA] Operación finalizada: "
+            + thisJoinPoint.getSignature().getName());
     }
 }
-// method1(int) dispara before + after
-// method1(int,String) NO dispara (requiere exactamente un param)</code></pre></div>
+// prepararEntrada() → dispara cocina
+// cobrar()          → dispara caja  (no cocina)</code></pre></div>
         </div>
       </div>
     </div>
 
-    <!-- ═══ CALL Y EXECUTION ═══ -->
-    <div class="example-panel" id="ex-callexec">
+    <!-- ═══ TRÁFICO ═══ -->
+    <div class="example-panel" id="ex-trafico">
       <div class="example-header">
-        <h3>📞 Call y Execution — Diferencia Práctica</h3>
-        <p><code>call()</code> intercepta el <em>lugar desde donde se llama</em> al método. <code>execution()</code> intercepta <em>dentro</em> del cuerpo del método. Esto importa mucho con herencia.</p>
+        <h3>🚗 Tráfico — <code>call()</code> vs <code>execution()</code></h3>
+        <p><code>call()</code> actúa en el <strong>sitio de la llamada</strong> (el caller). <code>execution()</code> actúa <strong>dentro del cuerpo</strong> del método. La diferencia es crítica con herencia: el cuerpo de <code>arrancar()</code> vive en <code>Vehiculo</code>, aunque la llamada sea a través de <code>Moto</code>.</p>
       </div>
       <div class="example-body">
         <div class="file-tabs">
-          <button class="file-tab active" data-type="java" onclick="switchFile(this,'ce-parent')">Parent.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'ce-child')">Child.java</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'ce-tracer')">ExecTracer.aj</button>
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'traf-veh')">Vehiculo.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'traf-moto')">Moto.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'traf-sensor')">SensorTrafico.aj</button>
         </div>
-        <div class="file-panel active" id="ce-parent">
-          <div class="file-desc">La clase padre define <code>greet()</code> y el <code>main</code>. Instancia a Child y llama <code>greet()</code> — el aspecto intercepta en distintos niveles.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Parent.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class Parent {
+        <div class="file-panel active" id="traf-veh">
+          <div class="file-desc">Define <code>arrancar()</code>. El cuerpo del método vive aquí — <code>execution()</code> se dispara en Vehiculo, incluso si la llamada vino de Moto.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Vehiculo.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Vehiculo {
 
-    public void greet() {
-        System.out.println("Hello");
+    public void arrancar() {
+        System.out.println("  Motor encendido");
+    }
+
+    public void frenar() {
+        System.out.println("  Frenos aplicados");
     }
 
     public static void main(String[] args) {
-        Child person = new Child();
-        person.greet();
+        Moto moto = new Moto();
+
+        System.out.println("=== moto.arrancar() ===");
+        moto.arrancar();  // → CALL (en main) + cuerpo + EXEC (en Vehiculo)
+
+        System.out.println("\n=== moto.frenar() ===");
+        moto.frenar();    // → EXEC(frenar) pero NO call(Moto.arrancar)
     }
 }</code></pre></div>
         </div>
-        <div class="file-panel" id="ce-child">
-          <div class="file-desc">Child hereda de Parent sin sobrescribir nada. El call intercepta en el caller, execution intercepta en Parent donde vive el cuerpo.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Child.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class Child extends Parent {
-    // Hereda greet() sin modificarla
+        <div class="file-panel" id="traf-moto">
+          <div class="file-desc">Hereda <code>arrancar()</code> sin sobreescribirla. El bytecode del método sigue en Vehiculo.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Moto.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Moto extends Vehiculo {
+    // Hereda arrancar() y frenar() sin sobreescribirlos.
+    // El cuerpo de ambos métodos sigue viviendo en Vehiculo.
 }</code></pre></div>
         </div>
-        <div class="file-panel" id="ce-tracer">
-          <div class="file-desc">El aspecto muestra la diferencia: <code>call(* Child.*())</code> actúa en el sitio de llamada, <code>execution(* Parent.greet())</code> actúa dentro del método heredado.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">ExecTracer.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect ExecTracer {
+        <div class="file-panel" id="traf-sensor">
+          <div class="file-desc"><code>call(Moto.arrancar)</code> actúa en <code>main</code> antes de entrar. <code>execution(Vehiculo.arrancar)</code> actúa dentro del cuerpo en Vehiculo.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">SensorTrafico.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect SensorTrafico {
 
-    // call: se activa en el lugar donde se hace la llamada
-    before() : call(* Child.*()) {
-        System.out.println("CALL a Child.método");
+    // call: se activa en el LUGAR DE LA LLAMADA (Vehiculo.main)
+    before() : call(* Moto.arrancar()) {
+        System.out.println("  [CALL]  llamada a Moto.arrancar() detectada");
     }
 
-    before() : call(* Parent.*()) {
-        System.out.println("CALL a Parent.método");
-    }
-
-    // execution: se activa dentro del cuerpo del método
-    after() : execution(* Parent.greet()) {
-        System.out.println("EXECUTION de Parent.greet() completada");
-    }
-
-    after() : execution(* Parent.main(..)) {
-        System.out.println("EXECUTION de main() completada");
+    // execution: se activa DENTRO DEL CUERPO del método (Vehiculo)
+    after() : execution(* Vehiculo.arrancar()) {
+        System.out.println("  [EXEC]  Vehiculo.arrancar() terminó");
     }
 }
-// Nota: person.greet() → activa call(Child.*) y execution(Parent.greet)
-// La ejecución vive en Parent aunque la llamada sea a través de Child</code></pre></div>
+// Salida para moto.arrancar():
+//   [CALL]  llamada a Moto.arrancar() detectada
+//   Motor encendido
+//   [EXEC]  Vehiculo.arrancar() terminó
+//
+// Salida para moto.frenar():
+//   Frenos aplicados        ← execution(Vehiculo.frenar) sí dispara
+//                           ← call(Moto.arrancar) NO dispara (es frenar)</code></pre></div>
         </div>
       </div>
     </div>
 
-    <!-- ═══ CALLS VS EXECUTION THEORY ═══ -->
-    <div class="example-panel" id="ex-callsvs">
+    <!-- ═══ AGENDA (ITD) ═══ -->
+    <div class="example-panel" id="ex-agenda">
       <div class="example-header">
-        <h3>⚖️ Calls vs Executions — Demostración con Monitor</h3>
-        <p><strong>call</strong> = el acto de llamar a una función (el caller). <strong>execution</strong> = el proceso de ejecutar el código de la función (el callee). C2 hereda de C1 — observa cómo Monitor solo actúa en la ejecución de C1.</p>
+        <h3>📋 Agenda — Inter-Type Declarations (ITD)</h3>
+        <p>Un aspecto puede <strong>inyectar campos y métodos en clases existentes</strong> sin tocar su código fuente. <code>PrioridadAspect</code> añade el campo <code>prioridad</code> y los métodos <code>setPrioridad()</code> / <code>getPrioridad()</code> a <code>Tarea</code> — completamente transparente para la clase.</p>
       </div>
       <div class="example-body">
-        <div class="theory-box">
-          <p><strong>call:</strong> se refiere al acto de pasar el control a una función. Si tienes <code>int x = add(1,2)</code>, eso es una <em>llamada</em>. <br><strong>execution:</strong> es el proceso de ejecutar las instrucciones dentro de la función. Son el mismo momento lógico pero interceptados desde distintos puntos de vista — el caller vs. el callee.</p>
-        </div>
         <div class="file-tabs">
-          <button class="file-tab active" data-type="java" onclick="switchFile(this,'cvs-c1')">C1.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'cvs-c2')">C2.java</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'cvs-monitor')">Monitor.aj</button>
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'agnd-java')">Tarea.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'agnd-aj')">PrioridadAspect.aj</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'agnd-main')">Main.java</button>
         </div>
-        <div class="file-panel active" id="cvs-c1">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">C1.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class C1 {
-    public void m() {
-        System.out.println("Inside m().");
+        <div class="file-panel active" id="agnd-java">
+          <div class="file-desc">Clase simple con descripción y <code>ejecutar()</code>. No declara ningún campo de prioridad — lo inyecta el aspecto.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Tarea.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Tarea {
+    private String descripcion;
+
+    public Tarea(String descripcion) { this.descripcion = descripcion; }
+
+    public void ejecutar() {
+        System.out.println("  Ejecutando: " + descripcion);
     }
+
+    public String getDescripcion() { return descripcion; }
 }</code></pre></div>
         </div>
-        <div class="file-panel" id="cvs-c2">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">C2.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class C2 extends C1 {
-    // Hereda m() de C1
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="cvs-monitor">
-          <div class="file-desc">Usando <code>execution</code> se intercepta cuando el código de <code>C1.m()</code> comienza a ejecutarse, independientemente de si se llamó a través de C1 o C2.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Monitor.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect Monitor {
-    // execution: actúa cuando el cuerpo de C1.m() se empieza a ejecutar
-    before() : execution(* C1.m()) {
-        System.out.println("Ejecutando C1.m()");
+        <div class="file-panel" id="agnd-aj">
+          <div class="file-desc">Los ITDs inyectan el campo <code>int prioridad</code> y dos métodos en <code>Tarea</code>. El <code>before()</code> lee ese campo para mostrarlo antes de ejecutar.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">PrioridadAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect PrioridadAspect {
+
+    // ITD: inyecta campo en Tarea (5 = prioridad normal por defecto)
+    int Tarea.prioridad = 5;
+
+    // ITD: inyecta métodos en Tarea
+    public void Tarea.setPrioridad(int p) { this.prioridad = p; }
+    public int  Tarea.getPrioridad()      { return this.prioridad; }
+
+    // Advice que usa el campo inyectado
+    before() : execution(void Tarea.ejecutar()) {
+        Tarea t = (Tarea) thisJoinPoint.getTarget();
+        System.out.printf("  [ITD] %-25s  prioridad: %d%n",
+            t.getDescripcion(), t.prioridad);
     }
 }
-// Si llamas c2.m(), también se dispara porque el cuerpo vive en C1
-// Con call(* C1.m()) NO se dispararía para una llamada a c2.m()</code></pre></div>
+// Tarea.java no declara 'prioridad', 'setPrioridad' ni 'getPrioridad'
+// ajc los inyecta en el bytecode vía ITD — transparente para la clase</code></pre></div>
         </div>
-      </div>
-    </div>
-
-    <!-- ═══ CONTEXT PASSING ═══ -->
-    <div class="example-panel" id="ex-context">
-      <div class="example-header">
-        <h3>📦 Context Passing — Agregar Estado con Aspectos</h3>
-        <p>AspectJ permite que los aspectos agreguen <strong>campos y métodos</strong> a clases existentes mediante Inter-Type Declarations (ITD). Aquí Logger agrega <code>numberOfMoves</code> y <code>howMany()</code> a Point sin modificarla.</p>
-      </div>
-      <div class="example-body">
-        <div class="file-tabs">
-          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'ctx-logger')">Logger.aj</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'ctx-point')">Point.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'ctx-test')">Test.java</button>
-        </div>
-        <div class="file-panel active" id="ctx-logger">
-          <div class="file-desc">El aspecto declara <code>int Point.numberOfMoves</code> y el método <code>Point.howMany()</code> — se agregan a Point sin tocar su código fuente.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Logger.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect Logger {
-
-    // Inter-Type Declaration: agrega campo a Point
-    int Point.numberOfMoves;
-
-    // Inter-Type Declaration: agrega método a Point
-    public int Point.howMany() {
-        System.out.print("Número de movimientos: ");
-        return this.numberOfMoves;
-    }
-
-    // Captura el objeto Point en el pointcut con this(p)
-    pointcut counts(Point p) :
-            execution(void Point.move(double, double)) &amp;&amp; this(p);
-
-    // Cada vez que Point.move() ejecuta, incrementa el contador
-    after(Point p) : counts(p) {
-        p.numberOfMoves++;
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ctx-point">
-          <div class="file-desc">Point no sabe nada de Logger. El aspecto le agrega estado y comportamiento transparentemente.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Point.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class Point {
-    protected double x, y;
-
-    public Point(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public Point() {
-        this(0, 0);
-    }
-
-    public void move(double x, double y) {
-        System.out.println("move: x=" + x + " y=" + y);
-        this.x = x;
-        this.y = y;
-    }
-
-    public String toString() {
-        return "x=" + x + " y=" + y;
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ctx-test">
-          <div class="file-desc">Test puede llamar <code>p1.howMany()</code> aunque Point no declare ese método — lo agrega el aspecto Logger.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Test.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class Test {
-    public static void main(String[] args) {
-        Point p1 = new Point();
-        Point p2 = new Point();
-
-        p1.move(3, 7);
-        p1.move(3, 11);
-        p2.move(10, 10);
-
-        // howMany() es agregado por Logger.aj (ITD)
-        System.out.println(p1.howMany()); // 2
-        System.out.println(p2.howMany()); // 1
-    }
-}</code></pre></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ ASPECT BEHAVIOURS ═══ -->
-    <div class="example-panel" id="ex-behavior">
-      <div class="example-header">
-        <h3>🎭 Aspect Behaviours — Implementar Interfaces vía Aspectos</h3>
-        <p>Con <code>declare parents</code>, un aspecto puede hacer que una clase implemente una interfaz y proporcionar los métodos requeridos. Noble obtiene <code>declare()</code> y <code>speak()</code> sin modificar su código.</p>
-      </div>
-      <div class="example-body">
-        <div class="file-tabs">
-          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'beh-behavior')">Behavior.aj</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-allegiance')">Allegiance.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-noble')">Noble.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-human')">Human.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'beh-demo')">DemoAspectj.java</button>
-        </div>
-        <div class="file-panel active" id="beh-behavior">
-          <div class="file-desc"><code>declare parents</code> hace que Noble implemente Allegiance. Los métodos <code>Noble.declare()</code> y <code>Noble.speak()</code> son proporcionados por el aspecto.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">Behavior.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect Behavior {
-
-    // Noble implementa Allegiance (sin modificar Noble.java)
-    declare parents: Noble implements Allegiance;
-
-    // Proporciona la implementación requerida por la interfaz
-    public void Noble.declare() {
-        System.out.println("** Noble.declare() via Behavior aspect **");
-        System.out.println(this.toString() + " Of House " + this.house);
-    }
-
-    // Agrega método adicional a Noble
-    public void Noble.speak() {
-        System.out.println("** Noble.speak() via Behavior aspect **");
-        System.out.println("Good morning, " + this.toString());
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="beh-allegiance">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Allegiance.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public interface Allegiance {
-    public void declare();
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="beh-noble">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Noble.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class Noble extends Human {
-    String house;
-
-    public Noble(String name, String house) {
-        super(name);
-        this.house = house;
-    }
-
-    public String toString() {
-        System.out.println("** Noble.toString() original **");
-        return "I am " + this.name + ".";
-    }
-}
-// Noble no implementa Allegiance en su código
-// pero Behavior.aj lo hace por ella</code></pre></div>
-        </div>
-        <div class="file-panel" id="beh-human">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Human.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public abstract class Human {
-    String name;
-
-    public Human(String name) {
-        this.name = name;
-    }
-
-    public void speak() {
-        System.out.println("Hello, " + this.name);
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="beh-demo">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">DemoAspectj.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class DemoAspectj {
-    public static void main(String[] args) {
-        Noble arya = new Noble("Arya", "House of Stark");
-
-        System.out.println("Invocando declare():");
-        arya.declare(); // método agregado por el aspecto
-
-        System.out.println("***********************");
-        System.out.println("Invocando speak():");
-        arya.speak();   // también agregado por el aspecto
-    }
-}</code></pre></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ SECURITY ═══ -->
-    <div class="example-panel" id="ex-security">
-      <div class="example-header">
-        <h3>🔒 Seguridad — Control de Acceso Centralizado</h3>
-        <p>Un aspecto intercepta el método <code>realizarTransaccion()</code> antes de que ejecute y verifica si el usuario tiene permisos. Si no los tiene, lanza <code>SecurityException</code> sin que el método de negocio sepa nada de esa lógica.</p>
-      </div>
-      <div class="example-body">
-        <div class="file-tabs">
-          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'sec-aspect')">AspectoSeguridad.aj</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'sec-servicio')">ServicioTransacciones.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'sec-main')">EjemploSeguridad.java</button>
-        </div>
-        <div class="file-panel active" id="sec-aspect">
-          <div class="file-desc">El aspecto captura los parámetros del método con <code>args()</code> y los usa en el advice before para validar acceso.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">AspectoSeguridad.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect AspectoSeguridad {
-
-    // Captura los 3 parámetros del método en el pointcut
-    pointcut realizarTransaccionPointcut(
-            String usuario, String operacion, int cantidad) :
-        execution(void ServicioTransaccionesSeguro
-                .realizarTransaccion(String, String, int))
-        &amp;&amp; args(usuario, operacion, cantidad);
-
-    // before: se ejecuta ANTES del método de negocio
-    before(String usuario, String operacion, int cantidad)
-            : realizarTransaccionPointcut(usuario, operacion, cantidad) {
-        if (!verificarRoles(usuario, operacion)) {
-            System.out.println("Acceso denegado para: " + usuario);
-            throw new SecurityException(
-                "Usuario no autorizado para: " + operacion);
-        }
-    }
-
-    private boolean verificarRoles(String usuario, String op) {
-        if (usuario.equals("usuario1") &amp;&amp; op.equals("depositar")) return true;
-        if (usuario.equals("usuario2") &amp;&amp; op.equals("retirar")) return true;
-        return false;
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="sec-servicio">
-          <div class="file-desc">El servicio no tiene ninguna lógica de seguridad — toda está en el aspecto.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ServicioTransaccionesSeguro.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class ServicioTransaccionesSeguro {
-    public void realizarTransaccion(
-            String usuario, String operacion, int cantidad) {
-        System.out.println("Usuario: " + usuario
-                + " realiza: " + operacion);
-
-        if (usuario.equals("usuario1") &amp;&amp; operacion.equals("depositar")) {
-            System.out.println("Depósito realizado: " + cantidad);
-        } else if (usuario.equals("usuario2") &amp;&amp; operacion.equals("retirar")) {
-            System.out.println("Retiro realizado: " + cantidad);
-        } else {
-            System.out.println("Operación no reconocida.");
-        }
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="sec-main">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">EjemploSeguridad.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">package EjemploSeguridad;
-
-public class EjemploSeguridad {
-    public static void main(String[] args) {
-        ServicioTransaccionesSeguro servicio =
-                new ServicioTransaccionesSeguro();
-
-        // usuario1 puede depositar → OK
-        servicio.realizarTransaccion("usuario1", "depositar", 100);
-        // usuario2 puede retirar → OK
-        servicio.realizarTransaccion("usuario2", "retirar", 50);
-        // usuario3 no tiene permisos → SecurityException
-        servicio.realizarTransaccion("usuario3", "retirar", 200);
-    }
-}</code></pre></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ TIMING ═══ -->
-    <div class="example-panel" id="ex-timing">
-      <div class="example-header">
-        <h3>⏱️ Tiempo de Ejecución — Performance Monitoring</h3>
-        <p>El aspecto mide el tiempo de ejecución de cualquier método de ProductService automáticamente, sin que la clase de negocio sepa que está siendo cronometrada.</p>
-      </div>
-      <div class="example-body">
-        <div class="file-tabs">
-          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'tim-aspect')">MethodExecutionTimeLogger.aj</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'tim-service')">ProductService.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'tim-main')">ProductosEjemplo.java</button>
-        </div>
-        <div class="file-panel active" id="tim-aspect">
-          <div class="file-desc">Usa <code>before()</code> para guardar el tiempo de inicio y <code>after() returning</code> para calcular la diferencia solo en caso de éxito.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">MethodExecutionTimeLogger.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect MethodExecutionTimeLogger {
-
-    private long startTime;
-
-    // Intercepta TODOS los métodos de ProductService
-    pointcut methodExecutionTime() :
-            execution(* ProductService.*(..));
-
-    before() : methodExecutionTime() {
-        startTime = System.currentTimeMillis();
-        System.out.println("Iniciando: "
-                + thisJoinPoint.getSignature().getName());
-    }
-
-    // Solo ejecuta si el método terminó correctamente
-    after() returning : methodExecutionTime() {
-        long executionTime = System.currentTimeMillis() - startTime;
-        System.out.println("Tiempo de ejecución: "
-                + executionTime + " ms");
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="tim-service">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ProductService.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class ProductService {
-    public void addProduct(String productName) {
-        System.out.println("Producto agregado: " + productName);
-    }
-
-    public void deleteProduct(String productName) {
-        System.out.println("Producto eliminado: " + productName);
-    }
-
-    public void updateProduct(String productName) {
-        System.out.println("Producto actualizado: " + productName);
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="tim-main">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ProductosEjemplo.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class ProductosEjemplo {
-    public static void main(String[] args) {
-        ProductService productService = new ProductService();
-
-        productService.addProduct("Producto 1");
-        productService.addProduct("Producto 2");
-        productService.deleteProduct("Producto 1");
-        productService.updateProduct("Producto 2");
-    }
-}
-// Output:
-// Iniciando: addProduct
-// Producto agregado: Producto 1
-// Tiempo de ejecución: 1 ms
-// ...</code></pre></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ PEDIDO ═══ -->
-    <div class="example-panel" id="ex-pedido">
-      <div class="example-header">
-        <h3>🛒 Realización de Pedido — Sistema con 3 Aspectos</h3>
-        <p>Ejemplo complejo: un sistema de pedidos con inventario y tres aspectos que trabajan juntos: verificar stock antes del pedido, registrar actividad en cada operación, y actualizar stock después de realizar el pedido.</p>
-      </div>
-      <div class="example-body">
-        <div class="file-tabs">
-          <button class="file-tab active" data-type="aj" onclick="switchFile(this,'ped-vstock')">VerificarStock.aj</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'ped-regact')">RegistroActividad.aj</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'ped-actstock')">ActualizacionStock.aj</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-pedido')">Pedido.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-inv')">Inventario.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-helper')">InventarioHelper.java</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'ped-main')">PedidoEjemplo.java</button>
-        </div>
-        <div class="file-panel active" id="ped-vstock">
-          <div class="file-desc"><strong>before</strong> de <code>realizarPedido()</code> — verifica que haya suficiente stock antes de proceder.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">VerificarStockAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect VerificarStockAspect {
-
-    pointcut realizarPedidoPointcut() :
-            execution(void Pedido.realizarPedido());
-
-    before() : realizarPedidoPointcut() {
-        Pedido pedido = (Pedido) thisJoinPoint.getTarget();
-        for (String producto : pedido.getProductos()) {
-            int cantidad = Collections.frequency(
-                    pedido.getProductos(), producto);
-            if (!InventarioHelper.verificarStock(producto, cantidad)) {
-                System.out.println("Stock insuficiente: " + producto);
-                throw new RuntimeException(
-                        "Stock insuficiente para: " + producto);
-            }
-        }
-        System.out.println("Verificación de stock: OK");
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ped-regact">
-          <div class="file-desc"><strong>before</strong> de <code>agregarProducto</code> y <code>eliminarProducto</code> — registra cada operación sobre el pedido.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">RegistroActividadAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect RegistroActividadAspect {
-
-    pointcut agregarProductoPointcut(String producto) :
-        call(void Pedido.agregarProducto(String)) &amp;&amp; args(producto);
-
-    pointcut eliminarProductoPointcut(String producto) :
-        call(void Pedido.eliminarProducto(String)) &amp;&amp; args(producto);
-
-    before(String producto) : agregarProductoPointcut(producto) {
-        System.out.println("LOG: agregando '" + producto + "' al pedido");
-    }
-
-    before(String producto) : eliminarProductoPointcut(producto) {
-        System.out.println("LOG: eliminando '" + producto + "' del pedido");
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ped-actstock">
-          <div class="file-desc"><strong>after</strong> de <code>realizarPedido()</code> — actualiza el inventario una vez el pedido fue realizado exitosamente.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">ActualizacionStockAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect ActualizacionStockAspect {
-
-    pointcut realizarPedidoPointcut() :
-            execution(void Pedido.realizarPedido());
-
-    after() : realizarPedidoPointcut() {
-        Pedido pedido = (Pedido) thisJoinPoint.getTarget();
-        for (String producto : pedido.getProductos()) {
-            int cantidad = Collections.frequency(
-                    pedido.getProductos(), producto);
-            InventarioHelper.actualizarStock(producto, cantidad);
-        }
-        System.out.println("Stock actualizado correctamente");
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ped-pedido">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Pedido.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">import java.util.ArrayList;
-import java.util.List;
-
-public class Pedido {
-    private int id;
-    private String cliente;
-    private List&lt;String&gt; productos;
-
-    public Pedido(int id, String cliente) {
-        this.id = id;
-        this.cliente = cliente;
-        this.productos = new ArrayList&lt;&gt;();
-    }
-
-    public void agregarProducto(String producto) {
-        productos.add(producto);
-        System.out.println("Producto agregado: " + producto);
-    }
-
-    public void eliminarProducto(String producto) {
-        productos.remove(producto);
-        System.out.println("Producto eliminado: " + producto);
-    }
-
-    public void realizarPedido() {
-        System.out.println("Pedido realizado para: " + cliente);
-    }
-
-    public List&lt;String&gt; getProductos() {
-        return this.productos;
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ped-inv">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Inventario.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">import java.util.HashMap;
-import java.util.Map;
-
-public class Inventario {
-    private Map&lt;String, Integer&gt; stock;
-
-    public Inventario() {
-        stock = new HashMap&lt;&gt;();
-    }
-
-    public void agregarProducto(String producto, int cantidad) {
-        stock.put(producto, cantidad);
-        System.out.println("Inventario: +" + producto + " x" + cantidad);
-    }
-
-    public void eliminarProducto(String producto) {
-        stock.remove(producto);
-    }
-
-    public boolean verificarStock(String producto, int cantidad) {
-        Integer stockActual = stock.get(producto);
-        return stockActual != null &amp;&amp; stockActual &gt;= cantidad;
-    }
-
-    public void actualizarStock(String producto, int cantidad) {
-        Integer stockActual = stock.get(producto);
-        if (stockActual != null) {
-            stock.put(producto, stockActual - cantidad);
-            System.out.println("Stock " + producto
-                    + ": " + (stockActual - cantidad) + " restantes");
-        }
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ped-helper">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">InventarioHelper.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class InventarioHelper {
-    private static Inventario inventario;
-
-    public static void setInventario(Inventario inv) {
-        inventario = inv;
-    }
-
-    public static boolean verificarStock(String producto, int cantidad) {
-        return inventario.verificarStock(producto, cantidad);
-    }
-
-    public static void actualizarStock(String producto, int cantidad) {
-        inventario.actualizarStock(producto, cantidad);
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="ped-main">
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">PedidoEjemplo.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class PedidoEjemplo {
-    public static void main(String[] args) {
-        Inventario inventario = new Inventario();
-        InventarioHelper.setInventario(inventario);
-
-        Pedido pedido = new Pedido(1, "John Doe");
-
-        inventario.agregarProducto("Camiseta", 10);
-        inventario.agregarProducto("Pantalón", 5);
-        inventario.agregarProducto("Zapatos", 3);
-
-        pedido.agregarProducto("Camiseta");   // → RegistroActividad.aj
-        pedido.agregarProducto("Pantalón");   // → RegistroActividad.aj
-        pedido.agregarProducto("Zapatos");    // → RegistroActividad.aj
-        pedido.eliminarProducto("Pantalón");  // → RegistroActividad.aj
-
-        // realizarPedido() → VerificarStock.aj (before) + Pedido + ActualizacionStock.aj (after)
-        pedido.realizarPedido();
-        System.out.println("Pedido completado con éxito");
-    }
-}</code></pre></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ CALCULADORA ═══ -->
-    <div class="example-panel" id="ex-calc">
-      <div class="example-header">
-        <h3>🧮 Calculadora con Logs — Trazabilidad de Operaciones</h3>
-        <p>Un aspecto de logging registra en archivo el inicio y fin de cada operación de la calculadora con timestamp preciso, separando completamente la lógica de negocio del registro.</p>
-      </div>
-      <div class="example-body">
-        <div class="file-tabs">
-          <button class="file-tab active" data-type="java" onclick="switchFile(this,'calc-calc')">Calculadora.java</button>
-          <button class="file-tab" data-type="aj" onclick="switchFile(this,'calc-logcal')">LogCal.aj</button>
-          <button class="file-tab" data-type="java" onclick="switchFile(this,'calc-main')">Main.java</button>
-        </div>
-        <div class="file-panel active" id="calc-calc">
-          <div class="file-desc">La calculadora es pura lógica de negocio — sin ninguna línea de logging o E/S de archivos.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Calculadora.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public class Calculadora {
-    public double sumar(double n1, double n2) {
-        return n1 + n2;
-    }
-
-    public double restar(double n1, double n2) {
-        return n1 - n2;
-    }
-
-    public double multiplicar(double n1, double n2) {
-        return n1 * n2;
-    }
-
-    public double dividir(double n1, double n2) {
-        return n1 / n2;
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="calc-logcal">
-          <div class="file-desc">El aspecto intercepta los 4 métodos con pointcuts específicos. Cada before/after escribe una línea en <code>log.txt</code> con timestamp.</div>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">LogCal.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Calendar;
-
-public aspect LogCal {
-    Calendar cal = Calendar.getInstance();
-    File file = new File("log.txt");
-
-    pointcut sumMethod()  : execution(* Calculadora.sumar(..));
-    pointcut restMethod() : execution(* Calculadora.restar(..));
-    pointcut multMethod() : execution(* Calculadora.multiplicar(..));
-    pointcut divMethod()  : execution(* Calculadora.dividir(..));
-
-    before() : sumMethod()  { writeLog("Init method sum"); }
-    before() : restMethod() { writeLog("Init method rest"); }
-    before() : multMethod() { writeLog("Init method mult"); }
-    before() : divMethod()  { writeLog("Init method div"); }
-
-    after() : sumMethod()  { writeLog("End method sum"); }
-    after() : restMethod() { writeLog("End method rest"); }
-    after() : multMethod() { writeLog("End method mult"); }
-    after() : divMethod()  { writeLog("End method div"); }
-
-    private void writeLog(String message) {
-        String timestamp = "[" + cal.get(Calendar.DATE) + "-"
-                + cal.get(Calendar.MONTH) + "-"
-                + cal.get(Calendar.YEAR) + " "
-                + cal.get(Calendar.HOUR_OF_DAY) + ":"
-                + cal.get(Calendar.MINUTE) + ":"
-                + cal.get(Calendar.SECOND) + "]";
-        try {
-            if (!file.exists()) file.createNewFile();
-            BufferedWriter bw = new BufferedWriter(
-                    new FileWriter(file, true));
-            bw.write(timestamp + "\t" + message);
-            bw.newLine();
-            bw.close();
-        } catch (IOException e) {
-            System.out.println("Error al escribir log: " + e.getMessage());
-        }
-    }
-}</code></pre></div>
-        </div>
-        <div class="file-panel" id="calc-main">
+        <div class="file-panel" id="agnd-main">
+          <div class="file-desc"><code>Main</code> llama <code>setPrioridad()</code> y <code>getPrioridad()</code> como si Tarea los declarara — porque gracias al ITD, sí lo hace en bytecode.</div>
           <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Main.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
 <pre><code class="language-java">public class Main {
     public static void main(String[] args) {
-        Calculadora calc = new Calculadora();
-        System.out.println(calc.sumar(1, 2));       // 3.0
-        System.out.println(calc.restar(1, 2));      // -1.0
-        System.out.println(calc.multiplicar(1, 2)); // 2.0
-        System.out.println(calc.dividir(1, 2));     // 0.5
+        Tarea t1 = new Tarea("Estudiar AspectJ");
+        Tarea t2 = new Tarea("Revisar correos");
+        Tarea t3 = new Tarea("Hacer ejercicio");
+
+        // setPrioridad() y getPrioridad() los inyectó PrioridadAspect (ITD)
+        t1.setPrioridad(1);   // urgente
+        t2.setPrioridad(3);   // media
+        // t3 queda en 5 (valor por defecto del campo inyectado)
+
+        System.out.println("t1: " + t1.getPrioridad());  // 1
+        System.out.println("t2: " + t2.getPrioridad());  // 3
+        System.out.println("t3: " + t3.getPrioridad());  // 5
+        System.out.println();
+
+        t1.ejecutar();
+        t2.ejecutar();
+        t3.ejecutar();
     }
-}
-// Cada llamada genera 2 líneas en log.txt:
-// [24-4-2024 14:30:15]  Init method sum
-// [24-4-2024 14:30:15]  End method sum</code></pre></div>
+}</code></pre></div>
         </div>
       </div>
     </div>
+
+    <!-- ═══ TERMOSTATO (declare parents) ═══ -->
+    <div class="example-panel" id="ex-termostato">
+      <div class="example-header">
+        <h3>🌡️ Termostato — <code>declare parents</code></h3>
+        <p><code>declare parents</code> permite que un aspecto haga que una clase <strong>implemente una interfaz</strong> y proporcione los métodos requeridos, todo sin modificar el código original. <code>Termostato</code> pasa a ser un <code>Reportable</code> de forma completamente transparente.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'term-java')">Termostato.java</button>
+          <button class="file-tab" data-type="java" onclick="switchFile(this,'term-iface')">Reportable.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'term-aj')">DiagnosticoAspect.aj</button>
+        </div>
+        <div class="file-panel active" id="term-java">
+          <div class="file-desc">Clase de dominio simple. No implementa ninguna interfaz en su código fuente — el aspecto lo hace por ella.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Termostato.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Termostato {
+    private int temperatura;
+
+    public Termostato(int tempInicial) { this.temperatura = tempInicial; }
+
+    public void ajustar(int nuevaTemp) {
+        this.temperatura = nuevaTemp;
+        System.out.println("  Temperatura ajustada a: " + nuevaTemp + "°C");
+    }
+
+    public int getTemperatura() { return temperatura; }
+
+    public static void main(String[] args) {
+        Termostato t = new Termostato(20);
+        t.ajustar(28);
+
+        // generarReporte() lo agregó DiagnosticoAspect via declare parents
+        t.generarReporte();
+
+        // Termostato es ahora un Reportable — el cast funciona
+        Reportable r = (Reportable) t;
+        r.generarReporte();
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="term-iface">
+          <div class="file-desc">Contrato que <code>Termostato</code> no implementa en su código. El aspecto lo implementa por él.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Reportable.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public interface Reportable {
+    void generarReporte();
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="term-aj">
+          <div class="file-desc"><code>declare parents</code> hace la declaración de implementación. El ITD del método satisface el contrato de la interfaz.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">DiagnosticoAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect DiagnosticoAspect {
+
+    // Hace que Termostato implemente Reportable sin tocar Termostato.java
+    declare parents: Termostato implements Reportable;
+
+    // Proporciona la implementación que la interfaz requiere
+    public void Termostato.generarReporte() {
+        System.out.println("  [REPORTE] Temperatura: " + this.temperatura + "°C");
+        System.out.println("  [REPORTE] Estado: "
+            + (temperatura &gt; 25 ? "CALEFACCIÓN ACTIVA" : "NORMAL"));
+    }
+}
+// Después del weaving:
+//   (Reportable) termostato  → cast válido
+//   termostato.generarReporte() → llama al método del aspecto</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FORMULARIO (args + throwing) ═══ -->
+    <div class="example-panel" id="ex-formulario">
+      <div class="example-header">
+        <h3>📝 Registro de Usuarios — <code>args()</code> + <code>after() throwing</code></h3>
+        <p><code>args()</code> vincula los parámetros del método a variables del advice para poder usarlos en la validación. <code>after() throwing</code> es el complemento de <code>after() returning</code>: solo se ejecuta cuando el método <strong>lanzó una excepción</strong>.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'form-java')">RegistroUsuarios.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'form-aj')">ValidacionAspect.aj</button>
+        </div>
+        <div class="file-panel active" id="form-java">
+          <div class="file-desc">Lógica de negocio sin ninguna validación propia — la delega completamente al aspecto.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">RegistroUsuarios.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class RegistroUsuarios {
+
+    public void registrar(String nombre, String email, int edad) {
+        System.out.println("  Registrado: " + nombre
+            + " &lt;" + email + "&gt;  edad: " + edad);
+    }
+
+    public void eliminar(String email) {
+        if (email == null || email.isEmpty())
+            throw new IllegalArgumentException("Email requerido");
+        System.out.println("  Eliminado: " + email);
+    }
+
+    public static void main(String[] args) {
+        RegistroUsuarios reg = new RegistroUsuarios();
+        reg.registrar("María", "maria@uni.edu", 22);  // OK
+        reg.eliminar("");                              // lanza excepción → after throwing
+        reg.registrar("", "sinCuenta", -5);           // before lo rechaza
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="form-aj">
+          <div class="file-desc"><code>args()</code> vincula los 3 parámetros a variables. <code>after() throwing</code> centraliza el log de errores de todos los métodos.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">ValidacionAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect ValidacionAspect {
+
+    // args() vincula los parámetros del método a variables del advice
+    pointcut registrando(String nombre, String email, int edad) :
+        execution(void RegistroUsuarios.registrar(String, String, int))
+        &amp;&amp; args(nombre, email, edad);
+
+    // before: valida los datos ANTES de que lleguen a registrar()
+    before(String nombre, String email, int edad)
+            : registrando(nombre, email, edad) {
+        if (nombre.isEmpty())
+            throw new IllegalArgumentException("Nombre vacío");
+        if (!email.contains("@"))
+            throw new IllegalArgumentException("Email inválido: " + email);
+        if (edad &lt; 0 || edad &gt; 120)
+            throw new IllegalArgumentException("Edad inválida: " + edad);
+        System.out.println("  [OK] Validado: " + nombre);
+    }
+
+    // after throwing: centraliza el log de errores de TODOS los métodos
+    after() throwing(Exception ex)
+            : execution(* RegistroUsuarios.*(..)) {
+        System.err.println("  [ERROR] "
+            + thisJoinPoint.getSignature().getName()
+            + " → " + ex.getMessage());
+    }
+}</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PROCESADOR (around) ═══ -->
+    <div class="example-panel" id="ex-procesador">
+      <div class="example-header">
+        <h3>⚡ Procesador de Tareas — <code>around()</code> y <code>proceed()</code></h3>
+        <p><code>around()</code> es el único advice que puede <strong>decidir si el método original se ejecuta o no</strong>. <code>proceed()</code> delega al método real; si no se llama, el método no ejecuta. Aquí lo usamos para memoizar resultados costosos y evitar reprocesamiento.</p>
+      </div>
+      <div class="example-body">
+        <div class="file-tabs">
+          <button class="file-tab active" data-type="java" onclick="switchFile(this,'proc-java')">ProcesadorTareas.java</button>
+          <button class="file-tab" data-type="aj" onclick="switchFile(this,'proc-aj')">ResultadoCacheAspect.aj</button>
+        </div>
+        <div class="file-panel active" id="proc-java">
+          <div class="file-desc">Simula una tarea costosa (150 ms). El aspecto evita que se reprocese la misma tarea dos veces.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ProcesadorTareas.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class ProcesadorTareas {
+
+    public String ejecutarTarea(String nombre) {
+        System.out.println("  [CPU] Procesando: " + nombre + " (150ms...)");
+        try { Thread.sleep(150); } catch (InterruptedException e) {}
+        return "resultado-de-" + nombre;
+    }
+
+    public void invalidarTarea(String nombre) {
+        System.out.println("  [CPU] Tarea invalidada: " + nombre);
+    }
+
+    public static void main(String[] args) {
+        ProcesadorTareas proc = new ProcesadorTareas();
+        System.out.println(proc.ejecutarTarea("reporteAnual")); // → CPU
+        System.out.println(proc.ejecutarTarea("reporteAnual")); // → Caché
+        System.out.println(proc.ejecutarTarea("reporteAnual")); // → Caché
+        proc.invalidarTarea("reporteAnual");                    // limpia caché
+        System.out.println(proc.ejecutarTarea("reporteAnual")); // → CPU de nuevo
+    }
+}</code></pre></div>
+        </div>
+        <div class="file-panel" id="proc-aj">
+          <div class="file-desc"><code>around()</code> consulta el caché <em>antes</em> de llamar a <code>proceed()</code>. Si hay resultado, retorna directamente; el CPU no trabaja.</div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">ResultadoCacheAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">import java.util.HashMap;
+import java.util.Map;
+
+public aspect ResultadoCacheAspect {
+
+    private Map&lt;String, String&gt; cache = new HashMap&lt;&gt;();
+
+    pointcut ejecutando(String nombre) :
+        execution(String ProcesadorTareas.ejecutarTarea(String)) &amp;&amp; args(nombre);
+
+    pointcut invalidando(String nombre) :
+        execution(void ProcesadorTareas.invalidarTarea(String)) &amp;&amp; args(nombre);
+
+    // around: sirve desde caché o ejecuta la tarea real
+    String around(String nombre) : ejecutando(nombre) {
+        if (cache.containsKey(nombre)) {
+            System.out.println("  [CACHÉ] Resultado listo: " + nombre);
+            return cache.get(nombre);   // NO llama proceed() → CPU no trabaja
+        }
+        String res = proceed(nombre);   // ejecuta la tarea real
+        cache.put(nombre, res);
+        System.out.println("  [CACHÉ] Resultado guardado: " + nombre);
+        return res;
+    }
+
+    // after: limpia la entrada al invalidar la tarea
+    after(String nombre) : invalidando(nombre) {
+        if (cache.remove(nombre) != null)
+            System.out.println("  [CACHÉ] Entrada eliminada: " + nombre);
+    }
+}</code></pre></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 

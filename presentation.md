@@ -744,74 +744,94 @@ public aspect CacheAspect {
 
 # <span class="accent">Ejemplos de Código</span>
 
-De Hello World a Inter-Type Declarations
+Del cajero automático a declaraciones inter-tipo
 
 ---
 
-<div class="tag">Hello World</div>
+<div class="tag">before / after</div>
 
-## El aspecto más simple posible
+## Auditoría transparente en un cajero
 
 <div class="cols">
 
 ```java
-// Hello.java — sin ninguna referencia a AspectJ
-public class Hello {
-    public static void main(String[] args) {
-        sayHello();
-    }
+// CajeroAutomatico.java — sin una línea de log
+public class CajeroAutomatico {
+    private double saldo;
 
-    public static void sayHello() {
-        System.out.print("Hello ");
+    public void depositar(double monto) {
+        saldo += monto;
     }
+    public void retirar(double monto) {
+        if (monto > saldo)
+            throw new IllegalStateException("Fondos insuficientes");
+        saldo -= monto;
+    }
+    public double getSaldo() { return saldo; }
 }
 ```
 
 ```java
-// World.aj
-public aspect World {
-    pointcut greeting() :
-        execution(* Hello.sayHello(..));
+// AuditoriaAspect.aj
+public aspect AuditoriaAspect {
 
-    after() returning() : greeting() {
-        System.out.println("World");
+    pointcut operaciones() :
+        execution(* CajeroAutomatico.*(..))
+        && !execution(* CajeroAutomatico.getSaldo());
+
+    before() : operaciones() {
+        System.out.println("[ANTES] "
+            + thisJoinPoint.getSignature().getName());
+    }
+
+    after() : operaciones() {
+        System.out.println("[DESPUÉS] operación completada");
     }
 }
-
-// Output: Hello World
 ```
 
 </div>
 
-> `Hello.java` no importa AspectJ ni sabe que existe `World.aj`. El aspecto añade comportamiento de forma completamente transparente.
+> `CajeroAutomatico.java` no sabe que existe `AuditoriaAspect.aj`. El log se añade sin tocar la lógica de negocio.
 
 ---
 
 <div class="tag">Comodines</div>
 
-## Comodines `*` en pointcuts
+## Wildcards `*` y `..` en pointcuts
 
 ```java
-public aspect DemoAspect {
+// Restaurante.java
+public class Restaurante {
+    public void prepararEntrada()   { /* … */ }
+    public void prepararPrincipal() { /* … */ }
+    public void prepararPostre()    { /* … */ }
+    public void cobrar()            { /* … */ }
+}
+```
 
-    // Exactamente 2 parámetros → method1(int, String)
-    pointcut twoParams() : call(void AOPDemo.method1(*, *));
+```java
+// OrdenAspect.aj
+public aspect OrdenAspect {
 
-    // Cualquier número de parámetros → todos los métodos de AOPDemo
-    pointcut anyParams() : call(void AOPDemo.*(..));
+    // * coincide con cualquier nombre que comience por "preparar"
+    pointcut cocina() : call(void Restaurante.preparar*(..));
 
-    // Exactamente 1 parámetro → method1(int) y method2(String)
-    pointcut oneParam() : call(void AOPDemo.method1(*));
+    // .. = cualquier número de parámetros; * = cualquier método
+    pointcut cualquiera() : call(* Restaurante.*(..));
 
-    before() : oneParam() {
-        System.out.println("before — un parámetro");
+    before() : cocina() {
+        System.out.println("[COCINA] iniciando: "
+            + thisJoinPoint.getSignature().getName());
     }
 
-    after() : oneParam() {
-        System.out.println("after — un parámetro");
+    // cobrar() es el único que no pasa por cocina()
+    after() : cualquiera() && !cocina() {
+        System.out.println("[CAJA] operación de caja completada");
     }
 }
-// method1(int, String) NO dispara: requiere exactamente 1 param
+// prepararEntrada, prepararPrincipal, prepararPostre → disparan cocina()
+// cobrar() → dispara solo la segunda regla
 ```
 
 ---
@@ -829,31 +849,31 @@ Se activa en el **lugar desde donde se llama** al método (el *caller*).
 **`execution()`**
 Se activa **dentro del cuerpo** del método (el *callee*).
 
-> Si `Child` hereda `greet()` de `Parent`, el cuerpo del método sigue viviendo en `Parent`.
+> `Moto` hereda `arrancar()` de `Vehiculo`.
+> El cuerpo del método vive en `Vehiculo`.
 >
-> `call(* Child.greet())` se dispara en el sitio de invocación.
-> `execution(* Parent.greet())` se dispara al entrar al cuerpo.
+> `call(* Moto.arrancar())` → se dispara en el sitio de invocación.
+> `execution(* Vehiculo.arrancar())` → se dispara al entrar al cuerpo.
 
 </div>
 
 ```java
-public aspect Tracer {
+public aspect SensorTrafico {
 
-    // Actúa en el lugar de la llamada
-    before() : call(* Child.*()) {
-        System.out.println("CALL → Child");
+    // call: se dispara donde se invoca moto.arrancar()
+    before() : call(* Moto.arrancar()) {
+        System.out.println(
+            "[CALL]  sensor en el caller");
     }
 
-    // Actúa dentro del método heredado
-    after() : execution(* Parent.greet()) {
-        System.out.println("EXEC Parent.greet()");
+    // execution: se dispara dentro del cuerpo heredado de Vehiculo
+    after() : execution(* Vehiculo.arrancar()) {
+        System.out.println(
+            "[EXEC]  sensor dentro del método");
     }
 }
-
-// Llamada: person.greet() siendo Child
-// → dispara CALL y EXEC
-// → el cuerpo vive en Parent aunque
-//    la referencia sea de tipo Child
+// moto.arrancar() → dispara CALL primero, luego EXEC
+// ambos se activan con una sola llamada
 ```
 
 </div>
@@ -862,34 +882,36 @@ public aspect Tracer {
 
 <div class="tag">Inter-Type Declarations</div>
 
-## Agregar estado a clases existentes
+## Agregar campos y métodos a clases existentes
 
 ```java
-public aspect Logger {
-
-    // ITD: agrega un campo a Point sin modificar Point.java
-    int Point.numberOfMoves;
-
-    // ITD: agrega un método a Point
-    public int Point.howMany() {
-        return this.numberOfMoves;
-    }
-
-    // Captura el objeto Point con this(p)
-    pointcut counts(Point p) :
-        execution(void Point.move(double, double)) && this(p);
-
-    after(Point p) : counts(p) {
-        p.numberOfMoves++;   // incrementa el campo agregado por el aspecto
+// Tarea.java — sin campo de prioridad
+public class Tarea {
+    private String descripcion;
+    public Tarea(String d) { this.descripcion = d; }
+    public void ejecutar() {
+        System.out.println("  Ejecutando: " + descripcion);
     }
 }
 ```
 
 ```java
-// Test.java puede llamar p.howMany() aunque Point no lo declare
-Point p1 = new Point();
-p1.move(3, 7);  p1.move(3, 11);
-System.out.println(p1.howMany()); // 2
+// PrioridadAspect.aj — inyecta prioridad desde fuera
+public aspect PrioridadAspect {
+
+    int Tarea.prioridad = 5;                          // ITD: campo con valor por defecto
+
+    public void Tarea.setPrioridad(int p) {
+        this.prioridad = (p >= 1 && p <= 10) ? p : 5;
+    }
+    public int Tarea.getPrioridad() { return this.prioridad; }
+
+    before() : execution(void Tarea.ejecutar()) {
+        Tarea t = (Tarea) thisJoinPoint.getTarget();
+        System.out.printf("  [ITD] prioridad: %d%n", t.getPrioridad());
+    }
+}
+// En Main.java: tarea.setPrioridad(1) funciona aunque Tarea no lo declare
 ```
 
 ---
