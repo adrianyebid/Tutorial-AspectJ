@@ -343,13 +343,13 @@ footer .footer-brand{font-family:var(--mono);color:var(--cyan);font-size:1rem;fo
     <li><a href="#hero">Inicio</a></li>
     <li><a href="#que-es-aop">¿Qué es AOP?</a></li>
     <li><a href="#compatibilidad">Compatibilidad</a></li>
+    <li><a href="#instalacion">Instalación</a></li>
     <li><a href="#conceptos">Conceptos</a></li>
     <li><a href="#aspect">Aspect</a></li>
     <li><a href="#joinpoint">Join Point</a></li>
     <li><a href="#advice-detalle">Advice</a></li>
     <li><a href="#weaving">Weaving</a></li>
     <li><a href="#inter-type">Inter-Type</a></li>
-    <li><a href="#instalacion">Instalación</a></li>
     <li><a href="#compiladores">Compiladores</a></li>
     <li><a href="#advice">Tipos de Advice</a></li>
     <li><a href="#ejemplos" class="highlight">Ejemplos</a></li>
@@ -498,6 +498,70 @@ public aspect LoggingAspect {
     </div>
     <div class="compat-note fade-up">
       AspectJ es <strong>estáticamente tipado</strong> y usa el sistema de tipos estático de Java. Fue creado en el <strong>PARC (Palo Alto Research Center)</strong> por el equipo Xerox PARC, liderado por Gregor Kiczales, y se ha convertido en el estándar de facto de la Programación Orientada a Aspectos en el ecosistema Java.
+    </div>
+  </div>
+</section>
+
+<!-- INSTALACION -->
+<section id="instalacion">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Setup</span>
+      <h2 class="section-title">Instalación y <span class="accent">Configuración</span></h2>
+      <p class="section-desc">Configura AspectJ en tu proyecto Maven con estos pasos. Para una guía más detallada, consulta la <a href="https://canva.link/mmlq6dw3azqzmdv" target="_blank" style="color:var(--cyan)">presentación de instalación</a>.</p>
+    </div>
+    <div class="install-steps">
+      <div class="fade-up delay-1">
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-filename"><span class="ext-xml">pom.xml</span> — Dependencias</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          </div>
+          <pre><code class="language-xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+    &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;
+    &lt;version&gt;1.9.21&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+&lt;build&gt;
+  &lt;plugins&gt;
+    &lt;plugin&gt;
+      &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+      &lt;artifactId&gt;aspectj-maven-plugin&lt;/artifactId&gt;
+      &lt;version&gt;1.15.0&lt;/version&gt;
+      &lt;configuration&gt;
+        &lt;complianceLevel&gt;17&lt;/complianceLevel&gt;
+        &lt;source&gt;17&lt;/source&gt;
+        &lt;target&gt;17&lt;/target&gt;
+      &lt;/configuration&gt;
+      &lt;executions&gt;
+        &lt;execution&gt;
+          &lt;goals&gt;&lt;goal&gt;compile&lt;/goal&gt;&lt;/goals&gt;
+        &lt;/execution&gt;
+      &lt;/executions&gt;
+    &lt;/plugin&gt;
+  &lt;/plugins&gt;
+&lt;/build&gt;</code></pre>
+        </div>
+      </div>
+      <div class="fade-up delay-2" style="margin-top:1.5rem">
+        <h3 style="font-size:1rem;margin-bottom:1rem">Requisitos</h3>
+        <ol style="font-size:.92rem;color:var(--text2);line-height:1.8;padding-left:1.25rem">
+          <li>Instalar un JDK (Java 8 o superior).</li>
+          <li>Descargar Maven desde <a href="https://maven.apache.org/download.cgi" target="_blank">maven.apache.org</a> y descomprimirlo.</li>
+          <li>Configurar variables de entorno en Windows: <code style="font-family:var(--mono)">MAVEN_HOME</code> y <code style="font-family:var(--mono)">M2_HOME</code> apuntando a la carpeta de Maven, y agregar <code style="font-family:var(--mono)">%MAVEN_HOME%\bin</code> y <code style="font-family:var(--mono)">%M2_HOME%\bin</code> al <code style="font-family:var(--mono)">Path</code>.</li>
+        </ol>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem" class="fade-up delay-2">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <h3>Verificar Java y Maven</h3>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">java -version   // Java 11+ requerido
+mvn -version    // Maven 3.6+ requerido</code></pre></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1379,70 +1443,6 @@ public aspect SerializableAspect {
     </div>
     <div style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--bg2);border-radius:var(--radius-sm);border-left:3px solid var(--cyan);font-size:.88rem;color:var(--text2)" class="fade-up">
       <strong style="color:var(--cyan)">En la práctica:</strong> <code style="font-family:var(--mono);color:var(--purple)">ajc</code> es el compilador estándar para proyectos reales. Al ejecutar <code style="font-family:var(--mono);color:var(--cyan)">mvn compile</code> con el plugin configurado, <code style="font-family:var(--mono);color:var(--purple)">ajc</code> reemplaza al compilador de Java y realiza el weaving automáticamente.
-    </div>
-  </div>
-</section>
-
-<!-- INSTALACIÓN -->
-<section id="instalacion">
-  <div class="container">
-    <div class="section-header fade-up">
-      <span class="section-tag">// Setup</span>
-      <h2 class="section-title">Instalación y <span class="accent">Configuración</span></h2>
-      <p class="section-desc">Configura AspectJ en tu proyecto Maven con estos pasos.</p>
-    </div>
-    <div class="install-steps">
-      <div class="fade-up delay-1">
-        <div class="code-wrap">
-          <div class="code-header">
-            <span class="code-filename"><span class="ext-xml">pom.xml</span> — Dependencias</span>
-            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
-          </div>
-          <pre><code class="language-xml">&lt;dependencies&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
-    &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;
-    &lt;version&gt;1.9.21&lt;/version&gt;
-  &lt;/dependency&gt;
-&lt;/dependencies&gt;
-
-&lt;build&gt;
-  &lt;plugins&gt;
-    &lt;plugin&gt;
-      &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
-      &lt;artifactId&gt;aspectj-maven-plugin&lt;/artifactId&gt;
-      &lt;version&gt;1.15.0&lt;/version&gt;
-      &lt;configuration&gt;
-        &lt;complianceLevel&gt;17&lt;/complianceLevel&gt;
-        &lt;source&gt;17&lt;/source&gt;
-        &lt;target&gt;17&lt;/target&gt;
-      &lt;/configuration&gt;
-      &lt;executions&gt;
-        &lt;execution&gt;
-          &lt;goals&gt;&lt;goal&gt;compile&lt;/goal&gt;&lt;/goals&gt;
-        &lt;/execution&gt;
-      &lt;/executions&gt;
-    &lt;/plugin&gt;
-  &lt;/plugins&gt;
-&lt;/build&gt;</code></pre>
-        </div>
-      </div>
-      <div class="fade-up delay-2" style="margin-top:1.5rem">
-        <h3 style="font-size:1rem;margin-bottom:1rem">Requisitos</h3>
-        <ol style="font-size:.92rem;color:var(--text2);line-height:1.8;padding-left:1.25rem">
-          <li>Instalar un JDK (Java 8 o superior).</li>
-          <li>Descargar Maven desde <a href="https://maven.apache.org/download.cgi" target="_blank">maven.apache.org</a> y descomprimirlo.</li>
-          <li>Configurar variables de entorno en Windows: <code style="font-family:var(--mono)">MAVEN_HOME</code> y <code style="font-family:var(--mono)">M2_HOME</code> apuntando a la carpeta de Maven, y agregar <code style="font-family:var(--mono)">%MAVEN_HOME%\bin</code> y <code style="font-family:var(--mono)">%M2_HOME%\bin</code> al <code style="font-family:var(--mono)">Path</code>.</li>
-        </ol>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:1rem" class="fade-up delay-2">
-        <div class="install-step">
-          <div class="step-num">1</div>
-          <h3>Verificar Java y Maven</h3>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">java -version   // Java 11+ requerido
-mvn -version    // Maven 3.6+ requerido</code></pre></div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
