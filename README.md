@@ -7,6 +7,17 @@
 
 ---
 
+## 👥 Integrantes del Grupo
+
+| Nombre |
+|--------|
+| Adrian Yebid Rincon |
+| Juan Esteban Ruiz Guasca |
+| Yeiner Arwawingumu Zapata Vallejo |
+| Cesar Felipe Pineda Ortiz |
+
+---
+
 ## 📋 Table of Contents
 
 1. [Introduction](#introduction)
