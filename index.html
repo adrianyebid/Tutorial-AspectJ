@@ -133,6 +133,8 @@ section{padding:5rem 2rem}
 .concept-card.c3:hover{box-shadow:0 0 0 1px var(--orange),0 12px 40px rgba(251,146,60,0.2)}
 .concept-card.c4:hover{box-shadow:0 0 0 1px var(--green),0 12px 40px rgba(52,211,153,0.2)}
 .concept-card.c5:hover{box-shadow:0 0 0 1px var(--red),0 12px 40px rgba(248,113,113,0.2)}
+.concept-card.c6:hover{box-shadow:0 0 0 1px var(--purple),0 12px 40px rgba(167,139,250,0.2)}
+.concept-card.c7:hover{box-shadow:0 0 0 1px var(--orange),0 12px 40px rgba(251,146,60,0.2)}
 .concept-icon{font-size:2rem;margin-bottom:.75rem}
 .concept-card h3{font-size:1rem;font-weight:700;margin-bottom:.5rem;font-family:var(--mono)}
 .concept-card p{font-size:.85rem;color:var(--text2);line-height:1.5;margin-bottom:1rem}
@@ -142,6 +144,8 @@ section{padding:5rem 2rem}
 .c3 .concept-tag{color:var(--orange)}
 .c4 .concept-tag{color:var(--green)}
 .c5 .concept-tag{color:var(--red)}
+.c6 .concept-tag{color:var(--purple)}
+.c7 .concept-tag{color:var(--orange)}
 
 /* ── ADVICE TYPES ── */
 #advice{background:var(--bg)}
@@ -340,7 +344,11 @@ footer .footer-brand{font-family:var(--mono);color:var(--cyan);font-size:1rem;fo
     <li><a href="#que-es-aop">¿Qué es AOP?</a></li>
     <li><a href="#compatibilidad">Compatibilidad</a></li>
     <li><a href="#conceptos">Conceptos</a></li>
-    <li><a href="#declaracion">Declaración</a></li>
+    <li><a href="#aspect">Aspect</a></li>
+    <li><a href="#joinpoint">Join Point</a></li>
+    <li><a href="#advice-detalle">Advice</a></li>
+    <li><a href="#weaving">Weaving</a></li>
+    <li><a href="#inter-type">Inter-Type</a></li>
     <li><a href="#instalacion">Instalación</a></li>
     <li><a href="#compiladores">Compiladores</a></li>
     <li><a href="#advice">Tipos de Advice</a></li>
@@ -366,7 +374,7 @@ footer .footer-brand{font-family:var(--mono);color:var(--cyan);font-size:1rem;fo
       <a href="#ejemplos" class="btn btn-outline">Ver Ejemplos</a>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Conceptos Clave</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Conceptos Clave</div></div>
       <div class="stat"><div class="stat-num">7</div><div class="stat-label">Ejemplos de Código</div></div>
       <div class="stat"><div class="stat-num">3</div><div class="stat-label">Tipos de Weaving</div></div>
       <div class="stat"><div class="stat-num">5</div><div class="stat-label">Tipos de Advice</div></div>
@@ -500,7 +508,7 @@ public aspect LoggingAspect {
     <div class="section-header fade-up">
       <span class="section-tag">// Vocabulario</span>
       <h2 class="section-title">Conceptos <span class="accent">Clave</span></h2>
-      <p class="section-desc">Los 5 pilares que necesitas entender para dominar AspectJ y AOP.</p>
+      <p class="section-desc">Los 6 pilares que necesitas entender para dominar AspectJ y AOP.</p>
     </div>
     <div class="concepts-grid">
       <div class="concept-card c1 fade-up delay-1">
@@ -516,38 +524,94 @@ public aspect LoggingAspect {
         <div class="concept-tag">method call / execution</div>
       </div>
       <div class="concept-card c3 fade-up delay-3">
-        <div class="concept-icon">🎯</div>
-        <h3>Pointcut</h3>
-        <p>Expresión que selecciona qué Join Points nos interesan. Define <em>dónde</em> se aplicará el advice.</p>
-        <div class="concept-tag">execution(* Service.*(..))</div>
-      </div>
-      <div class="concept-card c4 fade-up delay-4">
         <div class="concept-icon">⚡</div>
         <h3>Advice</h3>
         <p>El código que se ejecuta en el Join Point seleccionado. Puede ser before, after, around, afterReturning o afterThrowing.</p>
         <div class="concept-tag">before() : pointcut() { }</div>
       </div>
-      <div class="concept-card c5 fade-up delay-4">
+      <div class="concept-card c4 fade-up delay-4">
         <div class="concept-icon">🔗</div>
         <h3>Weaving</h3>
         <p>Proceso de combinar los aspectos con el código base. Puede ocurrir en tiempo de compilación, carga o ejecución.</p>
         <div class="concept-tag">compile-time / load-time</div>
       </div>
+      <div class="concept-card c6 fade-up delay-4">
+        <div class="concept-icon">🧱</div>
+        <h3>Inter-Type Declaration</h3>
+        <p>Entidad <em>estática</em>. Agrega métodos, atributos o constructores a clases existentes desde un aspecto, en tiempo de compilación.</p>
+        <div class="concept-tag">public String Clase.metodo()</div>
+      </div>
+      <div class="concept-card c7 fade-up delay-4">
+        <div class="concept-icon">🎯</div>
+        <h3>Pointcut</h3>
+        <p>Expresión que selecciona qué Join Points nos interesan. Define <em>dónde</em> se aplicará el advice.</p>
+        <div class="concept-tag">execution(* Service.*(..))</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- DECLARACIÓN DE ASPECTOS -->
-<section id="declaracion">
+
+
+<!-- ASPECT + DECLARACIÓN -->
+<section id="aspect" style="background:var(--bg)">
   <div class="container">
     <div class="section-header fade-up">
-      <span class="section-tag">// Sintaxis</span>
-      <h2 class="section-title">Declaración de <span class="accent">Aspectos</span></h2>
-      <p class="section-desc">Un aspecto puede declararse como cualquier clase de Java, con modificadores que controlan su acceso, herencia e instanciación.</p>
+      <span class="section-tag">// Entidad 1</span>
+      <h2 class="section-title">Aspect — <span class="accent">Concepto y Declaración</span></h2>
+      <p class="section-desc">La unidad principal de modularización en AOP. Encapsula un cross-cutting concern y se declara con modificadores únicos que no existen en las clases Java.</p>
     </div>
+
+    <!-- Qué es -->
+    <div class="problem-grid fade-up">
+      <div class="problem-card">
+        <h3 style="color:var(--text2)">En OOP — código disperso</h3>
+        <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ServicioA.java</span></span></div>
+<pre><code class="language-java">public class ServicioA {
+    public void procesar() {
+        log.info("Inicio procesar"); // logging
+        checkAuth();                  // seguridad
+        // lógica de negocio...
+        log.info("Fin procesar");    // logging
+    }
+}</code></pre></div>
+      </div>
+      <div class="problem-card solution-card">
+        <h3 style="color:var(--green)">Con AOP — código centralizado</h3>
+        <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">LoggingAspect.aj</span></span></div>
+<pre><code class="language-java">// Un aspecto — aplica en toda la aplicación
+public aspect LoggingAspect {
+    pointcut servicios() :
+        execution(* com.app.service.*.*(..));
+
+    before() : servicios() {
+        System.out.println("Inicio: "
+            + thisJoinPoint.getSignature());
+    }
+
+    after() : servicios() {
+        System.out.println("Fin del método");
+    }
+}</code></pre></div>
+      </div>
+    </div>
+
+    <!-- Sintaxis de declaración -->
+    <h3 class="fade-up" style="font-size:1rem;font-weight:700;color:var(--text2);margin:2rem 0 .75rem">Sintaxis de declaración</h3>
     <div class="decl-syntax fade-up">
-      [ <span>privileged</span> ] <span>aspect</span> Id [ <span>extends</span> Type ] [ <span>implements</span> TypeList ] [ <span>Per Clause</span> ] { Body }
+      [ <span>privileged</span> ] <span>aspect</span> Id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[ <span>extends</span> Type ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[ <span>implements</span> TypeList ]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[ <span>Per Clause</span> ]<br>
+      {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Body<br>
+      }
     </div>
+    <div class="fade-up" style="margin-bottom:1.5rem;padding:1rem 1.5rem;background:var(--bg3);border-radius:var(--radius-sm);border-left:3px solid var(--cyan);font-size:.88rem;color:var(--text2);line-height:1.7">
+      <strong style="color:var(--cyan)">Regla clave:</strong> Un aspecto no se instancia con <code style="font-family:var(--mono);color:var(--cyan)">new</code>. El runtime de AspectJ gestiona su ciclo de vida. Por defecto existe una sola instancia por JVM (singleton).
+    </div>
+
+    <!-- Modificadores como acordeones -->
     <div class="fade-up">
       <div class="acc-item">
         <button class="acc-btn" onclick="toggleAcc(this)">
@@ -592,7 +656,6 @@ public abstract aspect AbstractLogging {
 
 // Aspecto concreto que extiende el abstracto
 public aspect ConcreteLogging extends AbstractLogging {
-    // Implementa el pointcut abstracto
     pointcut loggedMethods() : execution(* com.app.service.*.*(..));
 }</code></pre></div>
         </div>
@@ -627,6 +690,352 @@ public aspect AccountAudit perthis(execution(* Account.*(..))) {
 // ya que pueden interferir con flujos de otros aspectos.</code></pre></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN POINT -->
+<section id="joinpoint" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Entidad 2</span>
+      <h2 class="section-title">Join Point — <span class="accent">El Punto de Intercepción</span></h2>
+      <p class="section-desc">Un Join Point es cualquier punto identificable en la ejecución del programa donde un aspecto puede actuar.</p>
+    </div>
+    <div class="advice-grid fade-up">
+      <div class="advice-card" style="border-top-color:var(--cyan)">
+        <h3 style="color:var(--cyan)">method execution</h3>
+        <p>Ejecución del cuerpo de un método. El más común.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--cyan);background:var(--bg3);padding:.5rem;border-radius:4px">execution(* Clase.*(..))</div>
+      </div>
+      <div class="advice-card" style="border-top-color:var(--purple)">
+        <h3 style="color:var(--purple)">method call</h3>
+        <p>Llamada a un método desde otro punto del código.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--purple);background:var(--bg3);padding:.5rem;border-radius:4px">call(* Clase.*(..))</div>
+      </div>
+      <div class="advice-card" style="border-top-color:var(--orange)">
+        <h3 style="color:var(--orange)">constructor execution</h3>
+        <p>Ejecución del constructor de una clase.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--orange);background:var(--bg3);padding:.5rem;border-radius:4px">execution(Clase.new(..))</div>
+      </div>
+      <div class="advice-card" style="border-top-color:var(--green)">
+        <h3 style="color:var(--green)">field access</h3>
+        <p>Lectura o escritura de un campo de una clase.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--green);background:var(--bg3);padding:.5rem;border-radius:4px">get(* Clase.*) / set(* Clase.*)</div>
+      </div>
+    </div>
+    <div class="fade-up" style="margin-top:2rem">
+      <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">JoinPointInfo.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect JoinPointInfo {
+    before() : execution(* com.app.*.*(..)) {
+        // thisJoinPoint da acceso al contexto del join point
+        System.out.println("Tipo:    " + thisJoinPoint.getKind());
+        System.out.println("Método:  " + thisJoinPoint.getSignature().getName());
+        System.out.println("Clase:   " + thisJoinPoint.getTarget().getClass().getSimpleName());
+        System.out.println("Args:    " + Arrays.toString(thisJoinPoint.getArgs()));
+    }
+}
+// Salida ejemplo:
+// Tipo:    method-execution
+// Método:  procesarPedido
+// Clase:   PedidoService
+// Args:    [Pedido@3f99bd52]</code></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVICE SECTION -->
+<section id="advice-detalle" style="background:var(--bg)">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Entidad 3</span>
+      <h2 class="section-title">Advice — <span class="accent">El Comportamiento</span></h2>
+      <p class="section-desc">El código que se ejecuta cuando un aspecto actúa en un Join Point. Define <em>qué</em> hacer y <em>cuándo</em> hacerlo.</p>
+    </div>
+    <div class="advice-grid fade-up">
+      <div class="advice-card a-before">
+        <h3>before()</h3>
+        <p>Se ejecuta <strong>antes</strong> del método. Ideal para validación, logging de entrada o seguridad. No puede detener la ejecución (salvo excepción).</p>
+      </div>
+      <div class="advice-card a-after">
+        <h3>after()</h3>
+        <p>Se ejecuta <strong>siempre después</strong>, en éxito o error. Equivalente al bloque <code style="font-family:var(--mono);color:var(--purple)">finally</code>.</p>
+      </div>
+      <div class="advice-card a-afterret">
+        <h3>after returning()</h3>
+        <p>Se ejecuta solo si el método <strong>retorna normalmente</strong>. Puede capturar el valor de retorno.</p>
+      </div>
+      <div class="advice-card a-afterthr">
+        <h3>after throwing()</h3>
+        <p>Se ejecuta solo si el método <strong>lanza una excepción</strong>. Puede capturar la excepción lanzada.</p>
+      </div>
+      <div class="advice-card a-around">
+        <h3>around()</h3>
+        <p>Envuelve el método <strong>completamente</strong>. Control total — puede modificar args, cambiar el resultado o evitar la ejecución. Requiere <code style="font-family:var(--mono);color:var(--orange)">proceed()</code>.</p>
+      </div>
+    </div>
+    <div class="advice-flow fade-up">
+      <div class="flow-box flow-around">around() { inicio...</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-before">before()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-method">método()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-after">after()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box flow-around">...fin }</div>
+    </div>
+    <div class="fade-up" style="margin-top:2rem">
+      <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">TimingAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect TimingAspect {
+    pointcut metodos() : execution(* com.app.service.*.*(..));
+
+    // around: mide el tiempo de ejecución
+    Object around() : metodos() {
+        long inicio = System.currentTimeMillis();
+        Object resultado = proceed(); // ejecuta el método original
+        long fin = System.currentTimeMillis();
+        System.out.println(thisJoinPoint.getSignature().getName()
+            + " tardó " + (fin - inicio) + "ms");
+        return resultado;
+    }
+}
+// Salida: procesarPedido tardó 42ms</code></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- WEAVING -->
+<section id="weaving" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Entidad 4</span>
+      <h2 class="section-title">Weaving — <span class="accent">El Ensamblaje</span></h2>
+      <p class="section-desc">El proceso mediante el cual los aspectos se combinan con el código base. Es lo que hace que el advice realmente se ejecute en los join points seleccionados.</p>
+    </div>
+    <div class="install-steps fade-up">
+      <div class="compat-card" style="border-top-color:var(--cyan)">
+        <h3>Compile-time Weaving</h3>
+        <p>El compilador <code style="font-family:var(--mono);color:var(--cyan)">ajc</code> teje los aspectos directamente en el bytecode durante la compilación. Es el más eficiente — sin overhead en ejecución.</p>
+        <div style="margin-top:1rem" class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div>
+<pre><code class="language-java">// ajc compila y teje al mismo tiempo
+ajc -sourceroots src/ -outjar app.jar
+
+// Con Maven — ajc reemplaza a javac:
+mvn clean compile</code></pre></div>
+      </div>
+      <div class="compat-card" style="border-top-color:var(--purple)">
+        <h3>Post-compile Weaving</h3>
+        <p>Teje aspectos sobre archivos <code style="font-family:var(--mono);color:var(--purple)">.class</code> ya compilados o JARs de terceros. Útil cuando no tienes el código fuente de la librería.</p>
+        <div style="margin-top:1rem" class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div>
+<pre><code class="language-java">// Teje sobre un JAR externo
+ajc -inpath libreria.jar
+    -aspectpath mis-aspectos.jar
+    -outjar resultado.jar</code></pre></div>
+      </div>
+    </div>
+    <div class="fade-up" style="margin-top:1.25rem">
+      <div class="compat-card" style="border-top-color:var(--orange)">
+        <h3>Load-time Weaving (LTW)</h3>
+        <p>Los aspectos se tejen cuando la JVM carga las clases. No requiere recompilar — se configura con un agente Java.</p>
+        <div style="margin-top:1rem" class="code-wrap"><div class="code-header"><span class="code-filename">terminal / aop.xml</span></div>
+<pre><code class="language-java">// Iniciar JVM con el agente de AspectJ:
+java -javaagent:aspectjweaver.jar -jar app.jar
+
+// aop.xml — declara qué aspectos aplicar:
+// &lt;aspectj&gt;
+//   &lt;aspects&gt;
+//     &lt;aspect name="com.app.LoggingAspect"/&gt;
+//   &lt;/aspects&gt;
+// &lt;/aspectj&gt;</code></pre></div>
+      </div>
+    </div>
+    <div class="fade-up" style="margin-top:1.5rem">
+      <table style="width:100%;border-collapse:collapse;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)">
+        <tr>
+          <th style="background:var(--bg3);padding:.75rem 1rem;text-align:left;font-size:.8rem;color:var(--text2);border-bottom:1px solid var(--border)">Tipo</th>
+          <th style="background:var(--bg3);padding:.75rem 1rem;text-align:left;font-size:.8rem;color:var(--text2);border-bottom:1px solid var(--border)">Cuándo ocurre</th>
+          <th style="background:var(--bg3);padding:.75rem 1rem;text-align:left;font-size:.8rem;color:var(--text2);border-bottom:1px solid var(--border)">Rendimiento</th>
+          <th style="background:var(--bg3);padding:.75rem 1rem;text-align:left;font-size:.8rem;color:var(--text2);border-bottom:1px solid var(--border)">Flexibilidad</th>
+        </tr>
+        <tr>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border);font-family:var(--mono);color:var(--cyan)">Compile-time</td>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border);color:var(--text2)">Compilación</td>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border)"><span class="check">✓ Máximo</span></td>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border)"><span class="mid">~ Media</span></td>
+        </tr>
+        <tr>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border);font-family:var(--mono);color:var(--purple)">Post-compile</td>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border);color:var(--text2)">Post-compilación</td>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border)"><span class="check">✓ Alto</span></td>
+          <td style="padding:.75rem 1rem;font-size:.85rem;border-bottom:1px solid var(--border)"><span class="check">✓ Alta</span></td>
+        </tr>
+        <tr>
+          <td style="padding:.75rem 1rem;font-size:.85rem;font-family:var(--mono);color:var(--orange)">Load-time</td>
+          <td style="padding:.75rem 1rem;font-size:.85rem;color:var(--text2)">Carga de clases</td>
+          <td style="padding:.75rem 1rem;font-size:.85rem"><span class="mid">~ Medio</span></td>
+          <td style="padding:.75rem 1rem;font-size:.85rem"><span class="check">✓ Máxima</span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- INTER-TYPE DECLARATIONS -->
+<section id="inter-type">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Entidad Estática</span>
+      <h2 class="section-title">Inter-Type <span class="accent">Declarations</span></h2>
+      <p class="section-desc">La única entidad estática de AspectJ. Permite modificar la estructura de clases existentes en tiempo de compilación — sin tocar su código fuente.</p>
+    </div>
+
+    <div class="fade-up" style="background:var(--bg3);border:1px solid var(--border);border-left:4px solid var(--purple);border-radius:0 var(--radius) var(--radius) 0;padding:1.25rem 1.75rem;margin-bottom:2rem">
+      <p style="font-size:.95rem;color:var(--text2);line-height:1.75">
+        A diferencia de <strong style="color:var(--cyan)">Pointcuts</strong> y <strong style="color:var(--cyan)">Advices</strong> que actúan en <em>tiempo de ejecución</em>,
+        las <strong style="color:var(--purple)">Inter-Type Declarations</strong> actúan en <em>tiempo de compilación</em>:
+        agregan métodos, atributos o constructores directamente a la estructura de clases externas,
+        como si siempre hubieran estado ahí.
+      </p>
+    </div>
+
+    <!-- Comparación dinámica vs estática -->
+    <div class="problem-grid fade-up" style="margin-bottom:2rem">
+      <div class="problem-card">
+        <h3 style="color:var(--cyan)">⚡ Entidades Dinámicas</h3>
+        <p style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.5rem">Actúan en <strong>tiempo de ejecución</strong>. Interceptan el flujo del programa.</p>
+        <ul style="padding-left:1.25rem;font-size:.85rem;color:var(--text2);line-height:2">
+          <li>Join Point — dónde puede ocurrir algo</li>
+          <li>Pointcut — qué join points seleccionar</li>
+          <li>Advice — qué ejecutar en esos puntos</li>
+        </ul>
+      </div>
+      <div class="problem-card solution-card">
+        <h3 style="color:var(--purple)">🧱 Entidad Estática</h3>
+        <p style="font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:.5rem">Actúa en <strong>tiempo de compilación</strong>. Modifica la estructura del programa.</p>
+        <ul style="padding-left:1.25rem;font-size:.85rem;color:var(--text2);line-height:2">
+          <li>Inter-Type Declaration — agrega miembros a clases externas</li>
+          <li>Afecta la firma estática de la clase</li>
+          <li>El compilador la trata como parte de la clase original</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tipos de ITD -->
+    <h3 class="fade-up" style="font-size:1rem;font-weight:700;color:var(--text2);margin-bottom:1rem">¿Qué se puede declarar con ITD?</h3>
+    <div class="advice-grid fade-up" style="margin-bottom:2rem">
+      <div class="advice-card" style="border-top-color:var(--purple)">
+        <h3 style="color:var(--purple)">Métodos</h3>
+        <p>Agrega métodos nuevos a una clase existente. La clase los hereda como si fueran propios.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--cyan);background:var(--bg3);padding:.5rem .75rem;border-radius:4px">public String Clase.nuevoMetodo()</div>
+      </div>
+      <div class="advice-card" style="border-top-color:var(--orange)">
+        <h3 style="color:var(--orange)">Atributos</h3>
+        <p>Agrega campos (variables de instancia) a una clase. Cada instancia de la clase tendrá ese campo.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--cyan);background:var(--bg3);padding:.5rem .75rem;border-radius:4px">private String Clase.nuevoAtributo</div>
+      </div>
+      <div class="advice-card" style="border-top-color:var(--green)">
+        <h3 style="color:var(--green)">Constructores</h3>
+        <p>Agrega nuevos constructores a una clase, permitiendo nuevas formas de instanciarla.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--cyan);background:var(--bg3);padding:.5rem .75rem;border-radius:4px">public Clase.new(String param)</div>
+      </div>
+      <div class="advice-card" style="border-top-color:var(--cyan)">
+        <h3 style="color:var(--cyan)">declare parents</h3>
+        <p>Hace que una clase extienda otra clase o implemente interfaces, sin tocar su código fuente.</p>
+        <div style="margin-top:.75rem;font-family:var(--mono);font-size:.78rem;color:var(--cyan);background:var(--bg3);padding:.5rem .75rem;border-radius:4px">declare parents: Clase implements IFaz</div>
+      </div>
+    </div>
+
+    <!-- Ejemplos de código -->
+    <div class="fade-up">
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this)">
+          <span><code style="font-family:var(--mono);color:var(--purple)">ITD Métodos y Atributos</code> — Agregar miembros a una clase</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="acc-body">
+          <p>Desde un aspecto se puede "inyectar" un método o atributo en una clase existente. La clase <code style="font-family:var(--mono);color:var(--cyan)">User</code> no sabe que tiene esos miembros — el compilador los agrega en el weaving.</p>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">AuditAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect AuditAspect {
+
+    // Agrega un atributo privado a la clase User
+    private String User.auditId;
+
+    // Agrega un método público a la clase User
+    public String User.getAuditInfo() {
+        return "User[" + this.getName() + "] auditId=" + this.auditId;
+    }
+
+    // Agrega un método a la clase User con lógica de aspecto
+    public void User.setAuditId(String id) {
+        this.auditId = id;
+    }
+}
+
+// En main — User usa los miembros como si fueran suyos:
+// User u = new User("Felipe");
+// u.setAuditId("AUD-001");
+// System.out.println(u.getAuditInfo());
+// → User[Felipe] auditId=AUD-001</code></pre></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this)">
+          <span><code style="font-family:var(--mono);color:var(--cyan)">declare parents</code> — Hacer que una clase implemente una interfaz</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="acc-body">
+          <p><code style="font-family:var(--mono);color:var(--cyan)">declare parents</code> es una forma especial de ITD que modifica la jerarquía de tipos de una clase — sin editar su código fuente. Muy útil para retrofitting de interfaces en clases legacy.</p>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">SerializableAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">import java.io.Serializable;
+
+public aspect SerializableAspect {
+
+    // Hace que todas las clases del paquete
+    // model implementen Serializable
+    declare parents: com.app.model.* implements Serializable;
+
+    // También puede hacer que una clase extienda otra:
+    // declare parents: ConcreteClass extends AbstractBase;
+}
+
+// Ahora cualquier instancia de com.app.model.*
+// puede usarse donde se requiera Serializable
+// sin haber modificado ninguna clase del paquete.</code></pre></div>
+        </div>
+      </div>
+
+      <div class="acc-item">
+        <button class="acc-btn" onclick="toggleAcc(this)">
+          <span><code style="font-family:var(--mono);color:var(--green)">ITD Constructor</code> — Nuevo constructor desde un aspecto</span>
+          <span class="acc-chevron">▼</span>
+        </button>
+        <div class="acc-body">
+          <p>Un aspecto puede agregar un constructor adicional a una clase existente, permitiendo nuevas formas de instanciarla sin modificar su código.</p>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">FactoryAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect FactoryAspect {
+
+    // Agrega un constructor alternativo a Product
+    public Product.new(String nombre, double precio, String categoria) {
+        this(nombre, precio); // llama al constructor existente
+        // lógica adicional del aspecto
+        System.out.println("Producto creado con categoría: " + categoria);
+    }
+}
+
+// Ahora se puede usar:
+// Product p = new Product("Laptop", 2500.0, "Electrónica");
+// → Producto creado con categoría: Electrónica</code></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nota clave -->
+    <div class="fade-up" style="margin-top:2rem;padding:1rem 1.5rem;background:var(--bg3);border-radius:var(--radius-sm);border-left:3px solid var(--orange);font-size:.88rem;color:var(--text2);line-height:1.7">
+      <strong style="color:var(--orange)">Diferencia clave con Advice:</strong> Un advice <em>intercepta</em> la ejecución en tiempo de ejecución y puede evitar o modificar el comportamiento.
+      Una ITD <em>extiende la estructura</em> en tiempo de compilación — el miembro agregado existe permanentemente en la clase compilada,
+      como si siempre hubiera sido parte de ella.
     </div>
   </div>
 </section>
@@ -723,50 +1132,6 @@ mvn exec:java \
     </div>
     <div style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--bg2);border-radius:var(--radius-sm);border-left:3px solid var(--cyan);font-size:.88rem;color:var(--text2)" class="fade-up">
       <strong style="color:var(--cyan)">En la práctica:</strong> <code style="font-family:var(--mono);color:var(--purple)">ajc</code> es el compilador estándar para proyectos reales. Al ejecutar <code style="font-family:var(--mono);color:var(--cyan)">mvn compile</code> con el plugin configurado, <code style="font-family:var(--mono);color:var(--purple)">ajc</code> reemplaza al compilador de Java y realiza el weaving automáticamente.
-    </div>
-  </div>
-</section>
-
-<!-- TIPOS DE ADVICE -->
-<section id="advice">
-  <div class="container">
-    <div class="section-header fade-up">
-      <span class="section-tag">// Advice</span>
-      <h2 class="section-title">Tipos de <span class="accent">Advice</span></h2>
-      <p class="section-desc">El advice define <em>cuándo</em> y <em>cómo</em> se ejecuta el código del aspecto en relación al Join Point.</p>
-    </div>
-    <div class="advice-grid fade-up">
-      <div class="advice-card a-before">
-        <h3>before()</h3>
-        <p>Se ejecuta <strong>antes</strong> del método. Ideal para validación, logging de entrada, seguridad. No puede detener la ejecución (salvo excepción).</p>
-      </div>
-      <div class="advice-card a-after">
-        <h3>after()</h3>
-        <p>Se ejecuta <strong>después siempre</strong>, tanto en éxito como en error. Equivalente al bloque <code style="font-family:var(--mono);color:var(--purple)">finally</code>.</p>
-      </div>
-      <div class="advice-card a-afterret">
-        <h3>after() returning</h3>
-        <p>Se ejecuta <strong>solo en éxito</strong>. Puede acceder al valor de retorno. Ideal para auditoría o caché post-ejecución.</p>
-      </div>
-      <div class="advice-card a-afterthr">
-        <h3>after() throwing</h3>
-        <p>Se ejecuta <strong>solo si hay excepción</strong>. Puede acceder a la excepción lanzada. Ideal para manejo centralizado de errores.</p>
-      </div>
-      <div class="advice-card a-around">
-        <h3>around()</h3>
-        <p>Envuelve el método <strong>completamente</strong>. Control total: puede modificar args, cambiar el resultado, o evitar la ejecución. Requiere llamar <code style="font-family:var(--mono);color:var(--orange)">proceed()</code>.</p>
-      </div>
-    </div>
-    <div class="advice-flow fade-up">
-      <div class="flow-box flow-around">around() { inicio...</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box flow-before">before()</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box flow-method">método()</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box flow-after">after()</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box flow-around">...fin }</div>
     </div>
   </div>
 </section>
@@ -1811,8 +2176,8 @@ public aspect CacheAspect {
         <p>Los cross-cutting concerns (logging, seguridad, transacciones) se repiten en decenas de clases con OOP puro, violando DRY y SRP. AOP externaliza ese código a Aspectos.</p>
       </div>
       <div class="conclusion-card">
-        <h3>Los 5 conceptos esenciales</h3>
-        <p><strong>Aspect</strong> → módulo del concern. <strong>Join Point</strong> → dónde puede actuar. <strong>Pointcut</strong> → dónde QUIERO que actúe. <strong>Advice</strong> → qué hace. <strong>Weaving</strong> → cómo se combina.</p>
+        <h3>Los 6 conceptos esenciales</h3>
+        <p><strong>Aspect</strong> → módulo del concern. <strong>Join Point</strong> → dónde puede actuar. <strong>Advice</strong> → qué hace. <strong>Weaving</strong> → cómo se combina. <strong>Inter-Type Declaration</strong> → modifica la estructura en compilación. <strong>Pointcut</strong> → dónde QUIERO que actúe.</p>
       </div>
       <div class="conclusion-card">
         <h3>OOP y AOP: Complementarios</h3>

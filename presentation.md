@@ -29,29 +29,24 @@ section {
   padding: 48px 64px;
 }
 
-/* Número de página */
 section::after {
   color: var(--text2);
   font-size: 14px;
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Encabezados */
 h1 { font-size: 2.4em; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.2em; color: var(--text); }
 h2 { font-size: 1.6em; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.6em; color: var(--text); }
 h3 { font-size: 1.1em; font-weight: 700; color: var(--cyan); margin-bottom: 0.3em; }
 h4 { font-size: 0.9em; font-weight: 700; color: var(--cyan); margin-bottom: 0.2em; }
 
-/* Acento degradado */
 .accent { background: linear-gradient(135deg, #00d9ff, #a78bfa);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-/* Párrafos y listas */
 p { color: #c9d1d9; line-height: 1.65; margin: 0.4em 0; }
 li { color: #c9d1d9; line-height: 1.7; margin-bottom: 0.2em; }
 strong { color: var(--text); }
 
-/* Código inline */
 code {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.82em;
@@ -62,7 +57,6 @@ code {
   border: 1px solid var(--border);
 }
 
-/* Bloques de código */
 pre {
   background: var(--bg2) !important;
   border: 1px solid var(--border);
@@ -79,7 +73,6 @@ pre code {
   color: #c9d1d9;
 }
 
-/* Tabla */
 table { width: 100%; border-collapse: collapse; font-size: 0.78em;
         background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; }
 thead tr { background: var(--bg3); }
@@ -88,11 +81,9 @@ tbody tr:nth-child(even) { background: #0d1117; }
 th { padding: 0.6em 1em; text-align: left; color: var(--cyan); font-weight: 700;
      text-transform: uppercase; font-size: 0.85em; letter-spacing: 0.07em;
      border-bottom: 2px solid var(--border); }
-td { padding: 0.55em 1em; border-bottom: 1px solid #21262d;
-     color: var(--text); }
+td { padding: 0.55em 1em; border-bottom: 1px solid #21262d; color: var(--text); }
 tr:last-child td { border: none; }
 
-/* Blockquote → caja de info */
 blockquote {
   background: var(--bg2);
   border-left: 3px solid var(--cyan);
@@ -107,12 +98,10 @@ blockquote.orange { border-color: var(--orange); }
 blockquote.green  { border-color: var(--green); }
 blockquote.red    { border-color: var(--red); }
 
-/* Layout dos columnas */
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; }
 .cols-6040 { display: grid; grid-template-columns: 6fr 4fr; gap: 1.2em; }
 .cols-4060 { display: grid; grid-template-columns: 4fr 6fr; gap: 1.2em; }
 
-/* Cards */
 .cards { display: grid; gap: 0.7em; }
 .cards-2 { grid-template-columns: 1fr 1fr; }
 .cards-3 { grid-template-columns: 1fr 1fr 1fr; }
@@ -130,7 +119,6 @@ blockquote.red    { border-color: var(--red); }
 .card.green  h4 { color: var(--green); }
 .card.red    h4 { color: var(--red); }
 
-/* Tag / badge */
 .tag {
   display: inline-block;
   font-family: 'JetBrains Mono', monospace;
@@ -146,12 +134,10 @@ blockquote.red    { border-color: var(--red); }
   margin-bottom: 0.5em;
 }
 
-/* Checks y cruces en tabla */
 .chk { color: var(--green); font-weight: 700; }
 .crs { color: var(--red);   font-weight: 700; }
 .mid { color: var(--orange);font-weight: 700; }
 
-/* Slide de portada */
 section.cover {
   display: flex;
   flex-direction: column;
@@ -181,7 +167,6 @@ section.cover {
 .stat-n { font-family: 'JetBrains Mono', monospace; font-size: 2em; font-weight: 800; color: var(--cyan); line-height: 1; }
 .stat-l { font-size: 0.55em; color: var(--text2); text-transform: uppercase; letter-spacing: 0.1em; }
 
-/* Separadores de sección */
 section.section-cover {
   display: flex;
   flex-direction: column;
@@ -201,8 +186,8 @@ Programación Orientada a Aspectos en Java —
 de los conceptos básicos a ejemplos prácticos.
 
 <div class="stats">
-  <div><div class="stat-n">5</div><div class="stat-l">Conceptos clave</div></div>
-  <div><div class="stat-n">3</div><div class="stat-l">Tutoriales originales</div></div>
+  <div><div class="stat-n">6</div><div class="stat-l">Conceptos clave</div></div>
+  <div><div class="stat-n">7</div><div class="stat-l">Ejemplos de código</div></div>
   <div><div class="stat-n">5</div><div class="stat-l">Tipos de advice</div></div>
   <div><div class="stat-n">2</div><div class="stat-l">Compiladores</div></div>
 </div>
@@ -218,19 +203,19 @@ de los conceptos básicos a ejemplos prácticos.
 
 - ¿Qué es AOP y por qué existe?
 - Compatibilidad con Java
-- Los 5 conceptos clave
-- Declaración de aspectos
-- Compiladores: `ajc` y `abc`
-- Instalación con Maven
+- Los 6 conceptos clave
+- Aspect + Declaración de aspectos
+- Join Point, Advice, Weaving
+- Inter-Type Declarations
 
 </div>
 <div>
 
-- Los 5 tipos de Advice
+- Compiladores: `ajc` y `abc`
+- Instalación con Maven
 - Ejemplos de código progresivos
 - 3 tutoriales originales
 - AspectJ vs Spring AOP
-- ¿Cuándo usar AOP?
 - Conclusiones
 
 </div>
@@ -283,7 +268,6 @@ public void procesarPedido(Pedido p) {
 ```java
 public aspect LoggingAspect {
 
-    // Selecciona TODOS los métodos de cualquier Service
     pointcut serviceMethods() :
         execution(* com.app.service.*.*(..));
 
@@ -333,19 +317,20 @@ La programación en AspectJ es una extensión *natural* de Java.
 
 # <span class="accent">Conceptos Clave</span>
 
-Los 5 pilares fundamentales de AOP:
+Los 6 pilares fundamentales de AOP:
 
 1. 🧩 **Aspect** — módulo que encapsula el concern transversal
 2. 📍 **Join Point** — punto de ejecución donde puede actuar un aspecto
-3. 🎯 **Pointcut** — expresión que selecciona los Join Points deseados
-4. ⚡ **Advice** — código que se ejecuta en el Join Point seleccionado
-5. 🔗 **Weaving** — proceso que combina aspectos con el código base
+3. ⚡ **Advice** — código que se ejecuta en el Join Point seleccionado
+4. 🔗 **Weaving** — proceso que combina aspectos con el código base
+5. 🧱 **Inter-Type Declaration** — modifica la estructura de clases en compilación
+6. 🎯 **Pointcut** — expresión que selecciona los Join Points deseados
 
 ---
 
 <div class="tag">Vocabulario</div>
 
-## Los 5 conceptos esenciales
+## Los 6 conceptos esenciales
 
 <div class="cards cards-3" style="margin-top: 0.8em">
 <div class="card">
@@ -360,90 +345,79 @@ Módulo que encapsula un cross-cutting concern. Equivale a una clase en OOP pero
 Punto bien definido en la ejecución: llamada a método, constructor, acceso a campo, handler de excepción...
 
 </div>
-<div class="card orange">
-
-#### 🎯 Pointcut
-Expresión que selecciona *cuáles* Join Points nos interesan. Define **dónde** actuará el aspecto.
-
-</div>
 <div class="card green">
 
 #### ⚡ Advice
 Código que se ejecuta en el Join Point seleccionado. Puede ser `before`, `after` o `around`.
 
 </div>
-<div class="card red" style="grid-column: span 2;">
+<div class="card red">
 
 #### 🔗 Weaving
-Proceso que **combina** los aspectos con el código base. Puede ocurrir en compile-time (`ajc`), load-time (agente JVM) o runtime (proxies dinámicos como en Spring AOP).
-
-</div>
-</div>
-
----
-
-<div class="tag">Weaving</div>
-
-## 🔗 Weaving — el proceso de "tejer"
-
-Combina los aspectos con el código base. Puede ocurrir en tres momentos:
-
-<div class="cards cards-3" style="margin-top: 0.8em">
-<div class="card">
-
-#### Compile-time
-El compilador `ajc` teje durante la compilación. **Mejor rendimiento**, sin overhead en runtime.
+Proceso que **combina** los aspectos con el código base. Puede ocurrir en compile-time (`ajc`), load-time (agente JVM) o runtime (proxies).
 
 </div>
 <div class="card orange">
 
-#### Load-time
-El agente de AspectJ teje cuando la JVM carga las clases. No requiere recompilar el código base.
+#### 🧱 Inter-Type Declaration
+Entidad **estática**. Agrega métodos, atributos o constructores a clases externas en tiempo de compilación.
 
 </div>
-<div class="card green">
+<div class="card" style="border-top: 2px dashed var(--border)">
 
-#### Runtime
-Usado por Spring AOP con proxies dinámicos. Más sencillo pero limitado a métodos públicos de beans.
+#### 🎯 Pointcut
+Expresión que selecciona *cuáles* Join Points nos interesan. Define **dónde** actuará el aspecto.
 
 </div>
 </div>
-
----
-
-<div class="tag">Pointcut</div>
-
-## Pointcut — patrones y comodines
-
-```java
-// * → exactamente un token  |  .. → cero o más tokens
-
-// Todos los métodos de cualquier clase Service
-pointcut serviceMethods() :
-    execution(* com.app.service.*.*(..));
-
-// Métodos con exactamente dos parámetros
-pointcut twoParams() :
-    call(void MiClase.metodo(*, *));
-
-// Combinando con operadores lógicos
-pointcut serviceWithString() :
-    execution(* com.app.service.*.*(..))
-    && execution(* *.*(.., String, ..));
-
-// Capturar argumentos del método
-pointcut lending(Member m, Book b) :
-    execution(void Library.lendBook(Member, Book))
-    && args(m, b);
-```
 
 ---
 
 <!-- _class: section-cover -->
 
-# <span class="accent">Declaración de Aspectos</span>
+# <span class="accent">Aspect — Concepto y Declaración</span>
 
-Sintaxis completa y modificadores especiales
+Qué es un aspecto, cómo se declara y sus modificadores especiales
+
+---
+
+<div class="tag">Entidad 1 — Aspect</div>
+
+## Aspect — OOP vs AOP
+
+<div class="cols">
+
+```java
+// OOP — código disperso en cada clase
+public class ServicioA {
+    public void procesar() {
+        log.info("Inicio procesar"); // logging
+        checkAuth();                  // seguridad
+        // lógica de negocio...
+        log.info("Fin procesar");    // logging
+    }
+}
+```
+
+```java
+// AOP — centralizado en un aspecto
+public aspect LoggingAspect {
+    pointcut servicios() :
+        execution(* com.app.service.*.*(..));
+
+    before() : servicios() {
+        System.out.println("Inicio: "
+            + thisJoinPoint.getSignature());
+    }
+    after() : servicios() {
+        System.out.println("Fin del método");
+    }
+}
+```
+
+</div>
+
+> Un aspecto **no se instancia con `new`**. El runtime de AspectJ gestiona su ciclo de vida. Por defecto existe una sola instancia por JVM (singleton).
 
 ---
 
@@ -469,7 +443,7 @@ Permite acceder a miembros `private` de clases externas sin getters.
 <div class="card purple">
 
 #### `extends / implements`
-Un aspecto puede heredar de un aspecto abstracto o implementar interfaces.
+Un aspecto puede heredar de un aspecto abstracto o implementar interfaces. No puede extenderse por clases ni instanciarse con `new`.
 
 </div>
 <div class="card orange">
@@ -499,10 +473,7 @@ Permite al aspecto leer y modificar campos `private` **sin** que la clase expong
 
 > Útil para aspectos de logging o debugging que necesitan inspeccionar estado interno sin cambiar la API pública.
 
-**Reglas de herencia:**
-- Un aspecto no se puede instanciar con `new`
-- Una clase no puede extender un aspecto
-- Un aspecto no puede extender uno no abstracto
+⚠️ **Rompe encapsulamiento** — usar con cuidado.
 
 </div>
 
@@ -521,6 +492,36 @@ privileged aspect AuditAspect {
 ```
 
 </div>
+
+---
+
+<div class="tag">extends / implements</div>
+
+## Herencia de aspectos
+
+**Reglas importantes:**
+
+- Un aspecto puede extender una **clase** o un **aspecto abstracto**
+- Un aspecto puede implementar múltiples **interfaces**
+- Un aspecto **no puede instanciarse** con `new`
+- Una clase **no puede extender** un aspecto
+- Un aspecto **no puede extender** un aspecto no abstracto
+
+```java
+// Aspecto abstracto base
+public abstract aspect AbstractLogging {
+    abstract pointcut loggedMethods();
+
+    before() : loggedMethods() {
+        System.out.println("Entering: " + thisJoinPoint.getSignature());
+    }
+}
+
+// Aspecto concreto que extiende el abstracto
+public aspect ConcreteLogging extends AbstractLogging {
+    pointcut loggedMethods() : execution(* com.app.service.*.*(..));
+}
+```
 
 ---
 
@@ -545,7 +546,365 @@ public aspect AccountAudit
 // Con perthis:  un contador independiente por cada Account
 ```
 
-> **Nota:** No se recomienda mezclar varios per clauses en el mismo proyecto ya que pueden interferir con los flujos de otros aspectos.
+| Per Clause | Instancia por... |
+|---|---|
+| `issingleton()` | Una global — comportamiento por defecto |
+| `perthis(pc)` | Cada objeto `this` que coincida |
+| `pertarget(pc)` | Cada objeto destino del join point |
+| `percflow(pc)` | Cada flujo de control que alcanza el pointcut |
+
+---
+
+<!-- _class: section-cover -->
+
+# <span class="accent">Join Point</span>
+
+Dónde puede actuar un aspecto
+
+---
+
+<div class="tag">Entidad 2 — Join Point</div>
+
+## Join Point — tipos de puntos de intercepción
+
+<div class="cards cards-2" style="margin-top: 0.8em">
+<div class="card">
+
+#### method execution
+Ejecución del cuerpo de un método. El más común.
+`execution(* Clase.*(..))`
+
+</div>
+<div class="card purple">
+
+#### method call
+Llamada a un método desde otro punto del código.
+`call(* Clase.*(..))`
+
+</div>
+<div class="card orange">
+
+#### constructor execution
+Ejecución del constructor de una clase.
+`execution(Clase.new(..))`
+
+</div>
+<div class="card green">
+
+#### field access
+Lectura o escritura de un campo de una clase.
+`get(* Clase.*) / set(* Clase.*)`
+
+</div>
+</div>
+
+---
+
+<div class="tag">thisJoinPoint</div>
+
+## Acceder al contexto del Join Point
+
+```java
+public aspect JoinPointInfo {
+    before() : execution(* com.app.*.*(..)) {
+        // thisJoinPoint da acceso al contexto de ejecución
+        System.out.println("Tipo:   " + thisJoinPoint.getKind());
+        System.out.println("Método: " + thisJoinPoint.getSignature().getName());
+        System.out.println("Clase:  " + thisJoinPoint.getTarget().getClass().getSimpleName());
+        System.out.println("Args:   " + Arrays.toString(thisJoinPoint.getArgs()));
+    }
+}
+// Salida ejemplo:
+// Tipo:   method-execution
+// Método: procesarPedido
+// Clase:  PedidoService
+// Args:   [Pedido@3f99bd52]
+```
+
+---
+
+<!-- _class: section-cover -->
+
+# <span class="accent">Advice</span>
+
+Qué ejecutar y cuándo
+
+---
+
+<div class="tag">Entidad 3 — Advice</div>
+
+## Los 5 tipos de Advice
+
+| Advice | Cuándo ejecuta | Uso típico |
+|---|---|---|
+| `before()` | Antes del método | Validación, logging de entrada |
+| `after()` | Siempre al final (≈ `finally`) | Liberación de recursos |
+| `after() returning` | Solo si terminó con éxito | Auditoría, caché post-ejecución |
+| `after() throwing` | Solo si lanzó excepción | Manejo centralizado de errores |
+| `around()` | Envuelve el método completo | Caché, retry, timing, seguridad |
+
+> **Flujo:** `around inicio` → `before` → **método()** → `after` → `around fin`
+
+---
+
+<div class="tag">before / after</div>
+
+## `before()` y `after()`
+
+```java
+public aspect TimingAspect {
+
+    pointcut serviceMethods() :
+        execution(* com.app.service.*.*(..));
+
+    // Antes del método — no puede detener la ejecución (salvo excepción)
+    before() : serviceMethods() {
+        System.out.println("→ " + thisJoinPoint.getSignature().getName());
+    }
+
+    // Siempre al final, tanto en éxito como en excepción (como finally)
+    after() : serviceMethods() {
+        System.out.println("← " + thisJoinPoint.getSignature().getName());
+    }
+}
+```
+
+---
+
+<div class="tag">after returning / throwing</div>
+
+## Variantes de `after()`
+
+```java
+public aspect ResultAspect {
+
+    pointcut query() : execution(* Repository.find*(..));
+
+    // Solo si terminó sin excepción — accede al valor de retorno
+    after() returning(Object result) : query() {
+        System.out.println("Resultado: " + result);
+    }
+
+    // Solo si lanzó excepción — accede al objeto de excepción
+    after() throwing(Exception ex) : query() {
+        System.err.println("Error en consulta: " + ex.getMessage());
+    }
+}
+```
+
+> `returning` y `throwing` son mutuamente excluyentes. `after()` sin modificador ejecuta en **ambos** casos.
+
+---
+
+<div class="tag">around</div>
+
+## `around()` — control total del flujo
+
+```java
+public aspect CacheAspect {
+
+    private Map<String, Object> cache = new HashMap<>();
+
+    Object around() : execution(* ProductService.getProduct(String)) {
+        String key = (String) thisJoinPoint.getArgs()[0];
+
+        if (cache.containsKey(key)) {
+            System.out.println("[CACHE HIT] " + key);
+            return cache.get(key);   // NO llama proceed() → evita la BD
+        }
+
+        Object result = proceed();   // ejecuta el método real
+        cache.put(key, result);
+        return result;
+    }
+}
+```
+
+> **Regla:** siempre llamar `proceed()` a menos que **intencionalmente** quieras bloquear la ejecución.
+
+---
+
+<!-- _class: section-cover -->
+
+# <span class="accent">Weaving</span>
+
+Cómo se ensamblan los aspectos con el código base
+
+---
+
+<div class="tag">Entidad 4 — Weaving</div>
+
+## Weaving — los 3 momentos
+
+<div class="cards cards-3" style="margin-top: 0.8em">
+<div class="card">
+
+#### Compile-time
+El compilador `ajc` teje durante la compilación. **Mejor rendimiento**, sin overhead en runtime.
+```bash
+mvn clean compile
+```
+
+</div>
+<div class="card orange">
+
+#### Post-compile
+Teje sobre `.class` o JARs ya compilados. Útil cuando no tienes el código fuente.
+```bash
+ajc -inpath libreria.jar
+    -aspectpath aspectos.jar
+```
+
+</div>
+<div class="card green">
+
+#### Load-time
+El agente de AspectJ teje cuando la JVM carga las clases. No requiere recompilar.
+```bash
+java -javaagent:aspectjweaver.jar
+     -jar app.jar
+```
+
+</div>
+</div>
+
+| Tipo | Cuándo ocurre | Rendimiento | Flexibilidad |
+|---|---|---|---|
+| Compile-time | Compilación | ✅ Máximo | ~ Media |
+| Post-compile | Post-compilación | ✅ Alto | ✅ Alta |
+| Load-time | Carga de clases | ~ Medio | ✅ Máxima |
+
+---
+
+<!-- _class: section-cover -->
+
+# <span class="accent">Inter-Type Declarations</span>
+
+La entidad estática de AspectJ
+
+---
+
+<div class="tag">Entidad 5 — ITD</div>
+
+## ITD — modificar la estructura en compilación
+
+A diferencia de Pointcuts y Advices que actúan en **runtime**, las ITD modifican la **estructura del programa en compilación** — agregan miembros a clases existentes sin tocar su código fuente.
+
+<div class="cards cards-2" style="margin-top: 0.8em">
+<div class="card purple">
+
+#### Métodos y atributos
+`public String Clase.nuevoMetodo()`
+`private String Clase.nuevoAtributo`
+
+</div>
+<div class="card orange">
+
+#### Constructores
+`public Clase.new(String param)`
+
+</div>
+<div class="card green">
+
+#### `declare parents`
+`declare parents: Clase implements IFaz`
+Hace que una clase implemente una interfaz sin tocar su código.
+
+</div>
+<div class="card red">
+
+#### Diferencia clave con Advice
+Advice *intercepta* en runtime. ITD *extiende la estructura* en compilación — el miembro existe permanentemente.
+
+</div>
+</div>
+
+---
+
+<div class="tag">ITD — código</div>
+
+## Inter-Type Declarations en acción
+
+```java
+public aspect AuditAspect {
+
+    // Agrega un atributo privado a la clase User
+    private String User.auditId;
+
+    // Agrega un método público a la clase User
+    public String User.getAuditInfo() {
+        return "User[" + this.getName() + "] auditId=" + this.auditId;
+    }
+
+    public void User.setAuditId(String id) {
+        this.auditId = id;
+    }
+}
+// User no sabe que tiene estos miembros — el compilador los agrega:
+// User u = new User("Felipe");
+// u.setAuditId("AUD-001");
+// System.out.println(u.getAuditInfo());
+// → User[Felipe] auditId=AUD-001
+```
+
+---
+
+<div class="tag">declare parents</div>
+
+## `declare parents` — retrofitting de interfaces
+
+```java
+import java.io.Serializable;
+
+public aspect SerializableAspect {
+
+    // Hace que todas las clases del paquete model
+    // implementen Serializable sin modificarlas
+    declare parents: com.app.model.* implements Serializable;
+}
+
+// Ahora cualquier instancia de com.app.model.*
+// puede usarse donde se requiera Serializable
+// sin haber modificado ninguna clase del paquete.
+```
+
+> Muy útil para **retrofitting** de clases legacy — agregar comportamiento a clases de terceros sin tener su código fuente.
+
+---
+
+<!-- _class: section-cover -->
+
+# <span class="accent">Pointcut</span>
+
+Seleccionar qué Join Points nos interesan
+
+---
+
+<div class="tag">Pointcut</div>
+
+## Pointcut — patrones y comodines
+
+```java
+// * → exactamente un token  |  .. → cero o más tokens
+
+// Todos los métodos de cualquier clase Service
+pointcut serviceMethods() :
+    execution(* com.app.service.*.*(..));
+
+// Métodos con exactamente dos parámetros
+pointcut twoParams() :
+    call(void MiClase.metodo(*, *));
+
+// Combinando con operadores lógicos
+pointcut serviceWithString() :
+    execution(* com.app.service.*.*(..))
+    && execution(* *.*(.., String, ..));
+
+// Capturar argumentos del método
+pointcut lending(Member m, Book b) :
+    execution(void Library.lendBook(Member, Book))
+    && args(m, b);
+```
 
 ---
 
@@ -641,107 +1000,6 @@ Compilador oficial del proyecto **Eclipse**. Estándar de producción.
 
 <!-- _class: section-cover -->
 
-# <span class="accent">Tipos de Advice</span>
-
-before, after, around y sus variantes
-
----
-
-<div class="tag">Advice</div>
-
-## Los 5 tipos de Advice
-
-| Advice | Cuándo ejecuta | Uso típico |
-|---|---|---|
-| `before()` | Antes del método | Validación, logging de entrada |
-| `after()` | Siempre al final (≈ `finally`) | Liberación de recursos |
-| `after() returning` | Solo si terminó con éxito | Auditoría, caché post-ejecución |
-| `after() throwing` | Solo si lanzó excepción | Manejo centralizado de errores |
-| `around()` | Envuelve el método completo | Caché, retry, timing, seguridad |
-
-> **Flujo:** `around inicio` → `before` → **método()** → `after` → `around fin`
-
----
-
-<div class="tag">before / after</div>
-
-## `before()` y `after()`
-
-```java
-public aspect TimingAspect {
-
-    pointcut serviceMethods() :
-        execution(* com.app.service.*.*(..));
-
-    // Antes del método — no puede detener la ejecución (salvo excepción)
-    before() : serviceMethods() {
-        System.out.println("→ " + thisJoinPoint.getSignature().getName());
-    }
-
-    // Siempre al final, tanto en éxito como en excepción (como finally)
-    after() : serviceMethods() {
-        System.out.println("← " + thisJoinPoint.getSignature().getName());
-    }
-}
-```
-
----
-
-<div class="tag">after returning / throwing</div>
-
-## Variantes de `after()`
-
-```java
-public aspect ResultAspect {
-
-    pointcut query() : execution(* Repository.find*(..));
-
-    // Solo si terminó sin excepción — accede al valor de retorno
-    after() returning(Object result) : query() {
-        System.out.println("Resultado: " + result);
-    }
-
-    // Solo si lanzó excepción — accede al objeto de excepción
-    after() throwing(Exception ex) : query() {
-        System.err.println("Error en consulta: " + ex.getMessage());
-    }
-}
-```
-
-> `returning` y `throwing` son mutuamente excluyentes. `after()` sin modificador ejecuta en **ambos** casos.
-
----
-
-<div class="tag">around</div>
-
-## `around()` — control total del flujo
-
-```java
-public aspect CacheAspect {
-
-    private Map<String, Object> cache = new HashMap<>();
-
-    Object around() : execution(* ProductService.getProduct(String)) {
-        String key = (String) thisJoinPoint.getArgs()[0];
-
-        if (cache.containsKey(key)) {
-            System.out.println("[CACHE HIT] " + key);
-            return cache.get(key);   // NO llama proceed() → evita la BD
-        }
-
-        Object result = proceed();   // ejecuta el método real
-        cache.put(key, result);      // guarda en caché para la próxima vez
-        return result;
-    }
-}
-```
-
-> **Regla:** siempre retornar un valor compatible con el tipo del método interceptado. Llamar `proceed()` a menos que **intencionalmente** quieras bloquear la ejecución.
-
----
-
-<!-- _class: section-cover -->
-
 # <span class="accent">Ejemplos de Código</span>
 
 Del cajero automático a declaraciones inter-tipo
@@ -801,17 +1059,6 @@ public aspect AuditoriaAspect {
 ## Wildcards `*` y `..` en pointcuts
 
 ```java
-// Restaurante.java
-public class Restaurante {
-    public void prepararEntrada()   { /* … */ }
-    public void prepararPrincipal() { /* … */ }
-    public void prepararPostre()    { /* … */ }
-    public void cobrar()            { /* … */ }
-}
-```
-
-```java
-// OrdenAspect.aj
 public aspect OrdenAspect {
 
     // * coincide con cualquier nombre que comience por "preparar"
@@ -860,20 +1107,17 @@ Se activa **dentro del cuerpo** del método (el *callee*).
 ```java
 public aspect SensorTrafico {
 
-    // call: se dispara donde se invoca moto.arrancar()
     before() : call(* Moto.arrancar()) {
         System.out.println(
             "[CALL]  sensor en el caller");
     }
 
-    // execution: se dispara dentro del cuerpo heredado de Vehiculo
     after() : execution(* Vehiculo.arrancar()) {
         System.out.println(
             "[EXEC]  sensor dentro del método");
     }
 }
 // moto.arrancar() → dispara CALL primero, luego EXEC
-// ambos se activan con una sola llamada
 ```
 
 </div>
@@ -961,8 +1205,6 @@ public aspect LoanLimitAspect {
         proceed(m, b);     // ejecuta Library.lendBook normalmente
     }
 }
-// Sin perthis: el contador de loanCount() vive en Member
-// El aspecto solo decide si permit o no la ejecución
 ```
 
 ---
@@ -972,7 +1214,6 @@ public aspect LoanLimitAspect {
 ## Validación y alerta automática con `args()` + `after returning`
 
 ```java
-// Aspecto 1: valida que la nota esté entre 0.0 y 5.0
 public aspect GradeValidationAspect {
     pointcut gradeRecording(Student s, String subject, double grade) :
         execution(void GradeBook.recordGrade(Student, String, double))
@@ -986,7 +1227,6 @@ public aspect GradeValidationAspect {
     }
 }
 
-// Aspecto 2: alerta si el promedio < 3.0
 public aspect AcademicRiskAspect {
     after(Student s) returning(double avg)
             : execution(double GradeBook.computeAverage(Student, ..))
@@ -1018,15 +1258,14 @@ public aspect CacheAspect {
     double around(String id) : priceQuery(id) {
         if (cache.containsKey(id)) {
             System.out.println("[CACHE HIT] " + id);
-            return cache.get(id);    // sin tocar la BD
+            return cache.get(id);
         }
-        double result = proceed(id); // consulta real
+        double result = proceed(id);
         cache.put(id, result);
         System.out.println("[CACHE SET] " + id + " = " + result);
         return result;
     }
 
-    // Invalida caché cuando el precio cambia
     after(String id) : priceUpdate(id) { cache.remove(id); }
 }
 ```
@@ -1113,8 +1352,8 @@ Los cross-cutting concerns se repiten en decenas de clases con OOP puro, violand
 </div>
 <div class="card purple">
 
-#### Los 5 conceptos
-**Aspect** → módulo. **Join Point** → dónde puede actuar. **Pointcut** → dónde quiero. **Advice** → qué hace. **Weaving** → cómo se combina.
+#### Los 6 conceptos
+**Aspect** → módulo. **Join Point** → dónde puede actuar. **Advice** → qué hace. **Weaving** → cómo se combina. **ITD** → modifica estructura en compilación. **Pointcut** → dónde quiero que actúe.
 
 </div>
 <div class="card green">
