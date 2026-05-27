@@ -876,13 +876,77 @@ public aspect SerializableAspect {
 
 # <span class="accent">Pointcut</span>
 
-Seleccionar qué Join Points nos interesan
+Seleccionan dónde y cuándo se ejecutará el código de un aspecto (conjuntos de join points).
 
 ---
 
 <div class="tag">Pointcut</div>
 
 ## Pointcut — patrones y comodines
+
+### Sintaxis de un pointcut
+
+```aspectj
+pointcut NombreDelPointcut() :
+    ModificadorDeAcceso TipoDeRetorno ClaseMetodo.metodo(parametros);
+```
+
+- `NombreDelPointcut`: Un identificador que se asigna.
+- `ModificadorDeAcceso`: Puede ser `public`, `private`, `protected` o package.
+- `TipoDeRetorno`: El tipo de retorno del método o `*` para cualquier tipo.
+- `ClaseMetodo`: El nombre de la clase que contiene el método.
+- `Metodo`: El nombre del método al que el pointcut se aplicará.
+- `Parametros`: La lista de parámetros del método.
+
+### Selección por Ejecución de Métodos (`execution`)
+
+Es el más común. Selecciona el momento en que se ejecuta el cuerpo de un método.
+
+```aspectj
+// Sintaxis: execution(modificador_acceso tipo_retorno paquete.clase.metodo(argumentos))
+
+// Selecciona la ejecución de CUALQUIER método público que devuelva un int
+pointcut todosLosEnterosPublicos() : execution(public int *(..));
+
+// Selecciona un método específico en una clase de servicios
+pointcut servicioFacturacion() : execution(* com.finanzas.services.FacturacionService.procesarPago(..));
+```
+
+### B. Selección por Llamada (`call`)
+
+A diferencia de `execution`, `call` selecciona el lugar desde donde se **llama** al método (el sitio de la invocación).
+
+```aspectj
+// Selecciona cuando alguien intenta llamar al método depositar
+pointcut cuandoLlamenADepositar() : call(* com.finanzas.Cuenta.depositar(..));
+```
+
+### C. Selección por Acceso a Atributos (`get` y `set`)
+
+Permite reaccionar cuando se lee o se modifica una variable de una clase.
+
+```aspectj
+// Selecciona cuando se modifica el atributo 'balance'
+pointcut cambioDeBalance() : set(double com.finanzas.Cuenta.balance);
+```
+
+### D. Combinación de Pointcuts (Operadores Lógicos)
+
+Se pueden usar `&&` (AND), `||` (OR) y `!` (NOT).
+
+```aspectj
+// Ejecución de métodos en el paquete servicios, EXCEPTO los que empiecen con 'get'
+pointcut serviciosModificadores() :
+    execution(* com.finanzas.services.*.*(..))
+    && !execution(* com.finanzas.services.*.get*(..));
+```
+
+Los pointcuts pueden exponer contexto (objetos, valores de argumentos) para que el advice los use.
+
+**call vs. execution**
+
+- `call`: Se activa en el sitio donde se hace la llamada. Útil para aspectos de producción que necesitan interceptar una interfaz específica.
+- `execution`: Se activa cuando el cuerpo del método está corriendo. Útil para trazas (tracing) o cuando importa la implementación real.
 
 ```java
 // * → exactamente un token  |  .. → cero o más tokens
@@ -942,6 +1006,15 @@ Compilador oficial del proyecto **Eclipse**. Estándar de producción.
 
 </div>
 </div>
+
+| Característica | ajc (AspectJ Compiler) | abc (AspectBench Compiler) |
+|---|---|---|
+| Origen e Infraestructura | Desarrollado por Xerox PARC y mantenido por Eclipse. Está basado directamente en el compilador de Eclipse (ecj). | Desarrollado por un consorcio académico (Oxford, McGill, Aarhus). Se apoya en las herramientas Polyglot y Soot. |
+| Enfoque | Productividad en entornos industriales, velocidad de compilación rápida y compatibilidad con IDEs. | Investigación académica, experimentación con el lenguaje y optimización estricta del rendimiento. |
+| Representación interna | Genera un Árbol de Sintaxis Abstracta (AST) unificado a partir de los archivos .java y .aj. | Traduce el AST a Jimple, una representación intermedia de código de 3 direcciones tipada y simplificada. |
+| Weaving | Modifica el bytecode directamente inyectando ganchos (hooks) o llamadas directas en las líneas del código objetivo. | Realiza el tejido de aspectos de forma optimizada sobre la representación Jimple, aprovechando su flujo de control limpio. |
+| Capacidad de Optimización | Para pointcuts dinámicos (como cflow), introduce comprobaciones redundantes en tiempo de ejecución en cada llamada. | Realiza análisis de flujo estático para evaluar qué comprobaciones son innecesarias y eliminarlas en la compilación. |
+| Salida | Produce archivos .class estándar con instrucciones duplicadas o redirigidas que la JVM lee de forma normal. | El framework Soot vuelve a empaquetar y transformar el código Jimple ya optimizado en bytecode de Java. |
 
 ---
 

@@ -805,6 +805,90 @@ public aspect AccountAudit perthis(execution(* Account.*(..))) {
   </div>
 </section>
 
+<section id="pointcut" style="background:var(--bg)">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Pointcuts</span>
+      <h2 class="section-title">Pointcut — <span class="accent">Patrones y Selección</span></h2>
+      <p class="section-desc">Seleccionan dónde y cuándo se ejecutará el código de un aspecto (conjuntos de join points).</p>
+    </div>
+    <div class="install-steps fade-up">
+      <div class="compat-card" style="border-top-color:var(--cyan)">
+        <h3>Sintaxis básica</h3>
+        <p>Un pointcut identifica métodos, accesos o llamadas en Java mediante una expresión de patrón clara.</p>
+        <div class="code-wrap" style="margin-top:1rem"><div class="code-header"><span class="code-filename">syntax</span></div>
+<pre><code class="language-java">pointcut NombreDelPointcut() :
+    ModificadorDeAcceso TipoDeRetorno ClaseMetodo.metodo(parametros);</code></pre></div>
+        <ul style="margin-top:1rem;color:var(--text2);line-height:1.8">
+          <li><strong>NombreDelPointcut</strong>: identificador del pointcut.</li>
+          <li><strong>ModificadorDeAcceso</strong>: <code>public</code>, <code>private</code>, <code>protected</code> o package.</li>
+          <li><strong>TipoDeRetorno</strong>: tipo devuelto o <code>*</code> para cualquier tipo.</li>
+          <li><strong>ClaseMetodo</strong>: clase que define el método.</li>
+          <li><strong>Metodo</strong>: nombre del método a interceptar.</li>
+          <li><strong>Parametros</strong>: lista de parámetros del método.</li>
+        </ul>
+      </div>
+      <div class="compat-card" style="border-top-color:var(--purple)">
+        <h3>Tipos comunes de selección</h3>
+        <p>Los pointcuts pueden elegir ejecución, llamada, acceso a campos y combinaciones lógicas.</p>
+        <div class="code-wrap" style="margin-top:1rem"><div class="code-header"><span class="code-filename">pointcuts</span></div>
+<pre><code class="language-java">// execution: selecciona el cuerpo del método
+pointcut todosLosEnterosPublicos() :
+    execution(public int *(..));
+
+pointcut servicioFacturacion() :
+    execution(* com.finanzas.services.FacturacionService.procesarPago(..));
+
+// call: selecciona el lugar de invocación
+pointcut cuandoLlamenADepositar() :
+    call(* com.finanzas.Cuenta.depositar(..));
+
+// get / set: selecciona acceso a campos
+pointcut cambioDeBalance() :
+    set(double com.finanzas.Cuenta.balance);
+
+// Operadores lógicos
+pointcut serviciosModificadores() :
+    execution(* com.finanzas.services.*.*(..))
+    &amp;&amp; !execution(* com.finanzas.services.*.get*(..));</code></pre></div>
+      </div>
+      <div class="compat-card" style="border-top-color:var(--green)">
+        <h3>Pointcut — patrones y comodines</h3>
+        <div class="code-wrap" style="margin-top:1rem"><div class="code-header"><span class="code-filename">ejemplos</span></div>
+<pre><code class="language-java">// * → exactamente un token  |  .. → cero o más tokens
+
+// Todos los métodos de cualquier clase Service
+pointcut serviceMethods() :
+    execution(* com.app.service.*.*(..));
+
+// Métodos con exactamente dos parámetros
+pointcut twoParams() :
+    call(void MiClase.metodo(*, *));
+
+// Combinando con operadores lógicos
+pointcut serviceWithString() :
+    execution(* com.app.service.*.*(..))
+    &amp;&amp; execution(* *.*(.., String, ..));
+
+// Capturar argumentos del método
+pointcut lending(Member m, Book b) :
+    execution(void Library.lendBook(Member, Book))
+    &amp;&amp; args(m, b);</code></pre></div>
+      </div>
+    </div>
+    <div class="fade-up" style="margin-top:1.25rem">
+      <div class="compat-card" style="border-top-color:var(--orange)">
+        <h3>Contexto y diferencias</h3>
+        <p>Los pointcuts pueden exponer objetos y valores de argumentos para que el advice los reutilice.</p>
+        <p style="margin-top:0.75rem;color:var(--text2)">
+          <strong>call</strong>: se activa en el sitio donde se hace la llamada. Ideal para interceptar interfaces y llamadas externas.<br>
+          <strong>execution</strong>: se activa cuando el cuerpo del método se ejecuta. Ideal para trazas y cuando importa la implementación real.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- WEAVING -->
 <section id="weaving" style="background:var(--bg2)">
   <div class="container">
@@ -1084,24 +1168,20 @@ public aspect SerializableAspect {
 &lt;/build&gt;</code></pre>
         </div>
       </div>
+      <div class="fade-up delay-2" style="margin-top:1.5rem">
+        <h3 style="font-size:1rem;margin-bottom:1rem">Requisitos</h3>
+        <ol style="font-size:.92rem;color:var(--text2);line-height:1.8;padding-left:1.25rem">
+          <li>Instalar un JDK (Java 8 o superior).</li>
+          <li>Descargar Maven desde <a href="https://maven.apache.org/download.cgi" target="_blank">maven.apache.org</a> y descomprimirlo.</li>
+          <li>Configurar variables de entorno en Windows: <code style="font-family:var(--mono)">MAVEN_HOME</code> y <code style="font-family:var(--mono)">M2_HOME</code> apuntando a la carpeta de Maven, y agregar <code style="font-family:var(--mono)">%MAVEN_HOME%\bin</code> y <code style="font-family:var(--mono)">%M2_HOME%\bin</code> al <code style="font-family:var(--mono)">Path</code>.</li>
+        </ol>
+      </div>
       <div style="display:flex;flex-direction:column;gap:1rem" class="fade-up delay-2">
         <div class="install-step">
           <div class="step-num">1</div>
           <h3>Verificar Java y Maven</h3>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">java -version  // Java 11+ requerido
-mvn -version   // Maven 3.6+ requerido</code></pre></div>
-        </div>
-        <div class="install-step">
-          <div class="step-num">2</div>
-          <h3>Plugin IntelliJ IDEA</h3>
-          <p>File → Settings → Plugins → Marketplace → buscar <strong>"AspectJ Support"</strong> → instalar → reiniciar IDE</p>
-        </div>
-        <div class="install-step">
-          <div class="step-num">3</div>
-          <h3>Compilar y ejecutar</h3>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">mvn clean compile
-mvn exec:java \
-  -Dexec.mainClass="com.app.Main"</code></pre></div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">java -version   // Java 11+ requerido
+mvn -version    // Maven 3.6+ requerido</code></pre></div>
         </div>
       </div>
     </div>
@@ -1129,6 +1209,49 @@ mvn exec:java \
         <p style="font-size:.85rem;color:var(--text2);margin-top:.75rem">Genera bytecode más optimizado en algunos escenarios y permite agregar extensiones al lenguaje de aspectos.</p>
         <span class="tag">aspectbench.org</span>
       </div>
+    </div>
+    <div class="compare-table-wrap fade-up" style="margin-top:1.5rem">
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>ajc (AspectJ Compiler)</th>
+            <th>abc (AspectBench Compiler)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Origen e Infraestructura</td>
+            <td>Desarrollado por Xerox PARC y mantenido por Eclipse. Está basado directamente en el compilador de Eclipse (ecj).</td>
+            <td>Desarrollado por un consorcio académico (Oxford, McGill, Aarhus). Se apoya en las herramientas Polyglot y Soot.</td>
+          </tr>
+          <tr>
+            <td>Enfoque</td>
+            <td>Productividad en entornos industriales, velocidad de compilación rápida y compatibilidad con IDEs.</td>
+            <td>Investigación académica, experimentación con el lenguaje y optimización estricta del rendimiento.</td>
+          </tr>
+          <tr>
+            <td>Representación interna</td>
+            <td>Genera un Árbol de Sintaxis Abstracta (AST) unificado a partir de los archivos .java y .aj.</td>
+            <td>Traduce el AST a Jimple, una representación intermedia de código de 3 direcciones tipada y simplificada.</td>
+          </tr>
+          <tr>
+            <td>Weaving</td>
+            <td>Modifica el bytecode directamente inyectando ganchos (hooks) o llamadas directas en las líneas del código objetivo.</td>
+            <td>Realiza el tejido de aspectos de forma optimizada sobre la representación Jimple, aprovechando su flujo de control limpio.</td>
+          </tr>
+          <tr>
+            <td>Capacidad de Optimización</td>
+            <td>Para pointcuts dinámicos (como cflow), introduce comprobaciones redundantes en tiempo de ejecución en cada llamada.</td>
+            <td>Realiza análisis de flujo estático para evaluar qué comprobaciones son innecesarias y eliminarlas en la compilación.</td>
+          </tr>
+          <tr>
+            <td>Salida</td>
+            <td>Produce archivos .class estándar con instrucciones duplicadas o redirigidas que la JVM lee de forma normal.</td>
+            <td>El framework Soot vuelve a empaquetar y transformar el código Jimple ya optimizado en bytecode de Java.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--bg2);border-radius:var(--radius-sm);border-left:3px solid var(--cyan);font-size:.88rem;color:var(--text2)" class="fade-up">
       <strong style="color:var(--cyan)">En la práctica:</strong> <code style="font-family:var(--mono);color:var(--purple)">ajc</code> es el compilador estándar para proyectos reales. Al ejecutar <code style="font-family:var(--mono);color:var(--cyan)">mvn compile</code> con el plugin configurado, <code style="font-family:var(--mono);color:var(--purple)">ajc</code> reemplaza al compilador de Java y realiza el weaving automáticamente.
