@@ -382,34 +382,6 @@ footer .footer-brand{font-family:var(--mono);color:var(--cyan);font-size:1rem;fo
   </div>
 </section>
 
-<!-- COMPATIBILIDAD -->
-<section id="compatibilidad">
-  <div class="container">
-    <div class="section-header fade-up">
-      <span class="section-tag">// Compatibilidad</span>
-      <h2 class="section-title">AspectJ es <span class="accent">compatible con Java</span></h2>
-      <p class="section-desc">AspectJ es una extensión compatible de Java para facilitar el uso de aspectos por parte de los programadores. Por compatible se entiende tres dimensiones fundamentales:</p>
-    </div>
-    <div class="compat-grid">
-      <div class="compat-card fade-up delay-1">
-        <h3>Compatibilidad Base</h3>
-        <p>Todos los programas válidos de Java deben ser programas válidos de AspectJ. Cualquier código Java existente funciona sin cambios dentro de un proyecto AspectJ.</p>
-      </div>
-      <div class="compat-card fade-up delay-2">
-        <h3>Compatibilidad de Plataforma</h3>
-        <p>Todos los programas válidos de AspectJ deben correr sobre la máquina virtual estándar de Java (JVM). No se requiere una JVM especializada o modificada.</p>
-      </div>
-      <div class="compat-card fade-up delay-3">
-        <h3>Compatibilidad de Programación</h3>
-        <p>La programación en AspectJ debe ser una extensión natural de la programación en Java. Esta meta fue una de las guías más importantes a la hora de tomar decisiones sobre el lenguaje.</p>
-      </div>
-    </div>
-    <div class="compat-note fade-up">
-      AspectJ es <strong>estáticamente tipado</strong> y usa el sistema de tipos estático de Java. Fue creado en el <strong>PARC (Palo Alto Research Center)</strong> por el equipo Xerox PARC, liderado por Gregor Kiczales, y se ha convertido en el estándar de facto de la Programación Orientada a Aspectos en el ecosistema Java.
-    </div>
-  </div>
-</section>
-
 <!-- QUÉ ES AOP -->
 <section id="que-es-aop">
   <div class="container">
@@ -502,6 +474,34 @@ public aspect LoggingAspect {
   </div>
 </section>
 
+<!-- COMPATIBILIDAD -->
+<section id="compatibilidad">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Compatibilidad</span>
+      <h2 class="section-title">AspectJ es <span class="accent">compatible con Java</span></h2>
+      <p class="section-desc">AspectJ es una extensión compatible de Java para facilitar el uso de aspectos por parte de los programadores. Por compatible se entiende tres dimensiones fundamentales:</p>
+    </div>
+    <div class="compat-grid">
+      <div class="compat-card fade-up delay-1">
+        <h3>Compatibilidad Base</h3>
+        <p>Todos los programas válidos de Java deben ser programas válidos de AspectJ. Cualquier código Java existente funciona sin cambios dentro de un proyecto AspectJ.</p>
+      </div>
+      <div class="compat-card fade-up delay-2">
+        <h3>Compatibilidad de Plataforma</h3>
+        <p>Todos los programas válidos de AspectJ deben correr sobre la máquina virtual estándar de Java (JVM). No se requiere una JVM especializada o modificada.</p>
+      </div>
+      <div class="compat-card fade-up delay-3">
+        <h3>Compatibilidad de Programación</h3>
+        <p>La programación en AspectJ debe ser una extensión natural de la programación en Java. Esta meta fue una de las guías más importantes a la hora de tomar decisiones sobre el lenguaje.</p>
+      </div>
+    </div>
+    <div class="compat-note fade-up">
+      AspectJ es <strong>estáticamente tipado</strong> y usa el sistema de tipos estático de Java. Fue creado en el <strong>PARC (Palo Alto Research Center)</strong> por el equipo Xerox PARC, liderado por Gregor Kiczales, y se ha convertido en el estándar de facto de la Programación Orientada a Aspectos en el ecosistema Java.
+    </div>
+  </div>
+</section>
+
 <!-- CONCEPTOS -->
 <section id="conceptos">
   <div class="container">
@@ -557,7 +557,7 @@ public aspect LoggingAspect {
 <section id="aspect" style="background:var(--bg)">
   <div class="container">
     <div class="section-header fade-up">
-      <span class="section-tag">// Entidad 1</span>
+      <span class="section-tag">// Aspect</span>
       <h2 class="section-title">Aspect — <span class="accent">Concepto y Declaración</span></h2>
       <p class="section-desc">La unidad principal de modularización en AOP. Encapsula un cross-cutting concern y se declara con modificadores únicos que no existen en las clases Java.</p>
     </div>
@@ -698,7 +698,7 @@ public aspect AccountAudit perthis(execution(* Account.*(..))) {
 <section id="joinpoint" style="background:var(--bg2)">
   <div class="container">
     <div class="section-header fade-up">
-      <span class="section-tag">// Entidad 2</span>
+      <span class="section-tag">// Join Point</span>
       <h2 class="section-title">Join Point — <span class="accent">El Punto de Intercepción</span></h2>
       <p class="section-desc">Un Join Point es cualquier punto identificable en la ejecución del programa donde un aspecto puede actuar.</p>
     </div>
@@ -748,7 +748,7 @@ public aspect AccountAudit perthis(execution(* Account.*(..))) {
 <section id="advice-detalle" style="background:var(--bg)">
   <div class="container">
     <div class="section-header fade-up">
-      <span class="section-tag">// Entidad 3</span>
+      <span class="section-tag">// Advice</span>
       <h2 class="section-title">Advice — <span class="accent">El Comportamiento</span></h2>
       <p class="section-desc">El código que se ejecuta cuando un aspecto actúa en un Join Point. Define <em>qué</em> hacer y <em>cuándo</em> hacerlo.</p>
     </div>
@@ -893,7 +893,7 @@ pointcut lending(Member m, Book b) :
 <section id="weaving" style="background:var(--bg2)">
   <div class="container">
     <div class="section-header fade-up">
-      <span class="section-tag">// Entidad 4</span>
+      <span class="section-tag">// Weaving</span>
       <h2 class="section-title">Weaving — <span class="accent">El Ensamblaje</span></h2>
       <p class="section-desc">El proceso mediante el cual los aspectos se combinan con el código base. Es lo que hace que el advice realmente se ejecute en los join points seleccionados.</p>
     </div>
@@ -1124,70 +1124,6 @@ public aspect SerializableAspect {
   </div>
 </section>
 
-<!-- INSTALACIÓN -->
-<section id="instalacion">
-  <div class="container">
-    <div class="section-header fade-up">
-      <span class="section-tag">// Setup</span>
-      <h2 class="section-title">Instalación y <span class="accent">Configuración</span></h2>
-      <p class="section-desc">Configura AspectJ en tu proyecto Maven con estos pasos.</p>
-    </div>
-    <div class="install-steps">
-      <div class="fade-up delay-1">
-        <div class="code-wrap">
-          <div class="code-header">
-            <span class="code-filename"><span class="ext-xml">pom.xml</span> — Dependencias</span>
-            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
-          </div>
-          <pre><code class="language-xml">&lt;dependencies&gt;
-  &lt;dependency&gt;
-    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
-    &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;
-    &lt;version&gt;1.9.21&lt;/version&gt;
-  &lt;/dependency&gt;
-&lt;/dependencies&gt;
-
-&lt;build&gt;
-  &lt;plugins&gt;
-    &lt;plugin&gt;
-      &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
-      &lt;artifactId&gt;aspectj-maven-plugin&lt;/artifactId&gt;
-      &lt;version&gt;1.15.0&lt;/version&gt;
-      &lt;configuration&gt;
-        &lt;complianceLevel&gt;17&lt;/complianceLevel&gt;
-        &lt;source&gt;17&lt;/source&gt;
-        &lt;target&gt;17&lt;/target&gt;
-      &lt;/configuration&gt;
-      &lt;executions&gt;
-        &lt;execution&gt;
-          &lt;goals&gt;&lt;goal&gt;compile&lt;/goal&gt;&lt;/goals&gt;
-        &lt;/execution&gt;
-      &lt;/executions&gt;
-    &lt;/plugin&gt;
-  &lt;/plugins&gt;
-&lt;/build&gt;</code></pre>
-        </div>
-      </div>
-      <div class="fade-up delay-2" style="margin-top:1.5rem">
-        <h3 style="font-size:1rem;margin-bottom:1rem">Requisitos</h3>
-        <ol style="font-size:.92rem;color:var(--text2);line-height:1.8;padding-left:1.25rem">
-          <li>Instalar un JDK (Java 8 o superior).</li>
-          <li>Descargar Maven desde <a href="https://maven.apache.org/download.cgi" target="_blank">maven.apache.org</a> y descomprimirlo.</li>
-          <li>Configurar variables de entorno en Windows: <code style="font-family:var(--mono)">MAVEN_HOME</code> y <code style="font-family:var(--mono)">M2_HOME</code> apuntando a la carpeta de Maven, y agregar <code style="font-family:var(--mono)">%MAVEN_HOME%\bin</code> y <code style="font-family:var(--mono)">%M2_HOME%\bin</code> al <code style="font-family:var(--mono)">Path</code>.</li>
-        </ol>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:1rem" class="fade-up delay-2">
-        <div class="install-step">
-          <div class="step-num">1</div>
-          <h3>Verificar Java y Maven</h3>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">java -version   // Java 11+ requerido
-mvn -version    // Maven 3.6+ requerido</code></pre></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- COMPILADORES -->
 <section id="compiladores">
   <div class="container">
@@ -1255,6 +1191,70 @@ mvn -version    // Maven 3.6+ requerido</code></pre></div>
     </div>
     <div style="margin-top:1.5rem;padding:1rem 1.5rem;background:var(--bg2);border-radius:var(--radius-sm);border-left:3px solid var(--cyan);font-size:.88rem;color:var(--text2)" class="fade-up">
       <strong style="color:var(--cyan)">En la práctica:</strong> <code style="font-family:var(--mono);color:var(--purple)">ajc</code> es el compilador estándar para proyectos reales. Al ejecutar <code style="font-family:var(--mono);color:var(--cyan)">mvn compile</code> con el plugin configurado, <code style="font-family:var(--mono);color:var(--purple)">ajc</code> reemplaza al compilador de Java y realiza el weaving automáticamente.
+    </div>
+  </div>
+</section>
+
+<!-- INSTALACIÓN -->
+<section id="instalacion">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="section-tag">// Setup</span>
+      <h2 class="section-title">Instalación y <span class="accent">Configuración</span></h2>
+      <p class="section-desc">Configura AspectJ en tu proyecto Maven con estos pasos.</p>
+    </div>
+    <div class="install-steps">
+      <div class="fade-up delay-1">
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-filename"><span class="ext-xml">pom.xml</span> — Dependencias</span>
+            <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          </div>
+          <pre><code class="language-xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+    &lt;artifactId&gt;aspectjrt&lt;/artifactId&gt;
+    &lt;version&gt;1.9.21&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+
+&lt;build&gt;
+  &lt;plugins&gt;
+    &lt;plugin&gt;
+      &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+      &lt;artifactId&gt;aspectj-maven-plugin&lt;/artifactId&gt;
+      &lt;version&gt;1.15.0&lt;/version&gt;
+      &lt;configuration&gt;
+        &lt;complianceLevel&gt;17&lt;/complianceLevel&gt;
+        &lt;source&gt;17&lt;/source&gt;
+        &lt;target&gt;17&lt;/target&gt;
+      &lt;/configuration&gt;
+      &lt;executions&gt;
+        &lt;execution&gt;
+          &lt;goals&gt;&lt;goal&gt;compile&lt;/goal&gt;&lt;/goals&gt;
+        &lt;/execution&gt;
+      &lt;/executions&gt;
+    &lt;/plugin&gt;
+  &lt;/plugins&gt;
+&lt;/build&gt;</code></pre>
+        </div>
+      </div>
+      <div class="fade-up delay-2" style="margin-top:1.5rem">
+        <h3 style="font-size:1rem;margin-bottom:1rem">Requisitos</h3>
+        <ol style="font-size:.92rem;color:var(--text2);line-height:1.8;padding-left:1.25rem">
+          <li>Instalar un JDK (Java 8 o superior).</li>
+          <li>Descargar Maven desde <a href="https://maven.apache.org/download.cgi" target="_blank">maven.apache.org</a> y descomprimirlo.</li>
+          <li>Configurar variables de entorno en Windows: <code style="font-family:var(--mono)">MAVEN_HOME</code> y <code style="font-family:var(--mono)">M2_HOME</code> apuntando a la carpeta de Maven, y agregar <code style="font-family:var(--mono)">%MAVEN_HOME%\bin</code> y <code style="font-family:var(--mono)">%M2_HOME%\bin</code> al <code style="font-family:var(--mono)">Path</code>.</li>
+        </ol>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem" class="fade-up delay-2">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <h3>Verificar Java y Maven</h3>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename">terminal</span></div><pre><code class="language-java">java -version   // Java 11+ requerido
+mvn -version    // Maven 3.6+ requerido</code></pre></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
