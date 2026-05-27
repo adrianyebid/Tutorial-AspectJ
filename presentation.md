@@ -203,6 +203,7 @@ de los conceptos básicos a ejemplos prácticos.
 
 - ¿Qué es AOP y por qué existe?
 - Compatibilidad con Java
+- Instalación con Maven
 - Los 6 conceptos clave
 - Aspect + Declaración de aspectos
 - Join Point, Advice, Weaving
@@ -212,7 +213,6 @@ de los conceptos básicos a ejemplos prácticos.
 <div>
 
 - Compiladores: `ajc` y `abc`
-- Instalación con Maven
 - Ejemplos de código progresivos
 - 3 tutoriales originales
 - AspectJ vs Spring AOP
@@ -310,6 +310,67 @@ La programación en AspectJ es una extensión *natural* de Java.
 
 </div>
 </div>
+
+---
+
+<!-- _class: section-cover -->
+
+# <span class="accent">Instalación y Configuración</span>
+
+`pom.xml` + pasos de setup. Guía detallada: [canva.link/mmlq6dw3azqzmdv](https://canva.link/mmlq6dw3azqzmdv)
+
+---
+
+<div class="tag">Instalación</div>
+
+## Configuración Maven — `pom.xml`
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjrt</artifactId>
+    <version>1.9.21</version>
+  </dependency>
+</dependencies>
+
+<build><plugins>
+  <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>aspectj-maven-plugin</artifactId>
+    <version>1.15.0</version>
+    <configuration>
+      <complianceLevel>17</complianceLevel>
+    </configuration>
+    <executions>
+      <execution><goals><goal>compile</goal></goals></execution>
+    </executions>
+  </plugin>
+</plugins></build>
+```
+
+---
+
+<div class="tag">Instalación</div>
+
+## Pasos de configuración
+
+1. **Verificar Java y Maven**
+   ```bash
+   java -version   # Java 11+ requerido
+   mvn -version    # Maven 3.6+ requerido
+   ```
+
+2. **Plugin IntelliJ IDEA**
+   `File → Settings → Plugins → Marketplace → "AspectJ Support" → instalar → reiniciar`
+
+3. **Compilar y ejecutar**
+   ```bash
+   mvn clean compile
+   mvn exec:java -Dexec.mainClass="com.app.Main"
+   ```
+
+> Los archivos `.aj` van en la misma estructura de paquetes que los `.java`. El compilador `ajc` los procesa juntos.
 
 ---
 
@@ -1126,9 +1187,9 @@ pointcut lending(Member m, Book b) :
 
 <!-- _class: section-cover -->
 
-# <span class="accent">Compiladores e Instalación</span>
+# <span class="accent">Compiladores</span>
 
-`ajc`, `abc` y configuración Maven
+`ajc` y `abc`
 
 ---
 
@@ -1167,59 +1228,6 @@ Compilador oficial del proyecto **Eclipse**. Estándar de producción.
 | Weaving | Modifica el bytecode directamente inyectando ganchos (hooks) o llamadas directas en las líneas del código objetivo. | Realiza el tejido de aspectos de forma optimizada sobre la representación Jimple, aprovechando su flujo de control limpio. |
 | Capacidad de Optimización | Para pointcuts dinámicos (como cflow), introduce comprobaciones redundantes en tiempo de ejecución en cada llamada. | Realiza análisis de flujo estático para evaluar qué comprobaciones son innecesarias y eliminarlas en la compilación. |
 | Salida | Produce archivos .class estándar con instrucciones duplicadas o redirigidas que la JVM lee de forma normal. | El framework Soot vuelve a empaquetar y transformar el código Jimple ya optimizado en bytecode de Java. |
-
----
-
-<div class="tag">Instalación</div>
-
-## Configuración Maven — `pom.xml`
-
-```xml
-<dependencies>
-  <dependency>
-    <groupId>org.aspectj</groupId>
-    <artifactId>aspectjrt</artifactId>
-    <version>1.9.21</version>
-  </dependency>
-</dependencies>
-
-<build><plugins>
-  <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>aspectj-maven-plugin</artifactId>
-    <version>1.15.0</version>
-    <configuration>
-      <complianceLevel>17</complianceLevel>
-    </configuration>
-    <executions>
-      <execution><goals><goal>compile</goal></goals></execution>
-    </executions>
-  </plugin>
-</plugins></build>
-```
-
----
-
-<div class="tag">Instalación</div>
-
-## Pasos de configuración
-
-1. **Verificar Java y Maven**
-   ```bash
-   java -version   # Java 11+ requerido
-   mvn -version    # Maven 3.6+ requerido
-   ```
-
-2. **Plugin IntelliJ IDEA**
-   `File → Settings → Plugins → Marketplace → "AspectJ Support" → instalar → reiniciar`
-
-3. **Compilar y ejecutar**
-   ```bash
-   mvn clean compile
-   mvn exec:java -Dexec.mainClass="com.app.Main"
-   ```
-
-> Los archivos `.aj` van en la misma estructura de paquetes que los `.java`. El compilador `ajc` los procesa juntos.
 
 ---
 
