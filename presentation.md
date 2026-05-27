@@ -389,6 +389,8 @@ Qué es un aspecto, cómo se declara y sus modificadores especiales
 
 ```java
 // OOP — código disperso en cada clase
+package com.app.service;
+
 public class ServicioA {
     public void procesar() {
         log.info("Inicio procesar"); // logging
@@ -396,11 +398,20 @@ public class ServicioA {
         // lógica de negocio...
         log.info("Fin procesar");    // logging
     }
+
+    public void guardar() {
+        log.info("Inicio guardar");  // logging
+        checkAuth();                  // seguridad
+        // lógica de negocio...
+        log.info("Fin guardar");     // logging
+    }
 }
+// El mismo patrón se repite en ServicioB, ServicioC...
 ```
 
 ```java
 // AOP — centralizado en un aspecto
+// Aplica a TODOS los métodos de com.app.service.*
 public aspect LoggingAspect {
     pointcut servicios() :
         execution(* com.app.service.*.*(..));
@@ -413,6 +424,9 @@ public aspect LoggingAspect {
         System.out.println("Fin del método");
     }
 }
+// Llamando servicioA.procesar():
+// Inicio: void com.app.service.ServicioA.procesar()
+// Fin del método
 ```
 
 </div>
@@ -467,31 +481,62 @@ Los aspectos son **singleton** — una sola instancia por JVM.
 ## `privileged` — acceso a miembros privados
 
 <div class="cols">
-<div>
-
-Permite al aspecto leer y modificar campos `private` **sin** que la clase exponga getters.
-
-> Útil para aspectos de logging o debugging que necesitan inspeccionar estado interno sin cambiar la API pública.
-
-⚠️ **Rompe encapsulamiento** — usar con cuidado.
-
-</div>
 
 ```java
-privileged aspect AuditAspect {
+// Account.java — sin getter para balance
+public class Account {
+    private double balance; // campo privado
+
+    public Account(double initialBalance) {
+        this.balance = initialBalance;
+    }
+
+    public void deposit(double amount) {
+        this.balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        if (amount > this.balance)
+            throw new IllegalStateException(
+                "Fondos insuficientes");
+        this.balance -= amount;
+    }
+    // No hay getBalance()
+}
+```
+
+```java
+// Sin 'privileged' → error de compilación:
+// "balance has private access in Account"
+privileged aspect PrivilegedAspect {
 
     before() : execution(* Account.deposit(..)) {
         Account a =
             (Account) thisJoinPoint.getTarget();
-
-        // Accede a 'balance' aunque sea private
         System.out.println(
-            "Balance antes: " + a.balance);
+            "Balance antes del depósito: "
+            + a.balance);
+    }
+
+    after() : execution(* Account.deposit(..)) {
+        Account a =
+            (Account) thisJoinPoint.getTarget();
+        System.out.println(
+            "Balance después del depósito: "
+            + a.balance);
     }
 }
+// Llamando: account.deposit(500.0)
+// con balance inicial = 1000.0
+//
+// [before]  Balance antes del depósito:  1000.0
+// → deposit() ejecuta: balance += 500.0
+// [after]   Balance después del depósito: 1500.0
 ```
 
 </div>
+
+⚠️ **Rompe encapsulamiento** — usar con cuidado.
 
 ---
 
@@ -604,22 +649,56 @@ Lectura o escritura de un campo de una clase.
 
 ## Acceder al contexto del Join Point
 
+<div class="cols">
+
 ```java
-public aspect JoinPointInfo {
-    before() : execution(* com.app.*.*(..)) {
-        // thisJoinPoint da acceso al contexto de ejecución
-        System.out.println("Tipo:   " + thisJoinPoint.getKind());
-        System.out.println("Método: " + thisJoinPoint.getSignature().getName());
-        System.out.println("Clase:  " + thisJoinPoint.getTarget().getClass().getSimpleName());
-        System.out.println("Args:   " + Arrays.toString(thisJoinPoint.getArgs()));
+// PedidoService.java
+package com.app.service;
+
+public class PedidoService {
+
+    public void procesarPedido(Pedido pedido) {
+        System.out.println(
+            "Procesando: " + pedido.getId());
+    }
+
+    public Pedido buscarPedido(int id) {
+        return new Pedido(id, "Producto X");
     }
 }
-// Salida ejemplo:
+```
+
+```java
+public aspect JoinPointInfo {
+
+    before() : execution(* com.app.service.*.*(..)) {
+        // Tipo: method-execution, call, etc.
+        System.out.println("Tipo:   "
+            + thisJoinPoint.getKind());
+
+        // Nombre del método interceptado
+        System.out.println("Método: "
+            + thisJoinPoint.getSignature().getName());
+
+        // Clase donde se ejecuta
+        System.out.println("Clase:  "
+            + thisJoinPoint.getTarget()
+                           .getClass()
+                           .getSimpleName());
+
+        // Argumentos recibidos
+        System.out.println("Args:   "
+            + Arrays.toString(thisJoinPoint.getArgs()));
+    }
+}
+// Llamando procesarPedido(pedido):
 // Tipo:   method-execution
 // Método: procesarPedido
 // Clase:  PedidoService
 // Args:   [Pedido@3f99bd52]
 ```
+
+</div>
 
 ---
 
@@ -647,80 +726,69 @@ Qué ejecutar y cuándo
 
 ---
 
-<div class="tag">before / after</div>
+<div class="tag">before / after / around</div>
 
-## `before()` y `after()`
+## Todos los tipos en un ejemplo
+
+<div class="cols">
 
 ```java
-public aspect TimingAspect {
+// PagoService.java
+public class PagoService {
 
-    pointcut serviceMethods() :
-        execution(* com.app.service.*.*(..));
+    public String procesarPago(double monto) {
+        if (monto <= 0)
+            throw new IllegalArgumentException(
+                "Monto inválido: " + monto);
 
-    // Antes del método — no puede detener la ejecución (salvo excepción)
-    before() : serviceMethods() {
-        System.out.println("→ " + thisJoinPoint.getSignature().getName());
-    }
-
-    // Siempre al final, tanto en éxito como en excepción (como finally)
-    after() : serviceMethods() {
-        System.out.println("← " + thisJoinPoint.getSignature().getName());
+        System.out.println(
+            "Procesando pago de $" + monto);
+        return "TXN-" + System.currentTimeMillis();
     }
 }
 ```
 
----
-
-<div class="tag">after returning / throwing</div>
-
-## Variantes de `after()`
-
 ```java
-public aspect ResultAspect {
+public aspect AllAdvicesAspect {
+    pointcut pago() :
+        execution(* PagoService.procesarPago(..));
 
-    pointcut query() : execution(* Repository.find*(..));
-
-    // Solo si terminó sin excepción — accede al valor de retorno
-    after() returning(Object result) : query() {
-        System.out.println("Resultado: " + result);
+    // 1. SIEMPRE antes del método
+    before() : pago() {
+        System.out.println("[before] validando...");
     }
-
-    // Solo si lanzó excepción — accede al objeto de excepción
-    after() throwing(Exception ex) : query() {
-        System.err.println("Error en consulta: " + ex.getMessage());
+    // 2. SIEMPRE después (éxito o error)
+    after() : pago() {
+        System.out.println("[after] finalizado");
     }
-}
-```
-
-> `returning` y `throwing` son mutuamente excluyentes. `after()` sin modificador ejecuta en **ambos** casos.
-
----
-
-<div class="tag">around</div>
-
-## `around()` — control total del flujo
-
-```java
-public aspect CacheAspect {
-
-    private Map<String, Object> cache = new HashMap<>();
-
-    Object around() : execution(* ProductService.getProduct(String)) {
-        String key = (String) thisJoinPoint.getArgs()[0];
-
-        if (cache.containsKey(key)) {
-            System.out.println("[CACHE HIT] " + key);
-            return cache.get(key);   // NO llama proceed() → evita la BD
-        }
-
-        Object result = proceed();   // ejecuta el método real
-        cache.put(key, result);
+    // 3. Solo si retornó SIN excepción
+    after() returning(String txn) : pago() {
+        System.out.println("[returning] TXN: " + txn);
+    }
+    // 4. Solo si LANZÓ excepción
+    after() throwing(Exception ex) : pago() {
+        System.out.println("[throwing] " + ex.getMessage());
+    }
+    // 5. Envuelve el método — control total
+    Object around() : pago() {
+        long t = System.currentTimeMillis();
+        System.out.println("[around] inicio");
+        Object result = proceed();
+        System.out.println("[around] fin en "
+            + (System.currentTimeMillis() - t) + "ms");
         return result;
     }
 }
+// procesarPago(150.0):        procesarPago(-5):
+//   [around] inicio             [around] inicio
+//   [before] validando...       [before] validando...
+//   Procesando pago de $150.0   (lanza excepción)
+//   [after]  finalizado         [after]  finalizado
+//   [returning] TXN-17163...    [throwing] Monto inválido
+//   [around] fin en 3ms
 ```
 
-> **Regla:** siempre llamar `proceed()` a menos que **intencionalmente** quieras bloquear la ejecución.
+</div>
 
 ---
 
@@ -821,31 +889,64 @@ Advice *intercepta* en runtime. ITD *extiende la estructura* en compilación —
 
 ---
 
-<div class="tag">ITD — código</div>
+<div class="tag">ITD — Métodos y Atributos</div>
 
 ## Inter-Type Declarations en acción
 
+<div class="cols">
+
 ```java
-public aspect AuditAspect {
+// User.java — sin auditId ni sus métodos
+public class User {
+    private String name;
 
-    // Agrega un atributo privado a la clase User
-    private String User.auditId;
-
-    // Agrega un método público a la clase User
-    public String User.getAuditInfo() {
-        return "User[" + this.getName() + "] auditId=" + this.auditId;
+    public User(String name) {
+        this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+    // No tiene auditId, getAuditInfo()
+    // ni setAuditId() — los agrega el aspecto
+}
+```
+
+```java
+// AuditAspect.aj
+public aspect AuditAspect {
+
+    // ITD: agrega atributo privado a User
+    private String User.auditId;
+
+    // ITD: agrega método público a User
+    public String User.getAuditInfo() {
+        return "User[" + this.getName()
+            + "] auditId=" + this.auditId;
+    }
+
+    // ITD: agrega setter a User
     public void User.setAuditId(String id) {
         this.auditId = id;
     }
 }
-// User no sabe que tiene estos miembros — el compilador los agrega:
-// User u = new User("Felipe");
-// u.setAuditId("AUD-001");
-// System.out.println(u.getAuditInfo());
-// → User[Felipe] auditId=AUD-001
 ```
+
+</div>
+
+```java
+// Main.java — los métodos inyectados ya están disponibles en User
+public class Main {
+    public static void main(String[] args) {
+        User u = new User("Felipe");
+        u.setAuditId("AUD-001");
+        System.out.println(u.getAuditInfo());  // → User[Felipe] auditId=AUD-001
+
+        User u2 = new User("Carlos");
+        u2.setAuditId("AUD-002");
+        System.out.println(u2.getAuditInfo()); // → User[Carlos] auditId=AUD-002
+    }
+}
 
 ---
 
@@ -869,6 +970,57 @@ public aspect SerializableAspect {
 ```
 
 > Muy útil para **retrofitting** de clases legacy — agregar comportamiento a clases de terceros sin tener su código fuente.
+
+---
+
+<div class="tag">ITD — Constructor</div>
+
+## ITD Constructor — nueva forma de instanciar
+
+<div class="cols">
+
+```java
+// Product.java — constructor original solo
+// acepta nombre y precio
+public class Product {
+    private String nombre;
+    private double precio;
+
+    public Product(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public String getNombre() { return nombre; }
+    public double getPrecio() { return precio; }
+    // No tiene constructor con 'categoria'
+}
+```
+
+```java
+// FactoryAspect.aj — agrega constructor a Product
+public aspect FactoryAspect {
+
+    public Product.new(String nombre,
+                       double precio,
+                       String categoria) {
+        // llama al constructor original
+        this(nombre, precio);
+        System.out.println(
+            "Producto creado en categoría: "
+            + categoria);
+    }
+}
+
+// Main.java
+// Product p1 = new Product("Mouse", 25.0);
+// → constructor original, sin categoría
+//
+// Product p2 = new Product("Laptop", 2500.0, "Electrónica");
+// → Producto creado en categoría: Electrónica
+```
+
+</div>
 
 ---
 

@@ -567,19 +567,31 @@ public aspect LoggingAspect {
       <div class="problem-card">
         <h3 style="color:var(--text2)">En OOP — código disperso</h3>
         <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">ServicioA.java</span></span></div>
-<pre><code class="language-java">public class ServicioA {
+<pre><code class="language-java">package com.app.service;
+
+public class ServicioA {
     public void procesar() {
         log.info("Inicio procesar"); // logging
         checkAuth();                  // seguridad
         // lógica de negocio...
         log.info("Fin procesar");    // logging
     }
-}</code></pre></div>
+
+    public void guardar() {
+        log.info("Inicio guardar");  // logging
+        checkAuth();                  // seguridad
+        // lógica de negocio...
+        log.info("Fin guardar");     // logging
+    }
+}
+// El mismo patrón de logging y seguridad
+// se repite en ServicioB, ServicioC... etc.</code></pre></div>
       </div>
       <div class="problem-card solution-card">
         <h3 style="color:var(--green)">Con AOP — código centralizado</h3>
         <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">LoggingAspect.aj</span></span></div>
-<pre><code class="language-java">// Un aspecto — aplica en toda la aplicación
+<pre><code class="language-java">// Aplica a TODOS los métodos de com.app.service.*
+// ServicioA, ServicioB, ServicioC... sin tocarlos
 public aspect LoggingAspect {
     pointcut servicios() :
         execution(* com.app.service.*.*(..));
@@ -592,7 +604,10 @@ public aspect LoggingAspect {
     after() : servicios() {
         System.out.println("Fin del método");
     }
-}</code></pre></div>
+}
+// Llamando servicioA.procesar():
+// Inicio: void com.app.service.ServicioA.procesar()
+// Fin del método</code></pre></div>
       </div>
     </div>
 
@@ -620,15 +635,57 @@ public aspect LoggingAspect {
         </button>
         <div class="acc-body">
           <p>Un modificador especial que le da al aspecto <strong>privilegios de acceso</strong>: puede leer y modificar métodos y atributos <code style="font-family:var(--mono);color:var(--cyan)">private</code> de clases y aspectos externos sin necesitar getters/setters.</p>
-          <p>Útil cuando el aspecto necesita inspeccionar estado interno de una clase sin forzar cambios en su API (por ejemplo, un aspecto de logging que necesita imprimir el estado interno de un objeto).</p>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">PrivilegedAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">privileged aspect PrivilegedAspect {
-    // Puede acceder a Account.balance aunque sea private
-    before() : execution(* Account.deposit(..)) {
-        Account a = (Account) thisJoinPoint.getTarget();
-        System.out.println("Balance antes: " + a.balance); // private
+          <p>Útil cuando el aspecto necesita inspeccionar estado interno de una clase sin forzar cambios en su API. En el ejemplo, <code style="font-family:var(--mono);color:var(--cyan)">balance</code> es <code style="font-family:var(--mono);color:var(--cyan)">private</code> en <code style="font-family:var(--mono);color:var(--cyan)">Account</code> — sin <code style="font-family:var(--mono);color:var(--cyan)">privileged</code> el aspecto no podría acceder a él.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Account.java</span></span></div>
+<pre><code class="language-java">public class Account {
+    private double balance; // campo privado
+
+    public Account(double initialBalance) {
+        this.balance = initialBalance;
     }
+
+    public void deposit(double amount) {
+        this.balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        if (amount > this.balance)
+            throw new IllegalStateException(
+                "Fondos insuficientes");
+        this.balance -= amount;
+    }
+    // No hay getBalance() — campo completamente privado
 }</code></pre></div>
+            <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">PrivilegedAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">// Sin 'privileged' esto fallaría en compilación:
+// "balance has private access in Account"
+privileged aspect PrivilegedAspect {
+
+    before() : execution(* Account.deposit(..)) {
+        Account a =
+            (Account) thisJoinPoint.getTarget();
+        // Acceso directo al campo private
+        System.out.println(
+            "Balance antes del depósito: "
+            + a.balance);
+    }
+
+    after() : execution(* Account.deposit(..)) {
+        Account a =
+            (Account) thisJoinPoint.getTarget();
+        System.out.println(
+            "Balance después del depósito: "
+            + a.balance);
+    }
+}
+// Llamando: account.deposit(500.0)
+// con balance inicial = 1000.0
+//
+// [before]  Balance antes del depósito:  1000.0
+// → deposit() ejecuta: balance += 500.0
+// [after]   Balance después del depósito: 1500.0</code></pre></div>
+          </div>
         </div>
       </div>
 
@@ -725,21 +782,51 @@ public aspect AccountAudit perthis(execution(* Account.*(..))) {
       </div>
     </div>
     <div class="fade-up" style="margin-top:2rem">
-      <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">JoinPointInfo.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">PedidoService.java</span></span></div>
+<pre><code class="language-java">package com.app.service;
+
+public class PedidoService {
+
+    public void procesarPedido(Pedido pedido) {
+        // lógica de negocio
+        System.out.println(
+            "Procesando pedido: " + pedido.getId());
+    }
+
+    public Pedido buscarPedido(int id) {
+        return new Pedido(id, "Producto X");
+    }
+}</code></pre></div>
+        <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">JoinPointInfo.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
 <pre><code class="language-java">public aspect JoinPointInfo {
-    before() : execution(* com.app.*.*(..)) {
-        // thisJoinPoint da acceso al contexto del join point
-        System.out.println("Tipo:    " + thisJoinPoint.getKind());
-        System.out.println("Método:  " + thisJoinPoint.getSignature().getName());
-        System.out.println("Clase:   " + thisJoinPoint.getTarget().getClass().getSimpleName());
-        System.out.println("Args:    " + Arrays.toString(thisJoinPoint.getArgs()));
+
+    before() : execution(* com.app.service.*.*(..)) {
+        // Tipo de join point: method-execution, call, etc.
+        System.out.println("Tipo:   "
+            + thisJoinPoint.getKind());
+
+        // Nombre del método interceptado
+        System.out.println("Método: "
+            + thisJoinPoint.getSignature().getName());
+
+        // Clase donde se ejecuta el método
+        System.out.println("Clase:  "
+            + thisJoinPoint.getTarget()
+                           .getClass()
+                           .getSimpleName());
+
+        // Argumentos recibidos por el método
+        System.out.println("Args:   "
+            + Arrays.toString(thisJoinPoint.getArgs()));
     }
 }
-// Salida ejemplo:
-// Tipo:    method-execution
-// Método:  procesarPedido
-// Clase:   PedidoService
-// Args:    [Pedido@3f99bd52]</code></pre></div>
+// Llamando procesarPedido(pedido) → imprime:
+// Tipo:   method-execution
+// Método: procesarPedido
+// Clase:  PedidoService
+// Args:   [Pedido@3f99bd52]</code></pre></div>
+      </div>
     </div>
   </div>
 </section>
@@ -786,21 +873,70 @@ public aspect AccountAudit perthis(execution(* Account.*(..))) {
       <div class="flow-box flow-around">...fin }</div>
     </div>
     <div class="fade-up" style="margin-top:2rem">
-      <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">TimingAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect TimingAspect {
-    pointcut metodos() : execution(* com.app.service.*.*(..));
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">PagoService.java</span></span></div>
+<pre><code class="language-java">public class PagoService {
 
-    // around: mide el tiempo de ejecución
-    Object around() : metodos() {
-        long inicio = System.currentTimeMillis();
-        Object resultado = proceed(); // ejecuta el método original
-        long fin = System.currentTimeMillis();
-        System.out.println(thisJoinPoint.getSignature().getName()
-            + " tardó " + (fin - inicio) + "ms");
-        return resultado;
+    public String procesarPago(double monto) {
+        if (monto <= 0)
+            throw new IllegalArgumentException(
+                "Monto inválido: " + monto);
+
+        System.out.println(
+            "Procesando pago de $" + monto);
+        return "TXN-" + System.currentTimeMillis();
+    }
+}</code></pre></div>
+        <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">AllAdvicesAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect AllAdvicesAspect {
+
+    pointcut pago() :
+        execution(* PagoService.procesarPago(..));
+
+    // 1. Se ejecuta SIEMPRE antes del método
+    before() : pago() {
+        System.out.println("[before] validando pago...");
+    }
+
+    // 2. Se ejecuta SIEMPRE después (éxito o error)
+    after() : pago() {
+        System.out.println("[after] operación finalizada");
+    }
+
+    // 3. Solo si el método retornó SIN excepción
+    after() returning(String txn) : pago() {
+        System.out.println("[returning] TXN generada: " + txn);
+    }
+
+    // 4. Solo si el método LANZÓ excepción
+    after() throwing(Exception ex) : pago() {
+        System.out.println("[throwing] error: " + ex.getMessage());
+    }
+
+    // 5. Envuelve el método — control total
+    Object around() : pago() {
+        long t = System.currentTimeMillis();
+        System.out.println("[around] inicio");
+        Object result = proceed(); // ejecuta procesarPago()
+        System.out.println("[around] fin en "
+            + (System.currentTimeMillis() - t) + "ms");
+        return result;
     }
 }
-// Salida: procesarPedido tardó 42ms</code></pre></div>
+// Llamando procesarPago(150.0):
+//   [around] inicio
+//   [before] validando pago...
+//   Procesando pago de $150.0
+//   [after]     operación finalizada
+//   [returning] TXN generada: TXN-1716300000000
+//   [around] fin en 3ms
+//
+// Llamando procesarPago(-5):
+//   [around] inicio
+//   [before] validando pago...
+//   [after]    operación finalizada
+//   [throwing] error: Monto inválido: -5.0</code></pre></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1038,29 +1174,57 @@ java -javaagent:aspectjweaver.jar -jar app.jar
           <span class="acc-chevron">▼</span>
         </button>
         <div class="acc-body">
-          <p>Desde un aspecto se puede "inyectar" un método o atributo en una clase existente. La clase <code style="font-family:var(--mono);color:var(--cyan)">User</code> no sabe que tiene esos miembros — el compilador los agrega en el weaving.</p>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">AuditAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
-<pre><code class="language-java">public aspect AuditAspect {
+          <p>Desde un aspecto se puede "inyectar" un método o atributo en una clase existente. La clase <code style="font-family:var(--mono);color:var(--cyan)">User</code> no declara <code style="font-family:var(--mono);color:var(--cyan)">auditId</code> ni sus getters — el compilador los agrega en el weaving.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+            <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">User.java</span></span></div>
+<pre><code class="language-java">public class User {
+    private String name;
 
-    // Agrega un atributo privado a la clase User
-    private String User.auditId;
-
-    // Agrega un método público a la clase User
-    public String User.getAuditInfo() {
-        return "User[" + this.getName() + "] auditId=" + this.auditId;
+    public User(String name) {
+        this.name = name;
     }
 
-    // Agrega un método a la clase User con lógica de aspecto
+    public String getName() {
+        return name;
+    }
+    // No tiene auditId, getAuditInfo()
+    // ni setAuditId() — los agrega el aspecto
+}</code></pre></div>
+            <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">AuditAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public aspect AuditAspect {
+
+    // ITD: agrega atributo privado a User
+    private String User.auditId;
+
+    // ITD: agrega método público a User
+    public String User.getAuditInfo() {
+        return "User[" + this.getName()
+            + "] auditId=" + this.auditId;
+    }
+
+    // ITD: agrega setter a User
     public void User.setAuditId(String id) {
         this.auditId = id;
     }
-}
+}</code></pre></div>
+          </div>
+          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Main.java</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><code class="language-java">public class Main {
+    public static void main(String[] args) {
 
-// En main — User usa los miembros como si fueran suyos:
-// User u = new User("Felipe");
-// u.setAuditId("AUD-001");
-// System.out.println(u.getAuditInfo());
-// → User[Felipe] auditId=AUD-001</code></pre></div>
+        User u = new User("Felipe");
+
+        // Métodos inyectados por AuditAspect — disponibles en User
+        u.setAuditId("AUD-001");
+        System.out.println(u.getAuditInfo());
+        // → User[Felipe] auditId=AUD-001
+
+        User u2 = new User("Carlos");
+        u2.setAuditId("AUD-002");
+        System.out.println(u2.getAuditInfo());
+        // → User[Carlos] auditId=AUD-002
+    }
+}</code></pre></div>
         </div>
       </div>
 
@@ -1097,20 +1261,44 @@ public aspect SerializableAspect {
         </button>
         <div class="acc-body">
           <p>Un aspecto puede agregar un constructor adicional a una clase existente, permitiendo nuevas formas de instanciarla sin modificar su código.</p>
-          <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">FactoryAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-java">Product.java</span></span></div>
+<pre><code class="language-java">public class Product {
+    private String nombre;
+    private double precio;
+
+    // Constructor original — solo nombre y precio
+    public Product(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public String getNombre() { return nombre; }
+    public double getPrecio() { return precio; }
+    // No tiene constructor con 'categoria'
+}</code></pre></div>
+            <div class="code-wrap"><div class="code-header"><span class="code-filename"><span class="ext-aj">FactoryAspect.aj</span></span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
 <pre><code class="language-java">public aspect FactoryAspect {
 
-    // Agrega un constructor alternativo a Product
-    public Product.new(String nombre, double precio, String categoria) {
-        this(nombre, precio); // llama al constructor existente
-        // lógica adicional del aspecto
-        System.out.println("Producto creado con categoría: " + categoria);
+    // ITD: agrega un constructor alternativo a Product
+    public Product.new(String nombre,
+                       double precio,
+                       String categoria) {
+        // llama al constructor original de Product
+        this(nombre, precio);
+        System.out.println(
+            "Producto creado en categoría: "
+            + categoria);
     }
 }
 
-// Ahora se puede usar:
-// Product p = new Product("Laptop", 2500.0, "Electrónica");
-// → Producto creado con categoría: Electrónica</code></pre></div>
+// Main.java — el nuevo constructor ya está disponible:
+// Product p1 = new Product("Mouse", 25.0);
+// → constructor original, sin categoría
+//
+// Product p2 = new Product("Laptop", 2500.0, "Electrónica");
+// → Producto creado en categoría: Electrónica</code></pre></div>
+          </div>
         </div>
       </div>
     </div>
